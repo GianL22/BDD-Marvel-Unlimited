@@ -1,26 +1,24 @@
 # Ultimate Marvel
-1. Descargar las dependencias del backend
-```sh
-cd backend
-npm i 
+Antes de empezar a desarrollar:
+1. Clonar el repositorio
+2. Ir a la carpeta del proyecto
 ```
-2. Descargar las dependencias del frontend
-```sh
-cd frontend
-yarn
+cd <folder_name>
 ```
-3. Crear .env en backend
-```sh
-cd backend
-PORT = 
+3. Descargar las dependencias
 ```
+cd frontend && yarn && cd ../
+cd backend && npm install && cd ../
+```
+
 4. Ejecutar frontend
-```sh
+```
 cd frontend
 yarn dev
 ```
 5. Ejecutar backend
-```sh
+```
 cd backend
 npm run start:dev
 ```
+6. Revisar los pasos en el README de cada carpeta para ejecutar cada servicio
