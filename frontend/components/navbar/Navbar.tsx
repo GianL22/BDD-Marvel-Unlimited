@@ -1,22 +1,8 @@
-import {Button, Dropdown, Link, Navbar, Spacer, Switch, Text} from '@nextui-org/react';
-import React from 'react';
-//import {ModalLogin} from '../modal';
-//import {icons} from './icons';
-//import {AcmeLogo} from './logo';
-import {useTheme as useNextTheme} from 'next-themes';
-import {useTheme} from '@nextui-org/react';
-//import {GithubIcon} from '../icons/GithubIcon';
+import {Button, Navbar, Spacer, Text} from '@nextui-org/react';
+import Link from 'next/link'
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 export const NavbarWrapper = () => {
-   const {setTheme} = useNextTheme();
-   const {isDark, type} = useTheme();
-   const collapseItems = [
-      'Features',
-      'Customers',
-      'Pricing',
-      'Company',
-      'Legal',
-   ];
    return (
       <Navbar
          isBordered
@@ -30,88 +16,36 @@ export const NavbarWrapper = () => {
         variant='sticky'
         maxWidth='fluid'
       >
+         <Navbar.Toggle 
+            showIn="sm" 
+         />
          <Navbar.Brand>
-            <Navbar.Toggle aria-label="toggle navigation" showIn="sm" />
-            {/* <Text b h2 hideIn="lg" >
-               MARVEL UNITED
-            </Text> */}
-            <Spacer x={4}/>
-            <Text h1 
-                css={{
-                    textGradient: "45deg, #E62429 30%, #FECB00 100%",
-                }}
-                size='$4xl'
+            <Spacer x={2}/>
+            <Text 
+               h1 
+               css={{
+                  textGradient: "45deg, #E62429 30%, #FECB00 100%",
+               }}
+               size='$4xl'
             >
-                <Link href='/'>
-                    MARVEL UNITED
-                </Link>
+               <Link href='/'>
+                  MARVEL UNITED
+               </Link>
             </Text>
          </Navbar.Brand>
+         <Navbar.Content
+            hideIn='sm'
+            enableCursorHighlight
+         >
+            <Button 
+               auto 
+               ghost 
+               bordered
+            >
+               LOGIN
+            </Button>
 
-         <Navbar.Collapse>
-            {collapseItems.map((item, index) => (
-               <Navbar.CollapseItem key={item}>
-                  <Link
-                     color="inherit"
-                     css={{
-                        minWidth: '100%',
-                     }}
-                     href="#"
-                  >
-                     {item}
-                  </Link>
-               </Navbar.CollapseItem>
-            ))}
-            <Navbar.CollapseItem>
-               <Link
-                  color="inherit"
-                  css={{
-                     minWidth: '100%',
-                  }}
-                  target="_blank"
-                  href="https://github.com/Siumauricio/landing-template-nextui"
-               >
-               </Link>
-            </Navbar.CollapseItem>
-            <Navbar.CollapseItem>
-               <Switch
-                  checked={isDark}
-                  onChange={(e) =>
-                     setTheme(e.target.checked ? 'dark' : 'light')
-                  }
-               />
-            </Navbar.CollapseItem>
-         </Navbar.Collapse>
-         <Navbar.Content>
-            <Navbar.Item>
-               <Button 
-                    auto 
-                    flat 
-                    href="#"
-                    bordered
-                >
-                  LOGIN
-               </Button>
-            </Navbar.Item>
-            <Navbar.Item hideIn={'xs'}>
-               <Link
-                  color="inherit"
-                  css={{
-                     minWidth: '100%',
-                  }}
-                  target="_blank"
-                  href="https://github.com/Siumauricio/landing-template-nextui"
-               >
-               </Link>
-            </Navbar.Item>
-            <Navbar.Item hideIn={'xs'}>
-               <Switch
-                  checked={isDark}
-                  onChange={(e) =>
-                     setTheme(e.target.checked ? 'dark' : 'light')
-                  }
-               />
-            </Navbar.Item>
+            <ThemeSwitcher />
          </Navbar.Content>
       </Navbar>
    );

@@ -1,7 +1,6 @@
-
-import {Button, Divider, Image, Input, Text} from '@nextui-org/react';
-import React from 'react';
-import {CheckIcon} from '../icons/CheckIcon';
+import {Button, Divider, Image, Link, Text} from '@nextui-org/react';
+import NextLink from 'next/link';
+import { Check } from 'iconoir-react';
 import {Box, Flex} from '../containers'
 
 export const Hero = () => {
@@ -25,8 +24,7 @@ export const Hero = () => {
          >
             <Box
                css={{
-                  pt: '$13',
-
+                  pt: '$12',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '$5',
@@ -71,12 +69,17 @@ export const Hero = () => {
                <Flex
                   css={{
                      gap: '$8',
-                     pt: '$4',
+                     pt: '$2',
+                     justifyContent: 'center',
+                     alignItems: 'center',
                   }}
                   wrap={'wrap'}
                >
-                  <Input placeholder="Enter your email address" size="lg" />
-                  <Button>Start Free Trial</Button>
+                  <Link href='/auth/register'>
+                        <Button>
+                           ¡Unete a la Aventura!
+                        </Button>
+                  </Link>
                </Flex>
                <Flex
                   wrap={'wrap'}
@@ -94,7 +97,7 @@ export const Hero = () => {
                         alignItems: 'center',
                      }}
                   >
-                     <CheckIcon /> No credit card required.
+                     <Check color='green' /> Mejor contenido.
                   </Flex>
                   <Flex
                      css={{
@@ -102,7 +105,7 @@ export const Hero = () => {
                         alignItems: 'center',
                      }}
                   >
-                     <CheckIcon /> 14-day free trial.
+                     <Check color='green' /> Prueba gratuita .
                   </Flex>
                   <Flex
                      css={{
@@ -110,7 +113,7 @@ export const Hero = () => {
                         alignItems: 'center',
                      }}
                   >
-                     <CheckIcon /> Cancel anytime.
+                     <Check color='green' /> Cancelar en cualquier momento.
                   </Flex>
                </Flex>
             </Box>
@@ -120,6 +123,11 @@ export const Hero = () => {
                     width={'775px'} 
                     objectFit="contain" 
                     showSkeleton
+                    containerCss={{
+                        borderRadius: '5%',
+                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.6)',
+                        overflow: 'hidden',
+                    }}
                 />
             </Box>
          </Flex>

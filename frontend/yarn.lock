@@ -1169,6 +1169,11 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+iconoir-react@^6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/iconoir-react/-/iconoir-react-6.8.0.tgz#6a34b57669038aba1d594343b8030f9939e393cc"
+  integrity sha512-16ltGI7/uar/8i9BggyzyAnu9IjxLdauHMiApS/wy+GhGnC2JEAqiTvulUsvim0rasHHgEyyAKe9VXmTUsUsGQ==
+
 inflight@^1.0.4:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/inflight/-/inflight-1.0.6.tgz#49bd6331d7d02d0c09bc910a1075ba8165b56df9"
