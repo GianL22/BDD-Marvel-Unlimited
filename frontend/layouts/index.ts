@@ -1,5 +1,8 @@
+export { AuthLayout } from "./AuthLayout";
 
 
-export { SubSignupLayout } from "./SubSignupLayout";
+export { LandingLayout } from "./LandingLayout";
+
+
 
 

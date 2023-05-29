@@ -1,12 +1,12 @@
 import type { NextPage } from 'next'
-import { SubSignupLayout } from '../layouts'
+import { LandingLayout } from '../layouts'
 import { Hero } from '../components/hero'
 import { Spacer, Text } from '@nextui-org/react'
 import { NavbarWrapper } from '@/components/navbar/Navbar'
 
 const Home: NextPage = () => {
   return (
-    <SubSignupLayout
+    <LandingLayout
       title='Hero United'
       description= 'Landing Page'
     >
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
       >
         - Stan Lee
       </Text>
-    </SubSignupLayout>
+    </LandingLayout>
   )
 }
 

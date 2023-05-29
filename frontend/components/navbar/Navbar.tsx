@@ -2,7 +2,11 @@ import {Button, Navbar, Spacer, Text} from '@nextui-org/react';
 import Link from 'next/link'
 import { ThemeSwitcher } from './ThemeSwitcher';
 
-export const NavbarWrapper = () => {
+interface Props {
+   type: boolean;
+}
+
+export const NavbarWrapper = ( {type}: Props) => {
    return (
       <Navbar
          isBordered
@@ -37,14 +41,23 @@ export const NavbarWrapper = () => {
             hideIn='sm'
             enableCursorHighlight
          >
-            <Button 
-               auto 
-               ghost 
-               bordered
-            >
-               LOGIN
-            </Button>
-
+            {
+               (type)
+                  ? (
+                     <Link
+                        href={'/auth/login'}
+                     >
+                        <Button 
+                           auto 
+                           ghost 
+                           bordered
+                           >
+                           LOGIN
+                        </Button>
+                     </Link>
+                  )
+                  : null
+            }
             <ThemeSwitcher />
          </Navbar.Content>
       </Navbar>

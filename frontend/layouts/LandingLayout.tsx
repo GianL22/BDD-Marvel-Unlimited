@@ -8,20 +8,22 @@ interface Props {
    children: React.ReactNode;
 }
 
-export const SubSignupLayout = ( {children,title,description}: Props) => {
+export const LandingLayout = ( {children,title,description}: Props) => {
    return(
       <>   
          <Head>
             <title>{title}</title>
             <meta name='description' content={description}/>
          </Head>
+         <NavbarWrapper 
+            type = {true}
+         />
          <Box
             css={{
                maxW: '100%',
                background: '$background',
             }}
          >
-            <NavbarWrapper />
             {children}
          </Box>
       </>

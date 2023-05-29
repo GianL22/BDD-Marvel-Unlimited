@@ -1,5 +1,4 @@
 import {Button, Divider, Image, Link, Text} from '@nextui-org/react';
-import NextLink from 'next/link';
 import { Check } from 'iconoir-react';
 import {Box, Flex} from '../containers'
 
