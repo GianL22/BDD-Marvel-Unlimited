@@ -1,9 +1,8 @@
-import { Button, Card, Col, Divider, Grid, Image, Input, Link, Loading, Radio, Row, Spacer, Text, useTheme } from '@nextui-org/react'
+import { Button, Card, Col, Grid, Input, Link, Row, Spacer, Text } from '@nextui-org/react'
 import { AuthLayout,  } from '../../../layouts';
-import { Box, Flex } from '../../../components/containers';
 import { CardPlan } from '@/components/plan/CardPlan';
 
-const MembershipPage = () => {
+const PaymentPage = () => {
     return(
       <AuthLayout
         title='Payment'
@@ -165,4 +164,4 @@ const MembershipPage = () => {
 
     )
 }
-export default MembershipPage
+export default PaymentPage
