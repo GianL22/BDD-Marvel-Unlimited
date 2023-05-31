@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Button, Card, Container, Grid, Image, Input, Link, Loading, Radio, Spacer, Text, useTheme } from '@nextui-org/react'
 import { LandingLayout } from '../../../layouts';
 import { CardPlan  } from '../../../components/plan/CardPlan';
-import { Flex } from '../../../components/containers/Flex';
+import { Flex, Box } from '../../../components/containers';
 
 const memberships =[
   {
@@ -37,6 +37,19 @@ const MembershipPage = () => {
                 SELECCIONA EL PLAN IDEAL PARA TI
             </Text>
             <Flex direction={'row'} justify={'center'} align={'center'} > 
+              <Box>
+                <Image 
+                      src="/Suscripcion.jpg"
+                      width={'335px'} 
+                      objectFit="contain" 
+                      showSkeleton
+                      containerCss={{
+                          borderRadius: '5%',
+                          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.6)',
+                          overflow: 'hidden',
+                      }}
+                  />
+              </Box> 
               <Text css={{lineHeight: '$xs', maxW:'60%', textAlign:'center', fontSize:'$4xl', pb:'128px'}}>
                 ¡Únete gratis a la comunidad de Marvel por tiempo limitado! Acceso exclusivo a contenido épico de Marvel
               </Text>
@@ -55,12 +68,6 @@ const MembershipPage = () => {
                 Puedes cambiar de plan cuando quieras.
               </Text>
             </Flex> */}
-            {/* <Image
-              height='360px'
-              width='400px'
-              src={'https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/DA2E198288BFCA56AB53340211B38DE7134E40E4521EDCAFE6FFB8CD69250DE9/scale?width=1200&aspectRatio=1.78&format=jpeg'}
-              alt="Marvel"
-            />     */}
             </Flex>
             <Flex css={{h : '100%'}}  direction={'row'} justify={'center'} align={'center'} >
               {

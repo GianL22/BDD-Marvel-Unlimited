@@ -41,6 +41,7 @@ export const NavbarWrapper = ( {type}: Props) => {
             hideIn='sm'
             enableCursorHighlight
          >
+            <ThemeSwitcher />
             {
                (type)
                   ? (
@@ -58,7 +59,6 @@ export const NavbarWrapper = ( {type}: Props) => {
                   )
                   : null
             }
-            <ThemeSwitcher />
          </Navbar.Content>
       </Navbar>
    );
