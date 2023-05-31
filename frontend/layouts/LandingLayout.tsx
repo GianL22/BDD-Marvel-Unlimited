@@ -22,6 +22,7 @@ export const LandingLayout = ( {children,title,description}: Props) => {
             css={{
                maxW: '100%',
                background: '$background',
+               height: '100vh',
             }}
          >
             {children}

@@ -1,88 +1,68 @@
 import { Button, Card, Divider, Grid, Text } from "@nextui-org/react"
 import { Box, Flex } from "../containers"
-import { Check } from "iconoir-react"
-
-export const CardPlan = () => {
+import { Check, FontSize } from "iconoir-react"
+interface Props {
+    title: string,
+    features: string[],
+    price: number,
+    recommended: boolean, 
+    
+}
+export const CardPlan = ({title, features, price, recommended} : Props) => {
     return (
-        <Card css={{p: '$6', mw: '400px'}}>
+        <Card
+            css={{
+                p: '$6', ml:'60px', width: '300px',
+                minWidth:'500px', h:'700px', background:'$backgroundContrast',
+                borderColor:'$primary', borderWidth:'3px',
+            }}
+            variant={ (recommended) ? 'bordered' : 'flat' }
+            isHoverable
+        >
             <Card.Header>
-                <Grid.Container css={{pl: '$6'}}>
-                <Grid xs={12}>
-                    <Text h4 css={{lineHeight: '$xs'}}>
-                        Free
+                <Grid.Container css={{p: '$8'}} >
+                    <Text h6 css={{lineHeight: '$xs'}}>
+                        $
                     </Text>
-                </Grid>
-                <Grid xs={12}>
-                    <Text css={{color: '$accents8'}}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing
-                        elit. Sed condimentum, nisl ut aliquam lacinia,
-                        elit
-                    </Text>
-                </Grid>
+                    <Flex justify={'center'} align={'center'}>
+                        <Text h1 css={{lineHeight: '$xs', paddingLeft:'$8', fontSize:'$6xl', padding:'$12'}}>
+                            {price}
+                        </Text>
+                        <Text h3 b css={{lineHeight: '$xs'}}>
+                            /mes
+                        </Text>
+                    </Flex>
+                    <Grid xs={12} css={{ display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
+                        <Text css={{
+                            backgroundColor: '$primary', borderRadius:'8px', fontSize: '16px',
+                            minWidth: '100px', textAlign: 'center', color: '$white'
+                        }}>
+                            {title}
+                        </Text>
+                    </Grid>
                 </Grid.Container>
             </Card.Header>
             <Card.Body css={{py: '$2'}}>
-                <Text css={{display: 'contents'}} h2>
-                $0{' '}
-                </Text>
-                <Text css={{display: 'contents', color: '$accents8'}}>
-                /mo
-                </Text>
-                <Button css={{mt: '$7', mb: '$12'}}>Get Started</Button>
-
-                <Divider />
-                <Box as={'ul'}>
-                <Flex
-                    as={'li'}
-                    css={{py: '$2', gap: '$2'}}
-                    align={'center'}
-                >
-                    <Check />
-                    <Text span css={{color: '$accents8'}}>
-                        1 Team Members
-                    </Text>
-                </Flex>
-                <Flex
-                    as={'li'}
-                    css={{py: '$2', gap: '$2'}}
-                    align={'center'}
-                >
-                    <Check />
-                    <Text span css={{color: '$accents8'}}>
-                        1 Website
-                    </Text>
-                </Flex>
-                <Flex
-                    as={'li'}
-                    css={{py: '$2', gap: '$2'}}
-                    align={'center'}
-                >
-                    <Check />
-                    <Text span css={{color: '$accents8'}}>
-                        1 GB Storage
-                    </Text>
-                </Flex>
-                <Flex
-                    as={'li'}
-                    css={{py: '$2', gap: '$2'}}
-                    align={'center'}
-                >
-                    <Check />
-                    <Text span css={{color: '$accents8'}}>
-                        1 TB Transfer
-                    </Text>
-                </Flex>
-                <Flex
-                    as={'li'}
-                    css={{py: '$2', gap: '$2'}}
-                    align={'center'}
-                >
-                    <Check />
-                    <Text span css={{color: '$accents8'}}>
-                        Email Support
-                    </Text>
-                </Flex>
-                </Box>
+                
+                    <Box as={'ul'} css={{h:'80%'}}>
+                        {features.map((feature) => {
+                            return (<Flex
+                                    as={'li'}
+                                    css={{py: '$2', gap: '$2'}}
+                                    align={'center'}
+                                >
+                                    <Check />
+                                    <Text span >
+                                        {feature}
+                                    </Text>
+                                </Flex>)}
+                        )}
+                    </Box>
+                    <Flex justify={'center'} align={'center'}>
+                        <Button css={{mt: '$7', mb: '$12', width:'80%'}}>Suscribete</Button>
+                    </Flex>
+                
+                
             </Card.Body>
         </Card>
 
