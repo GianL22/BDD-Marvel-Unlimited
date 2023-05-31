@@ -1,6 +1,6 @@
 import { Button, Card, Divider, Grid, Text } from "@nextui-org/react"
 import { Box, Flex } from "../containers"
-import { Check, FontSize, Dollar } from "iconoir-react"
+import { Check, FontSize } from "iconoir-react"
 
 interface Props {
     title: string,
@@ -22,12 +22,9 @@ export const CardPlan = ({title, features, price, recommended} : Props) => {
         >
             <Card.Header>
                 <Grid.Container css={{p: '$8'}} >
-                    {/* <Text h6 css={{lineHeight: '$xs'}}>
+                    <Text h2 css={{lineHeight: '$xs'}}>
                         $
-                    </Text> */}
-                    <Box>
-                        <Dollar fontSize={'60px'}/>
-                    </Box>
+                    </Text>
                     <Flex justify={'center'} align={'center'}>
                         <Text h1 css={{lineHeight: '$xs', paddingLeft:'$8', fontSize:'$6xl', padding:'$12'}}>
                             {price}
