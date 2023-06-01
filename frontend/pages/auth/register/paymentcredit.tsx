@@ -1,6 +1,14 @@
-import { Button, Card, Col, Grid, Input, Link, Row, Spacer, Text } from '@nextui-org/react'
+import { Button, Card, Col, Divider, Grid, Input, Link, Row, Spacer, Text } from '@nextui-org/react'
 import { AuthLayout,  } from '../../../layouts';
 import { CardPlan } from '@/components/plan/CardPlan';
+
+const memberships =
+    {
+      title: 'GOLD',
+      features : ['Acceso iimitado a las últimas películas y series de Marvel', 'Información detallada de los personajes de Marvel', 'Solo un perfil de usuario.'],
+      price: 9.99,
+      recommended: false,
+    }
 
 const PaymentPage = () => {
     return(
@@ -22,7 +30,7 @@ const PaymentPage = () => {
                     width: '100vw',
                 }}
             >
-                <CardPlan />
+                <CardPlan {...memberships}/>
             </Grid>
             <Grid 
                 xs={ 12 } 
