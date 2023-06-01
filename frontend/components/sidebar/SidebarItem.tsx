@@ -21,6 +21,7 @@ export const SidebarItem = ({icon, title, isActive, href = '', onClick}: Props) 
             color: '$accents9',
             'minWidth': '100%',
             'width': '100%',
+
          }}
       >
          <Flex
@@ -33,7 +34,7 @@ export const SidebarItem = ({icon, title, isActive, href = '', onClick}: Props) 
                'height': '100%',
                'alignItems': 'center',
                'px': '$7',
-               'borderRadius': '8px',
+               'borderRadius': '0px',
                'cursor': 'pointer',
                'transition': 'all 0.15s ease',
                '&:active': {
@@ -41,10 +42,10 @@ export const SidebarItem = ({icon, title, isActive, href = '', onClick}: Props) 
                },
                ...(isActive
                   ? {
-                        'bg': '$blue200',
                         '& svg path': {
-                           fill: '$blue600',
+                           color:'$primary'
                         },
+                        borderLeft:'$primary 4px solid',
                      }
                   : {'&:hover': {bg: '$accents2'}}),
             }}
@@ -54,10 +55,11 @@ export const SidebarItem = ({icon, title, isActive, href = '', onClick}: Props) 
             <Text
                span
                weight='normal'
-               size='$xl'
+               size='$2xl'
                css={{
-                  color: '$accents9',
-                  
+                  color: '$accents9', 
+                  ...(isActive && {color: '$primary'}),
+                  fontWeight:'bold'
                }}
             >
                {title}
