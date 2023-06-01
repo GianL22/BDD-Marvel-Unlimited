@@ -4,7 +4,7 @@ import { AppLayout } from '@/layouts/AppLayout'
 import { Text, Row, Col, Grid, Link, Button, Spacer } from '@nextui-org/react';
 
 
-const reportsPage: NextPage = () => {
+const ReportsPage: NextPage = () => {
   return ( 
     <AppLayout
       title='Reportes'
@@ -112,4 +112,4 @@ const reportsPage: NextPage = () => {
   )
 }
 
-export default reportsPage
+export default ReportsPage
