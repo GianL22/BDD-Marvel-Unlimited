@@ -32,11 +32,11 @@ const MembershipPage = () => {
         title='Plans'
         description='Seleccion Membresia'
       >
-          <Flex direction={'column'} justify={'center'} align={'center'} css={{padding:'$4'}}>
-            <Text h2 css={{lineHeight: '$xs'}}> 
+          <Flex direction={'column'} justify={'center'} align={'center'} css={{padding:'$4',}}>
+            <Text h2 css={{lineHeight: '$xs', pb:'$8'}}> 
                 SELECCIONA EL PLAN IDEAL PARA TI
             </Text>
-            <Flex direction={'row'} justify={'center'} align={'center'} > 
+            <Flex direction={'row'} justify={'center'} align={'center'} css={{pb:'$8'}}> 
               <Box>
                 <Image 
                       src="/Suscripcion.jpg"
@@ -50,7 +50,7 @@ const MembershipPage = () => {
                       }}
                   />
               </Box> 
-              <Text css={{lineHeight: '$xs', maxW:'60%', textAlign:'center', fontSize:'$4xl', pb:'128px'}}>
+              <Text css={{lineHeight: '$xs', maxW:'60%', textAlign:'center', fontSize:'$2xl'}}>
                 ¡Únete gratis a la comunidad de Marvel por tiempo limitado! Acceso exclusivo a contenido épico de Marvel
               </Text>
             {/* <Flex
