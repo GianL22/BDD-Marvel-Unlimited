@@ -6,7 +6,7 @@ import { NavbarWrapper } from '@/components/navbar/Navbar';
 import { AddProfile } from '@/components/profile/AddProfile';
 
 
-const reportsPage: NextPage = () => {
+const ProfilesPage: NextPage = () => {
   return (
     <>
             <NavbarWrapper type = {false} />
@@ -37,4 +37,4 @@ const reportsPage: NextPage = () => {
   )
 }
 
-export default reportsPage
+export default ProfilesPage
