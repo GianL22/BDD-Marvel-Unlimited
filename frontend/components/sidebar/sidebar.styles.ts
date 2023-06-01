@@ -61,9 +61,8 @@ export const Body = styled('div', {
    display: 'flex',
    flexDirection: 'column',
    gap: '$8',
-   mt: '$20',
    px: '$4',
-   // pt: '$4',
+   pt: '$4',
 });
 
 export const Footer = styled('div', {

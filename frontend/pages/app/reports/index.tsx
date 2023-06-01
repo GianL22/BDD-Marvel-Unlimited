@@ -1,7 +1,7 @@
+import type { NextPage } from 'next'
 import { Flex } from '@/components/containers';
 import { AppLayout } from '@/layouts/AppLayout'
 import { Text, Row, Col, Grid, Link, Button, Spacer } from '@nextui-org/react';
-import type { NextPage } from 'next'
 
 
 const reportsPage: NextPage = () => {

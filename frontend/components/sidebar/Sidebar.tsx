@@ -26,16 +26,20 @@ export const SidebarWrapper = () => {
          {collapsed && <Sidebar.Overlay onClick={()=>setCollapsed(prev => !prev)}/>}
          <Sidebar 
             collapsed={collapsed} 
+            css={{
+               width:'max-content'
+            }}
          >
             <Sidebar.Header>
                <Text 
                   h1 
                   css={{
-                     textGradient: "45deg, #E62429 30%, #FECB00 100%",
+                     //textGradient: "45deg, #E62429 30%, #FECB00 100%",
+                     pt:'$16', pb:'$16'
                   }}
                   size='$4xl'
                >
-                  <Link href='/app'>
+                  <Link href='/app' css={{color:'$primary'}}>
                      MARVEL UNITED
                   </Link>
                </Text>
