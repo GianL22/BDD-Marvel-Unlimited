@@ -1,6 +1,6 @@
-import { Button, Card, Divider, Grid, Text } from "@nextui-org/react"
+import { Button, Card, Grid, Text } from "@nextui-org/react"
 import { Box, Flex } from "../containers"
-import { Check, FontSize } from "iconoir-react"
+import { Check } from "iconoir-react"
 
 interface Props {
     title: string,
@@ -58,12 +58,15 @@ export const CardPlan = ({title, features, price, recommended} : Props) => {
                 
                     <Box as={'ul'} css={{h:'80%', overflow:'hidden'}}>
                         {features.map((feature) => {
-                            return (<Flex
+                            return (
+                                <Flex
                                     as={'li'}
                                     css={{py: '$2', gap: '$2'}}
                                     align={'center'}
                                 >
-                                    <Check />
+                                    <Box>
+                                        <Check />
+                                    </Box>
                                     <Text span >
                                         {feature}
                                     </Text>

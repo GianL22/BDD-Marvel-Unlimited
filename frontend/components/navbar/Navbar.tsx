@@ -20,9 +20,6 @@ export const NavbarWrapper = ( {type}: Props) => {
         variant='sticky'
         maxWidth='fluid'
       >
-         <Navbar.Toggle 
-            showIn="sm" 
-         />
          <Navbar.Brand>
             <Spacer x={2}/>
             <Text 
@@ -38,7 +35,7 @@ export const NavbarWrapper = ( {type}: Props) => {
             </Text>
          </Navbar.Brand>
          <Navbar.Content
-            hideIn='sm'
+            // hideIn='sm'
             enableCursorHighlight
          >
             <ThemeSwitcher />
