@@ -71,7 +71,7 @@ const MembershipPage = () => {
             </Flex>
             <Flex css={{h : '100%'}}  direction={'row'} justify={'center'} align={'center'} >
               {
-                memberships.map((membership) => <CardPlan {...membership} />)
+                memberships.map((membership, id) => <CardPlan  key={id} {...membership} />)
               }
             </Flex>
         </Flex>

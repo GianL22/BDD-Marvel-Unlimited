@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import { LandingLayout } from '../layouts'
 import { Spacer, Text } from '@nextui-org/react'
-import { Hero } from '@/components/Hero'
+import { Hero } from '@/components/hero'
 
 const Home: NextPage = () => {
   return (
