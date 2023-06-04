@@ -10,7 +10,6 @@ const ProfilesPage: NextPage = () => {
   return (
     <>
         <NavbarWrapper type = {false} />
-        {/* <Container justify='center' alignItems='center' alignContent='center'> */}
             <Grid.Container gap={0} justify='center' alignItems='center' css={{minWidth:'auto', minHeight:'80vh'}}>
                 <Grid md={2} justify='center' alignItems='center'>
                     <Profile
@@ -52,8 +51,6 @@ const ProfilesPage: NextPage = () => {
                 </Grid>
 
             </Grid.Container>
-        {/* </Container> */}
-        
     </> 
   )
 }
