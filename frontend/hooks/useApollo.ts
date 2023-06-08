@@ -6,7 +6,7 @@ export const useApollo = () => {
     const client = useMemo(
         () => 
             new ApolloClient({
-                uri: process.env.NEXT_PUBLIC_API_URL,
+                uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
                 cache: new InMemoryCache(),
             }),
         []
