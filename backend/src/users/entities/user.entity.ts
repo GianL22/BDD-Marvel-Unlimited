@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Profile } from './profile.entity';
 
 @Entity({name: 'users'})
 @ObjectType()
@@ -41,5 +42,12 @@ export class User {
   @Field( () => Boolean)
   isActive: boolean;
 
-  //TODO Relaciones... Profiles, CreditCard and City
+  @OneToMany(
+    () => Profile,
+    (profile) => profile.id,
+    {lazy: true}
+  )
+  profile: Profile;
+
+  //TODO Relaciones... CreditCard and City
 }

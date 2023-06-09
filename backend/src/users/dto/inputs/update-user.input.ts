@@ -15,5 +15,4 @@ export class UpdateUserInput extends PartialType(CreateUserInput) {
   @IsOptional()
   isActive?: boolean
 
-
 }

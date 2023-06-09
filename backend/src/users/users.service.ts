@@ -1,13 +1,14 @@
 import { Injectable, BadRequestException, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
 
-import { User } from './entities/user.entity';
+import { Profile, User } from './entities';
 
 import { UpdateUserInput } from './dto/inputs/update-user.input';
 
 import { SignupInput } from '../auth/dto/inputs/signup.input';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateProfileInput, UpdateProfileInput } from './dto/inputs';
 
 @Injectable()
 export class UsersService {
@@ -16,9 +17,13 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User> 
+    private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Profile)
+    private readonly profileRepository: Repository<Profile>,
   ){}
 
+  //* Funciones para usuarios
   async create(signupInput: SignupInput): Promise<User> {
     try {
       const newUser = this.userRepository.create( {
@@ -72,6 +77,45 @@ export class UsersService {
     return await this.userRepository.save( userToBlock );
   }
 
+  //* Funciones para Perfiles
+  async findAllProfiles(user: User): Promise<Profile[]> {
+
+    const queryBuilder = this.profileRepository.createQueryBuilder()
+      .where(`"userId" = :userId`, {userId: user.id});
+
+    return queryBuilder.getMany();
+  }
+
+  async createProfile(createProfileInput: CreateProfileInput, user: User): Promise<Profile> {
+    try {
+      const newProfile = this.profileRepository.create( {
+        ...createProfileInput,
+        user: user.id,
+      });
+      
+      return await this.profileRepository.save( newProfile );
+
+    } catch (error) {
+      this.handleDBError(error)
+    }
+  }
+
+  async updateProfile(id: string, updateProfileInput: UpdateProfileInput, userOwner: User): Promise<Profile> {
+    try {
+      const user = await this.profileRepository.preload(
+        {
+          ...updateProfileInput, 
+          user: userOwner.id,
+          id
+        } ) 
+      return await this.profileRepository.save( user );
+
+    } catch (error) {
+      this.handleDBError(error);
+    }
+  }
+
+  //* Funciones unicas del servicio
   private handleDBError( error: any): never {
     
     if (error.code === '23505')

@@ -10,6 +10,17 @@ type User {
   email: String!
   birthdate: String!
   isActive: Boolean!
+  profiles: [Profile!]!
+}
+
+type Profile {
+  id: ID!
+  nickname: String!
+  language: String!
+  hourConexion: Int!
+  device: String!
+  timeWatched: Int!
+  emailProfile: String!
 }
 
 type AuthResponse {
@@ -26,6 +37,8 @@ type Query {
 type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   blockUser(id: ID!): User!
+  createProfile(createProfileInput: CreateProfileInput!): Profile!
+  updateProfile(updateProfileInput: UpdateProfileInput!): Profile!
   signup(signupInput: SignupInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
 }
@@ -39,6 +52,24 @@ input UpdateUserInput {
   birthdate: String
   id: ID!
   isActive: Boolean
+}
+
+input CreateProfileInput {
+  nickname: String!
+  language: String!
+  device: String!
+  emailProfile: String!
+}
+
+input UpdateProfileInput {
+  nickname: String
+  language: String
+  device: String
+  emailProfile: String
+  id: ID!
+  isActive: Boolean
+  hourConexion: Int
+  timeWatched: Int
 }
 
 input SignupInput {

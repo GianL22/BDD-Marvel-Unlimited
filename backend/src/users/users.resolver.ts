@@ -1,11 +1,14 @@
 import { UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID, ResolveField, Parent } from '@nestjs/graphql';
 
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UpdateUserInput } from './dto/inputs/update-user.input';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Profile } from './entities';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CreateProfileInput, UpdateProfileInput } from './dto/inputs';
 
 @Resolver(() => User)
 // @UseGuards( JwtAuthGuard ) //*Si lo activo pide Token
@@ -14,12 +17,13 @@ export class UsersResolver {
     private readonly usersService: UsersService,
   ) {}
 
-
+  //* Query -> Users
   @Query(() => [User], { name: 'users' })
   async findAll(): Promise<User[]> {
     return this.usersService.findAll( );
   }
 
+  //* Query -> Usuario
   @Query(() => User, { name: 'user' })
   async findOne(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
@@ -27,6 +31,7 @@ export class UsersResolver {
     return this.usersService.findOneById(id);
   }
 
+  //* Actualizar usuario
   @Mutation(() => User, {name: 'updateUser'})
   async updateUser(
     @Args('updateUserInput') updateUserInput: UpdateUserInput, 
@@ -34,10 +39,37 @@ export class UsersResolver {
     return this.usersService.update(updateUserInput.id, updateUserInput );
   }
 
+  //* Bloquear (Desactivar) -> Usuario
   @Mutation(() => User, {name: 'blockUser'})
   blockUser(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
   ): Promise<User> {
     return this.usersService.block(id);
+  }
+
+  //* Funciones para profile
+  @ResolveField( () => [Profile], {name: 'profiles'} )
+  async getProfilesByUser(
+    @Parent() user: User,
+  ): Promise<Profile[]>{
+    return this.usersService.findAllProfiles(user);
+  }
+
+  @Mutation( () => Profile, {name: 'createProfile'})
+  @UseGuards( JwtAuthGuard )
+  async createProfile(
+    @Args('createProfileInput') createProfileInput: CreateProfileInput,
+    @CurrentUser() user: User,
+  ): Promise<Profile>{
+    return this.usersService.createProfile( createProfileInput, user);
+  }
+
+  @Mutation(() => Profile, {name: 'updateProfile'})
+  @UseGuards( JwtAuthGuard )
+  async updateProfile(
+    @Args('updateProfileInput') updateProfileInput: UpdateProfileInput, 
+    @CurrentUser() user: User,
+  ): Promise<Profile> {
+    return this.usersService.updateProfile(updateProfileInput.id, updateProfileInput, user);
   }
 }
