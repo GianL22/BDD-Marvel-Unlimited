@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -24,18 +25,20 @@ import { UsersModule } from './users/users.module';
         ]
     }),
 
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: process.env.DB_HOST,
-    //   port: +process.env.DB_PORT,
-    //   username: process.env.DB_USERNAME,
-    //   password: process.env.DB_PASSWORD,
-    //   database: process.env.DB_NAME,
-    //   synchronize: true,
-    //   autoLoadEntities: true,
-    // }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      synchronize: true,
+      autoLoadEntities: true,
+    }),
 
     UsersModule,
+
+    AuthModule,
 
   ],
   controllers: [],

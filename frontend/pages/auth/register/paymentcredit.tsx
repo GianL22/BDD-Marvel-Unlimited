@@ -1,6 +1,9 @@
-import { Button, Card, Col, Divider, Grid, Input, Link, Row, Spacer, Text } from '@nextui-org/react'
+import { Button, Card, Col, Divider, Grid, Input, Link, Loading, Row, Spacer, Text } from '@nextui-org/react'
 import { AuthLayout,  } from '../../../layouts';
 import { CardPlan } from '@/components/plan/CardPlan';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useForm } from '@/hooks/useForm';
 
 const memberships =
     {
@@ -11,6 +14,76 @@ const memberships =
     }
 
 const PaymentPage = () => {
+    const [isLoading,setIsLoading] = useState(false);
+    const {replace} = useRouter();
+    const {allowSubmit,parsedFields} = useForm([
+      {
+        name: 'creditNumber',
+        validate: (value: string) => value.match(/^\d{16}$/),
+        validMessage: 'Tarjeta credito válida',
+        errorMessage: 'Tarjeta credito invalida (Deben ser 16 digitos)',
+        initialValue: '',
+      },
+      {
+        name: 'expeditionDate',
+        validate: (value: string) => value.match(/^(0[1-9]|1[0-2])-(\d{2})$/),
+        validMessage: 'Fecha de vencimiento válida',
+        errorMessage: 'La fecha debe tener un formato MM-AA',
+        initialValue: '',
+      },
+      {
+        name: 'cvv',
+        validate: (value: string) => value.match(/^\d{3,4}$/),
+        validMessage: 'CVV válido',
+        errorMessage: 'Debe estar en un rango de 3 o 4 digitos',
+        initialValue: '',
+      },
+      {
+        name: 'name',
+        validate: (value: string) => value.trim().length >= 3,
+        validMessage: 'Nombre válido',
+        errorMessage: 'Mínimo 3 caracteres',
+        initialValue: '',
+      },
+      {
+        name: 'lastName',
+        validate: (value: string) => value.trim().length >= 3,
+        validMessage: 'Apellido válido',
+        errorMessage: 'Mínimo 3 caracteres',
+        initialValue: '',
+      }
+    ])
+    const [creditNumber,expeditionDate,cvv,name,lastName] = parsedFields;
+    const handleSubmit = async() => {
+        setIsLoading(true)
+      //   Notification(isDark).fire({
+      //     title: 'Cargando',
+      //     icon: 'info',
+      //   })
+        try {
+          //! Falta implementar el register pero de la tarjeta de credito
+          // await register({ 
+          //     creditNumber: creditNumber.value,
+          //     expeditionDate: expeditionDate.value,
+          //     cvv: cvv.value,
+          //     name: name.value,
+          //     lastName: lastName.value,
+          // })
+          setTimeout(() => replace('/auth/register/membership'),700)
+          // Notification(isDark).fire({
+          //   title: 'Registro exitoso',
+          //   icon: 'success',
+          //   timer: 5000,
+          // })
+          setIsLoading(false)
+        } catch (error: any) {
+          // Notification(isDark).fire({
+          //   title: error.response.data.message,
+          //   icon: 'error',
+          // })
+          setIsLoading(false)
+        }
+      }
     return(
       <AuthLayout
         title='Payment'
@@ -71,12 +144,12 @@ const PaymentPage = () => {
                         <Input
                             labelPlaceholder='Numero Tarjeta'
                             type='text'
-                            // value={name.value}
-                            // onChange={(e) => name.setValue(e.target.value)}
-                            // helperText={name.message}
-                            // helperColor={name.color}
-                            // status={name.color}
-                            // color={name.color}
+                            value={creditNumber.value}
+                            onChange={(e) => creditNumber.setValue(e.target.value)}
+                            helperText={creditNumber.message}
+                            helperColor={creditNumber.color}
+                            status={creditNumber.color}
+                            color={creditNumber.color}
                             size='lg'
                             bordered
                             clearable
@@ -86,14 +159,14 @@ const PaymentPage = () => {
                             <Col css={{alignContent: 'center', justifyItems: 'center', width: '50%'}} >
                                 <Input
                                     label='Vencimiento'
-                                    placeholder='mm/aa'
+                                    placeholder='MM-AA'
                                     type='text'
-                                    // value={name.value}
-                                    // onChange={(e) => name.setValue(e.target.value)}
-                                    // helperText={name.message}
-                                    // helperColor={name.color}
-                                    // status={name.color}
-                                    // color={name.color}
+                                    value={expeditionDate.value}
+                                    onChange={(e) => expeditionDate.setValue(e.target.value)}
+                                    helperText={expeditionDate.message}
+                                    helperColor={expeditionDate.color}
+                                    status={expeditionDate.color}
+                                    color={expeditionDate.color}
                                     size='lg'
                                     bordered
                                     clearable
@@ -105,12 +178,12 @@ const PaymentPage = () => {
                                     label='CVV'
                                     placeholder='345'
                                     type='text'
-                                    // value={email.value}
-                                    // onChange={(e) => email.setValue(e.target.value)}
-                                    // helperText={email.message}
-                                    // helperColor={email.color}
-                                    // status={email.color}
-                                    // color={email.color}
+                                    value={cvv.value}
+                                    onChange={(e) => cvv.setValue(e.target.value)}
+                                    helperText={cvv.message}
+                                    helperColor={cvv.color}
+                                    status={cvv.color}
+                                    color={cvv.color}
                                     size='lg'
                                     bordered
                                     clearable
@@ -119,12 +192,12 @@ const PaymentPage = () => {
                         </Row>   
                         <Input
                             labelPlaceholder='Nombre'
-                            // value={password.value}
-                            // onChange={(e) => password.setValue(e.target.value)}
-                            // helperText={password.message}
-                            // helperColor={password.color}
-                            // status={password.color}
-                            // color={password.color}
+                            value={name.value}
+                            onChange={(e) => name.setValue(e.target.value)}
+                            helperText={name.message}
+                            helperColor={name.color}
+                            status={name.color}
+                            color={name.color}
                             size='lg'
                             bordered
                             />
@@ -132,22 +205,21 @@ const PaymentPage = () => {
                         <Input 
                             labelPlaceholder='Apellido' 
                             type="text"
-                            // value={password.value}
-                            // onChange={(e) => password.setValue(e.target.value)}
-                            // helperText={password.message}
-                            // helperColor={password.color}
-                            // status={password.color}
-                            // color={password.color}
+                            value={lastName.value}
+                            onChange={(e) => lastName.setValue(e.target.value)}
+                            helperText={lastName.message}
+                            helperColor={lastName.color}
+                            status={lastName.color}
+                            color={lastName.color}
                             size='lg'
                             bordered 
                             />
                         <Button
                             size='lg'
-                            // onPress={handleSubmit}
-                            // disabled={!allowSubmit || dniType === '' || isLoading }
+                            onPress={handleSubmit}
+                            disabled={!allowSubmit || isLoading }
                             >
-                            {/* {!isLoading ? 'Registrarse' : <Loading type='points' />} */}
-                            Comprar Ahora
+                            {!isLoading ? 'Comprar Ahora' : <Loading type='points' />}
                         </Button>
                     </Card.Body>
                     <Card.Footer

@@ -3,28 +3,85 @@
 # ------------------------------------------------------
 
 type User {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: ID!
+  username: String!
+  name: String!
+  lastName: String!
+  email: String!
+  birthdate: String!
+  isActive: Boolean!
+  profiles: [Profile!]!
+}
+
+type Profile {
+  id: ID!
+  nickname: String!
+  language: String!
+  hourConexion: Int!
+  device: String!
+  timeWatched: Int!
+  emailProfile: String!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
 }
 
 type Query {
   users: [User!]!
-  user(id: Int!): User!
+  user(id: ID!): User!
+  revalite: AuthResponse!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
-}
-
-input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  blockUser(id: ID!): User!
+  createProfile(createProfileInput: CreateProfileInput!): Profile!
+  updateProfile(updateProfileInput: UpdateProfileInput!): Profile!
+  signup(signupInput: SignupInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
 }
 
 input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  username: String
+  name: String
+  lastName: String
+  email: String
+  password: String
+  birthdate: String
+  id: ID!
+  isActive: Boolean
+}
+
+input CreateProfileInput {
+  nickname: String!
+  language: String!
+  device: String!
+  emailProfile: String!
+}
+
+input UpdateProfileInput {
+  nickname: String
+  language: String
+  device: String
+  emailProfile: String
+  id: ID!
+  isActive: Boolean
+  hourConexion: Int
+  timeWatched: Int
+}
+
+input SignupInput {
+  username: String!
+  name: String!
+  lastName: String!
+  email: String!
+  password: String!
+  birthdate: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }

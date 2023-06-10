@@ -8,8 +8,8 @@ import { AuthLayout } from '../../../layouts/AuthLayout';
 
 const RegisterPage = () => {
     // const {register} = useContext(AuthContext)
-    const [isLoading,setIsLoading] = useState(false)
-    const {replace} = useRouter()
+    const [isLoading,setIsLoading] = useState(false);
+    const {replace} = useRouter();
     const {allowSubmit,parsedFields} = useForm([
       {
         name: 'email',
@@ -48,35 +48,37 @@ const RegisterPage = () => {
       },
     ])
     const [email,password,name,lastName,birthdate] = parsedFields;
-    // const handleSubmit = async() => {
-    //   setIsLoading(true)
+    const handleSubmit = async() => {
+      setIsLoading(true)
     //   Notification(isDark).fire({
     //     title: 'Cargando',
     //     icon: 'info',
     //   })
-    //   try {
-    //     await register({
-    //       email: email.value,
-    //       password: password.value,
-    //       fullName: name.value,
-    //       dni: dniType + dni.value,
-    //       phoneNumber: phoneNumber.value,
-    //     })
-    //     setTimeout(() => replace('/auth/login'),500)
-    //     Notification(isDark).fire({
-    //       title: 'Registro exitoso',
-    //       icon: 'success',
-    //       timer: 5000,
-    //     })
-    //     setIsLoading(false)
-    //   } catch (error: any) {
-    //     Notification(isDark).fire({
-    //       title: error.response.data.message,
-    //       icon: 'error',
-    //     })
-    //     setIsLoading(false)
-    //   }
-    // }
+      try {
+        //! Falta implementar el register nada más
+        // await register({ 
+        //     email: email.value,
+        //     username: email.value.split('@',1)[0],
+        //     password: password.value,
+        //     name: name.value,
+        //     birthdate: birthdate.value,
+        //     lastName: lastName.value,
+        // })
+        setTimeout(() => replace('/auth/register/membership'),700)
+        // Notification(isDark).fire({
+        //   title: 'Registro exitoso',
+        //   icon: 'success',
+        //   timer: 5000,
+        // })
+        setIsLoading(false)
+      } catch (error: any) {
+        // Notification(isDark).fire({
+        //   title: error.response.data.message,
+        //   icon: 'error',
+        // })
+        setIsLoading(false)
+      }
+    }
     return (
         <AuthLayout
           title='Regístrate'
@@ -85,7 +87,7 @@ const RegisterPage = () => {
             <Card
                 css={{
                     width: 'fit-content',
-                    py: '$10',
+                    py: '$4',
                     px: '$7',
                 }} 
             >
@@ -93,7 +95,7 @@ const RegisterPage = () => {
                     css={{
                         display: 'flex',
                         justifyContent: 'center',
-                        height: '10%'
+                        height: '8%'
                     }}
                 >
                     <Text h1>Regístrate</Text>
@@ -101,9 +103,12 @@ const RegisterPage = () => {
 
                 <Card.Body 
                     css={{
-                        gap: '$15',
+                        gap: '$17',
                         display: 'flex',
+                        flexDirection: 'column',
                         py: '$12',
+                        justifyContent: 'space-between',
+                        margin: '$0'
                     }}
                 >
                     <Input
@@ -170,9 +175,10 @@ const RegisterPage = () => {
                         bordered 
                     />
                     <Button
+                        css={{ maxWidth: '100%' }}
                         size='lg'
-                        // onPress={handleSubmit}
-                        // disabled={!allowSubmit || dniType === '' || isLoading }
+                        onPress={handleSubmit}
+                        disabled={!allowSubmit || isLoading }
                     >
                         {!isLoading ? 'Registrarse' : <Loading type='points' />}
                     </Button>
