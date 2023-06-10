@@ -1,8 +1,8 @@
-<div style="text-align: center;">
+<p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-  <span style="display: inline-block; width: 20px;"></span>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Plus_symbol.svg" width="200" alt="Plus" />
   <a href="https://docs.nestjs.com/graphql/quick-start" target="blank"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/GraphQL_Logo.svg" width="200" alt="GraphQL Logo" /></a>
-</div>
+</p>
 
 # Marvel Unlimited API GRAPHQL
 
