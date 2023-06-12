@@ -9,6 +9,8 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { MembershipsModule } from './memberships/memberships.module';
+import { CreditCardsModule } from './credit-cards/credit-cards.module';
 
 
 @Module({
@@ -40,6 +42,9 @@ import { AuthModule } from './auth/auth.module';
 
     AuthModule,
 
+    MembershipsModule,
+
+    CreditCardsModule,
   ],
   controllers: [],
   providers: [],
