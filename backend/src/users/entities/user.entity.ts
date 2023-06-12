@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Profile } from './profile.entity';
+import { CreditCard } from 'src/credit-cards/entities/credit-card.entity';
 
 @Entity({name: 'users'})
 @ObjectType()
@@ -49,5 +50,8 @@ export class User {
   )
   profile: Profile;
 
+  @ManyToOne(() => CreditCard, creditCard => creditCard.user, {lazy : true})
+  @Field(() => CreditCard)
+  creditCard : CreditCard
   //TODO Relaciones... CreditCard and City
 }

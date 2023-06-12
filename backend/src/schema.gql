@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CreditCard {
+  cardNumber: Int!
+  user: User
+  last4Digits: Int!
+}
+
 type User {
   id: ID!
   username: String!
@@ -10,6 +16,7 @@ type User {
   email: String!
   birthdate: String!
   isActive: Boolean!
+  creditCard: CreditCard!
   profiles: [Profile!]!
 }
 
@@ -52,6 +59,7 @@ type Mutation {
   login(loginInput: LoginInput!): AuthResponse!
   createMembership(createMembershipInput: CreateMembershipInput!): Membership!
   removeMembership(id: String!): Membership!
+  createCreditCard(createCreditCardsInput: CreateCreditCardsInput!): CreditCard!
 }
 
 input UpdateUserInput {
@@ -108,3 +116,16 @@ enum TypeMemberships {
   premium
   vip
 }
+
+input CreateCreditCardsInput {
+  cardNumber: Int!
+  ownerName: String!
+  ownerLastName: String!
+  expiration: DateTime!
+  cvv: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime

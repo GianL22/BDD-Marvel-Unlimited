@@ -1,7 +1,7 @@
+import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMembershipInput, UpdateMembershipInput } from './dto/inputs';
 import { Membership } from './entities/membership.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()

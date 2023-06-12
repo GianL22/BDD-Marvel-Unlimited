@@ -1,8 +1,8 @@
+import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { MembershipsService } from './memberships.service';
 import { Membership } from './entities/membership.entity';
 import { CreateMembershipInput, UpdateMembershipInput } from './dto/inputs';
-import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Resolver(() => Membership)
