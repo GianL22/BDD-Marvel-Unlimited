@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity({name: 'profiles'})
@@ -10,6 +10,9 @@ export class Profile {
     @PrimaryGeneratedColumn('uuid')
     @Field( () => ID)
     id: string;
+
+    @PrimaryColumn({ type: "uuid" })
+    userId: string;
 
     @Column()
     @Field( () => String)
@@ -41,12 +44,16 @@ export class Profile {
     @Field( () => String)
     emailProfile: string;
 
+    @Column( {nullable: false})
+    @Field( () => String)
+    avatar: string;
+
     @ManyToOne(
         () => User,
         (user) => user.id,
         {lazy: true}
     )
+    @JoinColumn({ name: "userId" })
     user: string;
-
     //TODO: Realizar la relación luego con la entidad user
 }

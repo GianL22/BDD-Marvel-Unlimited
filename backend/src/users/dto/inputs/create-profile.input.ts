@@ -19,4 +19,8 @@ export class CreateProfileInput {
     @Field( () => String)
     @IsEmail()
     emailProfile: string;
+
+    @Field( () => String)
+    @IsString()
+    avatar: string;
 }
