@@ -28,10 +28,19 @@ type AuthResponse {
   user: User!
 }
 
+type Membership {
+  id: ID!
+  price: Float!
+  type: String!
+  description: String!
+}
+
 type Query {
   users: [User!]!
   user(id: ID!): User!
   revalite: AuthResponse!
+  memberships: [Membership!]!
+  membership(id: String!): Membership!
 }
 
 type Mutation {
@@ -41,6 +50,8 @@ type Mutation {
   updateProfile(updateProfileInput: UpdateProfileInput!): Profile!
   signup(signupInput: SignupInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
+  createMembership(createMembershipInput: CreateMembershipInput!): Membership!
+  removeMembership(id: String!): Membership!
 }
 
 input UpdateUserInput {
@@ -84,4 +95,16 @@ input SignupInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateMembershipInput {
+  price: Float!
+  type: TypeMemberships!
+  description: String!
+}
+
+enum TypeMemberships {
+  gold
+  premium
+  vip
 }
