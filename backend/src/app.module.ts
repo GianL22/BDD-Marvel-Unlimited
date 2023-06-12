@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MembershipsModule } from './memberships/memberships.module';
 import { CreditCardsModule } from './credit-cards/credit-cards.module';
+import { SuscriptionModule } from './suscription/suscription.module';
 
 
 @Module({
@@ -45,6 +46,8 @@ import { CreditCardsModule } from './credit-cards/credit-cards.module';
     MembershipsModule,
 
     CreditCardsModule,
+
+    SuscriptionModule,
   ],
   controllers: [],
   providers: [],
