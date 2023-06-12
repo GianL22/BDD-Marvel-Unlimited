@@ -5,26 +5,30 @@ import { Column, Entity, PrimaryColumn, ManyToOne, OneToMany } from 'typeorm';
 @Entity({name : 'CreditCards'})
 @ObjectType()
 export class CreditCard {
-    @PrimaryColumn({
-        type: 'int'
-    })
-    @Field(() => Int)
-    cardNumber: number;
-    @Column()
+
+    @PrimaryColumn()
+    @Field(() => String)
+    cardNumber: string;
+
+    @Column({nullable: false})
     ownerName: string;
-    @Column()
+
+    @Column({nullable: false})
     ownerLastName: string;
+
     @Column({
-        type: 'date'
+        type: 'date',
+        nullable: false
     })
     expiration: Date;
+
     @Column({
-        type: 'int'
+        type: 'int',
+        nullable: false
     })
     cvv: number;
     
     @OneToMany(() => User, user => user.creditCard)
-    @Field(() => User, {nullable: true})
     user: User;
     
 }

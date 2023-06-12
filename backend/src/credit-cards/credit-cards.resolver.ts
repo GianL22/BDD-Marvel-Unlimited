@@ -2,7 +2,7 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { CreditCardsService } from './credit-cards.service';
 import { CreditCard } from './entities/credit-card.entity';
-import { CreateCreditCardsInput } from './dto/inputs/create-credit-cards.input';
+import { CreateCreditCardInput } from './dto/inputs/create-credit-cards.input';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities';
@@ -14,9 +14,9 @@ export class CreditCardsResolver {
 
   @Mutation(() => CreditCard, {name : 'createCreditCard'})
   async create (
-    @Args('createCreditCardsInput') createCreditCardsInput: CreateCreditCardsInput,
+    @Args('createCreditCardInput') createCreditCardInput: CreateCreditCardInput,
   ) {
-    return this.creditCardsService.create(createCreditCardsInput);
+    return this.creditCardsService.createCreditCard(createCreditCardInput);
   }
 
   // @Query(() => CreditCard, { name: 'creditCard' })
@@ -27,10 +27,10 @@ export class CreditCardsResolver {
   //   return this.creditCardsService.findOneByCardNumber(user);
   // }
 
-  @ResolveField( () => Int, { name: 'last4Digits' })
-  async last4DigitsByUser(
-    @Parent() creditCard: CreditCard
-  ): Promise<number> {
-    return this.creditCardsService.getLast4Digits(creditCard.cardNumber);
-  }
+  // @ResolveField( () => Int, { name: 'last4Digits' })
+  // async last4DigitsByUser(
+  //   @Parent() creditCard: CreditCard
+  // ): Promise<number> {
+  //   return this.creditCardsService.getLast4Digits(creditCard.cardNumber);
+  // }
 }

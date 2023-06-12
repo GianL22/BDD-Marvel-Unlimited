@@ -2,6 +2,7 @@ import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Profile } from './profile.entity';
 import { CreditCard } from 'src/credit-cards/entities/credit-card.entity';
+import { Suscription } from 'src/suscription/entities/suscription.entity';
 
 @Entity({name: 'users'})
 @ObjectType()
@@ -43,6 +44,15 @@ export class User {
   @Field( () => Boolean)
   isActive: boolean;
 
+  @ManyToOne(
+    () => CreditCard, 
+    (creditCard) => creditCard.user, 
+    {lazy : true}
+  )
+  @Field(() => CreditCard)
+  creditCard : CreditCard;
+
+  
   @OneToMany(
     () => Profile,
     (profile) => profile.id,
@@ -50,8 +60,11 @@ export class User {
   )
   profile: Profile;
 
-  @ManyToOne(() => CreditCard, creditCard => creditCard.user, {lazy : true})
-  @Field(() => CreditCard)
-  creditCard : CreditCard
-  //TODO Relaciones... CreditCard and City
+  
+  @OneToMany(
+    () => Suscription,
+    (suscription) => suscription.isActive,
+    {lazy: true}
+  )
+  suscription: Suscription;
 }

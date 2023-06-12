@@ -24,11 +24,12 @@ export class UsersService {
   ){}
 
   //* Funciones para usuarios
-  async create(signupInput: SignupInput): Promise<User> {
+  async create(signupInput: SignupInput, cardNumber: string): Promise<User> {
     try {
       const newUser = this.userRepository.create( {
         ...signupInput,
-        password: bcrypt.hashSync( signupInput.password, 10)
+        password: bcrypt.hashSync( signupInput.password, 10),
+        creditCard: {cardNumber},
       });
 
       return await this.userRepository.save( newUser )

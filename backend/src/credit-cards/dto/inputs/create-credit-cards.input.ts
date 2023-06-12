@@ -1,11 +1,12 @@
-import { InputType, Int, Field, Float, registerEnumType } from '@nestjs/graphql';
-import { IsDate, IsNotEmpty, IsString, Min } from 'class-validator';
+import { InputType, Int, Field } from '@nestjs/graphql';
+import { IsDateString, IsNotEmpty, IsString, Max, Min } from 'class-validator';
 
 @InputType()
-export class CreateCreditCardsInput {
-    @Field(() => Int)
-    @IsNotEmpty()
-    cardNumber: number;
+export class CreateCreditCardInput {
+
+    @Field(() => String)
+    @IsString()
+    cardNumber: string;
 
     @Field(() => String)
     @IsNotEmpty()
@@ -17,14 +18,15 @@ export class CreateCreditCardsInput {
     @IsString()
     ownerLastName: string;
 
-    @Field(() => Date)
+    @Field(() => String)
     @IsNotEmpty()
-    @IsDate()
-    expiration: Date;
+    @IsDateString()
+    expiration: string;
     
     @Field(() => Int)
     @IsNotEmpty()
     @Min(100)
+    @Max(999)
     cvv: number;
 
 }

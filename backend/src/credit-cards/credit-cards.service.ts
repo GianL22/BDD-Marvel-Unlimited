@@ -2,8 +2,7 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreditCard } from './entities/credit-card.entity';
-import { CreateCreditCardsInput } from './dto/inputs/create-credit-cards.input';
-import { User } from 'src/users/entities';
+import { CreateCreditCardInput } from './dto/inputs/create-credit-cards.input';
 
 @Injectable()
 export class CreditCardsService {
@@ -12,28 +11,28 @@ export class CreditCardsService {
         private readonly creditCardsRepository: Repository<CreditCard>
     ) {}
 
-    async create(createCreditCardsInput: CreateCreditCardsInput): Promise<CreditCard> {
+    async createCreditCard(createCreditCardInput: CreateCreditCardInput): Promise<CreditCard> {
         try {
-            const newCreditCard = this.creditCardsRepository.create(createCreditCardsInput);
+            const creditCard = await this.findOneByCardNumber(createCreditCardInput.cardNumber);
+            if (creditCard)
+                return creditCard;
+            const newCreditCard = this.creditCardsRepository.create(createCreditCardInput);
             return await this.creditCardsRepository.save(newCreditCard);
         } catch (error) {
             throw new InternalServerErrorException('Error al crear la tarjeta');
         }
     }
 
-    // async findOneByCardNumber(user : User){
-    //     const creditCard = await this.creditCardsRepository.findOneBy({ cardNumber });
-    //     return creditCard;
-    // }
-
-    
-
-    async getLast4Digits(cardNumber : number): Promise<number> {
-        try {
-            const creditCard = await this.creditCardsRepository.findOneByOrFail({ cardNumber });
-            return creditCard.cardNumber % 10000;
-        } catch (error) {
-            throw new NotFoundException('No se encontro la tarjeta')
-        }
+    async findOneByCardNumber(cardNumber: string): Promise<CreditCard>{
+       return await this.creditCardsRepository.findOneBy({ cardNumber });
     }
+
+    // async getLast4Digits(cardNumber : number): Promise<number> {
+    //     try {
+    //         const creditCard = await this.creditCardsRepository.findOneByOrFail({ cardNumber });
+    //         return creditCard.cardNumber % 10000;
+    //     } catch (error) {
+    //         throw new NotFoundException('No se encontro la tarjeta')
+    //     }
+    // }
 }

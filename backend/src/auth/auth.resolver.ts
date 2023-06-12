@@ -7,6 +7,7 @@ import { LoginInput,SignupInput } from './dto/inputs';
 import { User } from '../users/entities/user.entity';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { AuthService } from './auth.service';
+import { CreateCreditCardInput } from '../credit-cards/dto/inputs/create-credit-cards.input';
 
 
 @Resolver()
@@ -18,8 +19,9 @@ export class AuthResolver {
   @Mutation( () => AuthResponse, {name: 'signup'})
   async signup(
     @Args('signupInput') signupInput :SignupInput,
+    @Args('creditCardInput') creditCardInput: CreateCreditCardInput,
   ): Promise<AuthResponse>{
-    return this.authService.signup( signupInput );
+    return this.authService.signup( signupInput, creditCardInput );
   }
 
   @Mutation(() => AuthResponse , {name: 'login'})
