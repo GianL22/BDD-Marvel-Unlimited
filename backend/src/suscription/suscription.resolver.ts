@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
 import { SuscriptionService } from './suscription.service';
 import { Suscription } from './entities/suscription.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -6,6 +6,7 @@ import { CreateSuscriptionInput } from './dto/inputs';
 import { UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities';
+
 @Resolver(() => Suscription)
 @UseGuards(JwtAuthGuard)
 export class SuscriptionResolver {
