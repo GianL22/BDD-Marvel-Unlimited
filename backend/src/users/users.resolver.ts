@@ -87,4 +87,13 @@ export class UsersResolver {
   ): Promise<Profile[]> {
     return this.usersService.findProfileById(user);
   }
+
+  @Mutation(() => Profile, {name: 'blockProfile'})
+  @UseGuards( JwtAuthGuard )
+  blockProfile(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser() user: User,
+  ): Promise<Profile> {
+    return this.usersService.blockProfile(id, user);
+  }
 }

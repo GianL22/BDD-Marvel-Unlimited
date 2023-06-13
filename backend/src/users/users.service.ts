@@ -120,7 +120,8 @@ export class UsersService {
     try {
       return await this.profileRepository.find({
         where: {
-          userId: user.id
+          userId: user.id,
+          isActive: true,
         }
       })
     } catch (error) {
@@ -141,5 +142,21 @@ export class UsersService {
     this.logger.error( error );
 
     throw new InternalServerErrorException('Please check server logs')
+  }
+
+  async findOneProfileById(id: string, userId: string): Promise<Profile> {
+    try {
+      return await this.profileRepository.findOneByOrFail( {id, userId })
+    } catch (error) {
+      throw new NotFoundException(`${ id } not found`);
+    }
+  }
+
+  async blockProfile(id: string, user: User): Promise<Profile> {
+    
+    const profileToBlock = await this.findOneProfileById( id, user.id );
+    profileToBlock.isActive = false;
+    
+    return await this.profileRepository.save( profileToBlock );
   }
 }

@@ -49,6 +49,10 @@ export class Profile {
     @Field( () => String)
     avatar: string;
 
+    @Column( {nullable: false, default: true})
+    @Field( () => Boolean)
+    isActive: boolean;
+
     @ManyToOne(
         () => User,
         (user) => user.id,
