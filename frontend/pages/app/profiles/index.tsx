@@ -1,15 +1,26 @@
 import type { NextPage } from 'next'
 import { Text, Row, Col, Grid, Link, Button, Spacer, Container } from '@nextui-org/react';
-import { Flex } from '@/components/containers';
-import { Profile } from '@/components/profile/Profile';
 import { NavbarWrapper } from '@/components/navbar/Navbar';
 import { AddProfile } from '@/components/profile/AddProfile';
 import { EditPencil, Cancel } from 'iconoir-react';
-import { useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { GetProfilesByUser } from '@/graphql/Profile';
+import { Profile } from '@/components/profile/Profile';
+import { useEffect, useState } from 'react';
+import { Profile as ProfileModel } from '@/models/Client';
 
+interface RequestType {
+    profileByUser: ProfileModel[],
+}
 
 const ProfilesPage: NextPage = () => {
-   const [edit,setEdit] = useState(false);
+
+    const { data } = useQuery<RequestType>(GetProfilesByUser,{
+        pollInterval: 1000
+    });
+    console.log('Time')
+    const [edit,setEdit] = useState(false);
+
   return (
     <>
         <NavbarWrapper type = {false} />
@@ -23,47 +34,18 @@ const ProfilesPage: NextPage = () => {
                 Editar
             </Text>
         </Button>
-        <Grid.Container gap={0} justify='center' alignItems='center' css={{minWidth:'auto', minHeight:'80vh'}}>
-            <Grid md={2} justify='center' alignItems='center'>
-                <Profile
-                    img='/profiles/1.png' 
-                    nickname='MiPerfil'
-                    nProfile={1}
-                    editable = { edit }
-                />
-            </Grid>
-            <Grid md={2} justify='center' alignItems='center'>
-                <Profile
-                    img='/profiles/2.png' 
-                    nickname='MiPerfil'
-                    nProfile={1}
-                    editable = { edit }
-                />
-            </Grid>
-            <Grid md={2} justify='center' alignItems='center'>
-                <Profile
-                    img='/profiles/3.png' 
-                    nickname='MiPerfil'
-                    nProfile={1}
-                    editable = { edit }
-                />
-            </Grid>
-            <Grid md={2} justify='center' alignItems='center'>
-                <Profile
-                    img='/profiles/4.png'  
-                    nickname='MiPerfil'
-                    nProfile={1}
-                    editable = { edit }
-                />
-            </Grid>
-            <Grid md={2} justify='center' alignItems='center'>
-                <Profile
-                    img='/profiles/5.png' 
-                    nickname='MiPerfil'
-                    nProfile={1}
-                    editable = { edit }
-                />
-            </Grid>
+        <Grid.Container gap={4} justify='center' alignItems='center' css={{minWidth:'auto', minHeight:'80vh'}}>
+            {
+                data?.profileByUser.map( (profile)  => (
+                    <Grid md={2} justify='center' alignItems='center' key={profile.id}>
+                        <Profile
+                            profile={profile}
+                            nProfile={ 1 }
+                            editable = { edit }
+                        />
+                    </Grid>
+                ))
+            }
             <Grid md={2} justify='center' alignItems='center'>
                 <AddProfile/>
             </Grid>

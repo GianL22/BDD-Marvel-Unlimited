@@ -1,7 +1,15 @@
 import { useForm } from '@/hooks/useForm';
-import { Button, Image, Modal, Row, Text, Col, Grid, Input, Radio, Spacer, Divider } from '@nextui-org/react'
+import { Button, Image, Modal, Row, Text, Col, Grid, Input, Radio, Spacer, Divider, useTheme, Loading } from '@nextui-org/react'
 import { FC, useState } from 'react';
 import { ArrowRightCircle, ArrowLeftCircle  } from 'iconoir-react'
+import { Notification } from '@/notification';
+import { useMutation } from '@apollo/client';
+import { CreateProfile } from '@/graphql';
+import Cookies from 'js-cookie';
+import { Profile } from '@/models/Client';
+import { useRouter } from 'next/router';
+import { AddProfile } from '../profile/AddProfile';
+import { UpdateProfile } from '@/graphql/Profile';
 
 interface Props {
    bindings: {
@@ -10,10 +18,16 @@ interface Props {
    };
    setVisible: (visible: boolean) => void;
    edit: boolean;
+   profile: Profile;
 }
 
-export const ProfileModal: FC<Props> = ( {bindings, setVisible, edit} ) => {
+export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} ) => {
+   const { replace, asPath } = useRouter();
+   const [createProfile] = useMutation(CreateProfile);
+   const {isDark} = useTheme()
    const [avatar,setAvatar] = useState(1);
+   const [avatarPath,setAvatarPath] = useState((!profile?.avatar) ? '' : profile?.avatar);
+
    const handleAdd = () => {
       if(avatar < 5)
          setAvatar(avatar + 1 );
@@ -22,40 +36,112 @@ export const ProfileModal: FC<Props> = ( {bindings, setVisible, edit} ) => {
    const handleTakeOut = () => {
       if(avatar > 1)
          setAvatar(avatar - 1);
-         else setAvatar(5)
+      else setAvatar(5)
    } 
    const [isLoading,setIsLoading] = useState(false);
    const {allowSubmit,parsedFields} = useForm([
-   {
-      name: 'email',
-      validate: (value: string) => value.match(/\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi),
-      validMessage: 'Email válido',
-      errorMessage: 'Email inválido',
-      initialValue: '',
-   },
-   {
-      name: 'nickname',
-      validate: (value: string) => value.trim().length >= 3,
-      validMessage: 'Nickname valido',
-      errorMessage: 'Debe tener al menos 3 caracteres',
-      initialValue: '',
-   },
-   {
-      name: 'language',
-      validate: (value: string) => value.trim().length >= 3,
-      validMessage: 'Idioma válido',
-      errorMessage: 'Mínimo 3 caracteres',
-      initialValue: '',
-   },
-   {
-      name: 'device',
-      validate: (value: string) => value.trim().length >= 3,
-      validMessage: 'Dispositivo válido',
-      errorMessage: 'Mínimo 3 caracteres',
-      initialValue: '',
-   },
+      {
+         name: 'email',
+         validate: (value: string) => value.match(/\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi),
+         validMessage: 'Email válido',
+         errorMessage: 'Email inválido',
+         initialValue: (!profile?.emailProfile) ? '' : profile.emailProfile,
+      },
+      {
+         name: 'nickname',
+         validate: (value: string) => value.trim().length >= 3,
+         validMessage: 'Nickname valido',
+         errorMessage: 'Debe tener al menos 3 caracteres',
+         initialValue: (!profile?.nickname) ? '' : profile.nickname,
+      },
+      {
+         name: 'language',
+         validate: (value: string) => value.trim().length >= 3,
+         validMessage: 'Idioma válido',
+         errorMessage: 'Mínimo 3 caracteres',
+         initialValue: (!profile?.language) ? '' : profile.language,
+      },
+      {
+         name: 'device',
+         validate: (value: string) => value.trim().length >= 3,
+         validMessage: 'Dispositivo válido',
+         errorMessage: 'Mínimo 3 caracteres',
+         initialValue: (!profile?.device) ? '' : profile.device,
+      },
    ])
    const [email,nickname,language,device] = parsedFields;
+   
+   const [updateProfile] = useMutation(UpdateProfile);
+
+   const handleUpdate = async() => {
+      setIsLoading(true)
+      Notification(isDark).fire({
+          title: 'Cargando',
+          icon: 'info',
+      })
+      try{
+         await updateProfile({
+            variables:{
+               updateProfileInput:{
+                  id: profile.id,
+                  nickname: nickname.value,
+                  language: language.value,
+                  device: device.value,
+                  emailProfile: email.value,
+                  avatar: avatarPath,
+               }
+            }
+         })
+         nickname.setValue('');
+         language.setValue('');
+         device.setValue('');
+         email.setValue('');
+         setAvatarPath('');
+         setIsLoading(false);
+         setVisible(false);
+
+      } catch (error: any) {
+         Notification(isDark).fire({
+             title: error.message,
+             icon: 'error',
+         }) 
+         setIsLoading(false)
+     }
+   }
+   
+   const handleSubmit = async() => {
+      setIsLoading(true)
+      Notification(isDark).fire({
+          title: 'Cargando',
+          icon: 'info',
+      })
+      try {
+         await createProfile({
+            variables: {
+               createProfileInput: {
+                  nickname: nickname.value,
+                  language: language.value,
+                  device: device.value,
+                  emailProfile: email.value,
+                  avatar: avatarPath,
+               },
+            },
+         });
+         nickname.setValue('');
+         language.setValue('');
+         device.setValue('');
+         email.setValue('');
+         setAvatarPath('');
+         setIsLoading(false);
+         setVisible(false);
+      } catch (error: any) {
+          Notification(isDark).fire({
+              title: error.message,
+              icon: 'error',
+          }) 
+          setIsLoading(false)
+      }
+  }
 
    return (
       <Modal
@@ -110,11 +196,16 @@ export const ProfileModal: FC<Props> = ( {bindings, setVisible, edit} ) => {
                            light
                            auto
                            size={'sm'} 
-                           onClick={ handleTakeOut }
+                           onPress={handleTakeOut}
                         />
                      </Col>
                      <Col>
-                        <Button auto ghost size={'md'} >
+                        <Button 
+                           auto 
+                           ghost 
+                           size={'md'} 
+                           onPress={() => setAvatarPath(`/profiles/${avatar}.png`)}
+                        >
                            Guardar Avatar
                         </Button>
                      </Col>
@@ -124,7 +215,7 @@ export const ProfileModal: FC<Props> = ( {bindings, setVisible, edit} ) => {
                            auto
                            light
                            iconRight= { <ArrowRightCircle fontSize={'20px'} color='#ED1D24' /> }
-                           onClick={ handleAdd }
+                           onPress={handleAdd}
                         />
                      </Col>
                   </Row>
@@ -200,11 +291,23 @@ export const ProfileModal: FC<Props> = ( {bindings, setVisible, edit} ) => {
             </Grid.Container>
          </Modal.Body>
          <Modal.Footer>
-            <Button auto flat color="error" onPress={() => setVisible(false)}>
-               Close
-            </Button>
-            <Button auto onPress={ () => setVisible(false) }>
-               Sign in
+            <Button
+               size='lg'
+               onPress={
+                  (edit) 
+                     ? handleUpdate
+                     : handleSubmit
+               }
+               css={{
+                     mt: '$5',
+               }}
+               disabled={!allowSubmit || isLoading || avatarPath === ''}
+            >
+               {
+                  (edit)
+                     ? (!isLoading )? 'Modificar Perfil' : <Loading type='points' />
+                     : (!isLoading )? 'Crear Perfil' : <Loading type='points' />
+               }
             </Button>
          </Modal.Footer>
          

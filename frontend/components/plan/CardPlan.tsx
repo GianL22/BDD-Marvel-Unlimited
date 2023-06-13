@@ -1,15 +1,25 @@
 import { Button, Card, Grid, Text } from "@nextui-org/react"
 import { Box, Flex } from "../containers"
 import { Check } from "iconoir-react"
+import Cookies from 'js-cookie';
+import { useRouter } from "next/router";
+
 
 interface Props {
-    title: string,
-    features: string[],
-    price: number,
-    recommended: boolean, 
-    
+    id: string | undefined;
+    title: string | undefined,
+    features: string[] | undefined,
+    price: number | undefined,
+    recommended?: boolean | undefined,
+    disableButton?: boolean
 }
-export const CardPlan = ({title, features, price, recommended} : Props) => {
+
+export const CardPlan = ({id = '', title='',  features = [], price = 0, recommended= false, disableButton = false } : Props) => {
+    const {replace} = useRouter();
+    const saveSuscription = (membershipId: string) => {
+        Cookies.set('membershipId', membershipId , { expires: 7 })
+        setTimeout(() => replace('/auth/register/paymentcredit'),700)
+    }
     return (
         <Card
             css={{
@@ -49,7 +59,7 @@ export const CardPlan = ({title, features, price, recommended} : Props) => {
                             backgroundColor: '$primary', borderRadius:'8px', fontSize: '16px',
                             minWidth: '100px', textAlign: 'center', color: '$white'
                         }}>
-                            {title}
+                            {title.toUpperCase()}
                         </Text>
                     </Grid>
                 </Grid.Container>
@@ -63,18 +73,28 @@ export const CardPlan = ({title, features, price, recommended} : Props) => {
                                     as={'li'}
                                     css={{py: '$2', gap: '$2'}}
                                     align={'center'}
+                                    key={ feature }
                                 >
                                     <Box>
                                         <Check />
                                     </Box>
-                                    <Text span >
+                                    <Text span key={ feature } >
                                         {feature}
                                     </Text>
                                 </Flex>)}
                         )}
                     </Box>
                     <Flex justify={'center'} align={'center'}>
-                        <Button css={{mt: '$7', mb: '$12', width:'80%'}}>Suscribete</Button>
+                        {
+                            (disableButton)
+                                ? <></>
+                                :   <Button 
+                                        css={{mt: '$7', mb: '$12', width:'80%'}}
+                                        onClick={() => saveSuscription(id)}
+                                    >
+                                        Suscribete
+                                    </Button>
+                        }
                     </Flex>
             </Card.Body>
         </Card>

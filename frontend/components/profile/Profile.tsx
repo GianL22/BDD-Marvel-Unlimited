@@ -3,19 +3,19 @@ import { Card, Row, Text, Col, useModal } from '@nextui-org/react';
 import { ProfileModal } from '../modal/ProfileModal';
 import { EditPencil } from 'iconoir-react'
 import { Box } from '../containers';
+import { Profile as ProfileModel } from '@/models/Client';
 
 interface Props {
-    img: string;
-    nickname: string;
+    profile: ProfileModel;
     nProfile: number;
     editable: boolean;
 }
 
-export const Profile:FC<Props> = ({img,nickname,nProfile, editable} : Props) => {
+export const Profile:FC<Props> = ({profile,nProfile, editable} : Props) => {
     const { bindings, setVisible } = useModal();
   return (
     <>
-        <ProfileModal bindings={bindings} setVisible={setVisible} edit={true} />
+        <ProfileModal profile={profile} bindings={bindings} setVisible={setVisible} edit={true} />
         <Card 
             isPressable 
             isHoverable  
@@ -42,7 +42,7 @@ export const Profile:FC<Props> = ({img,nickname,nProfile, editable} : Props) => 
                         : <></>
                 }
                 <Card.Image
-                    src={img}
+                    src={profile.avatar}
                     objectFit="cover"   
                     width="100%"
                     height={340}
@@ -51,7 +51,7 @@ export const Profile:FC<Props> = ({img,nickname,nProfile, editable} : Props) => 
             </Card.Body>
             <Card.Footer css={{ justifyItems: "flex-start" }}>
                 <Row wrap="wrap" justify="space-between" align="center">
-                    <Text b>{nickname}</Text>
+                    <Text b>{profile.nickname}</Text>
                     <Text css={{ color: "$accents7", fontWeight: "$semibold", fontSize: "$sm" }}>
                     Numero Perfil {nProfile}
                     </Text>

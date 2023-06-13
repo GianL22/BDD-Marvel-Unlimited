@@ -12,6 +12,7 @@ export class Profile {
     id: string;
 
     @PrimaryColumn({ type: "uuid" })
+    @Field( () => ID)
     userId: string;
 
     @Column()
