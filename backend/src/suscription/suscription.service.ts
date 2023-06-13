@@ -37,7 +37,9 @@ export class SuscriptionService {
       throw new InternalServerErrorException('Algo ocurrió mal en la creacion de la suscripcion')
     }
   }
+
   async changeSuscription(createSuscriptionInput: CreateSuscriptionInput, user : User): Promise<Suscription> {
+
     const suscription = await this.suscriptionRepository.findOne({ where: { userId : user.id, isActive : true }})
     if ( suscription ){
       suscription.isActive = false;
@@ -63,22 +65,33 @@ export class SuscriptionService {
       const today = new Date()
       const fourMonthsAgo = new Date()
       fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
+
+      const subQuery = this.suscriptionRepository.createQueryBuilder()
+        .select('s.userId')
+        .from(Suscription, 's')
+        .where("s.membershipId = :oldMembership", { oldMembership: premiumId })
+        .andWhere("s.isActive = :active", { active: true })
+
       const queryBuilder = this.suscriptionRepository.createQueryBuilder()
-      .select('s')
-      .from(Suscription, 's')
-      .where("s.membershipId = :oldMembership", { oldMembership: goldId })
-      .andWhere("s.isActive = :active", { active: false })
-      .andWhere(`s.dateEnd BETWEEN '${fourMonthsAgo.toISOString().slice(0,10)}' AND '${today.toISOString().slice(0,10)}'`)
-      // .andWhere("suscription.dateSuscription >= DATE_SUB(NOW(), INTERVAL 4 MONTH)")
-      // .andWhere("suscription.dateEnd <= NOW()")
-      // .andWhere("um.active = :active", { active: true })
-      return await queryBuilder.getMany();      
+        .select('s')
+        .from(Suscription, 's')
+        .where("s.membershipId = :oldMembership", { oldMembership: goldId })
+        .andWhere("s.isActive = :active", { active: false })
+        .andWhere(`s.dateEnd BETWEEN '${fourMonthsAgo.toISOString().slice(0,10)}' AND '${today.toISOString().slice(0,10)}'`)
+        .andWhere("s.userId IN (" + subQuery.getQuery() + ")")
+        .setParameters( subQuery.getParameters() )
+
+        // console.log(queryBuilder.getQuery())
+
+      return  await queryBuilder.getMany(); 
+
     } catch (error) {
       console.log(error)
       throw new InternalServerErrorException('Error en el servidor')
     }
 
   }
+
 
   update(id: number, updateSuscriptionInput: UpdateSuscriptionInput) {
     return `This action updates a #${id} suscription`;

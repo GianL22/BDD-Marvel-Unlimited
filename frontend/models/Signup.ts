@@ -1,5 +1,4 @@
 
-
 export interface SignupInput{
     username: string
     name: string
@@ -23,4 +22,9 @@ export interface CreditCardInput{
     ownerLastName: string;
     expiration: string;
     cvv: number;
+}
+
+export interface SuscriptionInput {
+    dateSuscription: string,
+    membership: string,
 }

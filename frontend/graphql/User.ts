@@ -51,8 +51,8 @@ export const Login = gql`
 `;
 
 export const SignUp = gql`
-    mutation Signup($signupInput: SignupInput!, $creditCardInput: CreateCreditCardInput!) {
-        signup(signupInput: $signupInput, creditCardInput: $creditCardInput) {
+    mutation Mutation($suscriptionInput: CreateSuscriptionInput!, $creditCardInput: CreateCreditCardInput!, $signupInput: SignupInput!) {
+        signup(suscriptionInput: $suscriptionInput, creditCardInput: $creditCardInput, signupInput: $signupInput) {
             token
             user {
                 id

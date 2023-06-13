@@ -1,12 +1,22 @@
 import {Button, Navbar, Spacer, Text} from '@nextui-org/react';
 import Link from 'next/link'
 import { ThemeSwitcher } from './ThemeSwitcher';
+import Cookies from 'js-cookie';
+import { useContext } from 'react';
+import { AuthContext } from '@/context/auth';
+import { useRouter } from 'next/router';
 
 interface Props {
    type: boolean;
 }
 
 export const NavbarWrapper = ( {type}: Props) => {
+   const { replace }  = useRouter()
+   const { logout } =useContext(AuthContext);
+   const handleLogout = () =>{
+      logout();
+      replace('/')
+   }
    return (
       <Navbar
          isBordered
@@ -40,6 +50,18 @@ export const NavbarWrapper = ( {type}: Props) => {
          >
             <ThemeSwitcher />
             {
+               ( Cookies.get('token') )
+                  ? <Button 
+                        auto 
+                        ghost 
+                        bordered
+                        onPress={ handleLogout }
+                     >
+                        LOGOUT
+                     </Button>
+                  : <></>
+            }
+            {
                (type)
                   ? (
                      <Link
@@ -49,7 +71,7 @@ export const NavbarWrapper = ( {type}: Props) => {
                            auto 
                            ghost 
                            bordered
-                           >
+                        >
                            LOGIN
                         </Button>
                      </Link>

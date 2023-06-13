@@ -53,7 +53,7 @@ export const Profile:FC<Props> = ({profile,nProfile, editable} : Props) => {
                 <Row wrap="wrap" justify="space-between" align="center">
                     <Text b>{profile.nickname}</Text>
                     <Text css={{ color: "$accents7", fontWeight: "$semibold", fontSize: "$sm" }}>
-                    Numero Perfil {nProfile}
+                    Nro. {nProfile}
                     </Text>
                 </Row>
             </Card.Footer>

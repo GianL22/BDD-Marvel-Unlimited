@@ -6,7 +6,7 @@ import { Login, SignUp } from '@/graphql/User';
 import { Client } from '@/models/Client';
 import { authReducer } from './auth.reducer';
 import { AuthContext } from './AuthContext';
-import { CreditCardInput, SignupInput } from '@/models/Signup';
+import { CreditCardInput, SignupInput, SuscriptionInput } from '@/models/Signup';
 
 export interface AuthState {
     isLoggedIn: boolean;
@@ -63,7 +63,7 @@ export const AuthProvider: FC<Props> = ({children}) => {
 
     const [createUser] = useMutation(SignUp);
 
-    const register = async(signUpInput: SignupInput, createCardInput: CreditCardInput) => {
+    const register = async(signUpInput: SignupInput, createCardInput: CreditCardInput, suscriptionInput: SuscriptionInput) => {
 
         const { data } = await createUser({
             variables: {
@@ -72,6 +72,9 @@ export const AuthProvider: FC<Props> = ({children}) => {
                 },
                 creditCardInput:{
                     ...createCardInput,
+                },
+                suscriptionInput:{
+                    ...suscriptionInput
                 }
             },
         });
