@@ -1,13 +1,24 @@
-import { useContext, useState } from 'react';
+import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
-import { Button, Card, Input, Link, Loading, Spacer, Text } from '@nextui-org/react'
+import { Button, Card, Input, Link, Loading, Spacer, Text, useTheme } from '@nextui-org/react'
 import { useForm } from '../../../hooks/useForm';
 import { AuthLayout } from '../../../layouts/AuthLayout';
-// import { AuthContext } from '../../../context/auth';
-// import { Notification } from '../../../notification';
+import { Notification } from '../../../notification';
+import { useQuery } from '@apollo/client';
+import { ExistEmail } from '@/graphql/User';
+
+interface RegisterData{
+    email:string,
+    username: string,
+    password: string,
+    name: string,
+    birthdate: string,
+    lastName: string, 
+}
 
 const RegisterPage = () => {
-    // const {register} = useContext(AuthContext)
+    const {isDark} = useTheme()
     const [isLoading,setIsLoading] = useState(false);
     const {replace} = useRouter();
     const {allowSubmit,parsedFields} = useForm([
@@ -16,66 +27,70 @@ const RegisterPage = () => {
         validate: (value: string) => value.match(/\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi),
         validMessage: 'Email válido',
         errorMessage: 'Email inválido',
-        initialValue: '',
+        initialValue: (!Cookies.get('registerData')) ? '' : JSON.parse(Cookies.get('registerData')!).email,
       },
       {
         name: 'password',
         validate: (value: string) => value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
         validMessage: 'Contraseña segura',
         errorMessage: 'Debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
-        initialValue: '',
+        initialValue: (!Cookies.get('registerData')) ? '' : JSON.parse(Cookies.get('registerData')!).password,
       },
       {
         name: 'name',
         validate: (value: string) => value.trim().length >= 3,
         validMessage: 'Nombre válido',
         errorMessage: 'Mínimo 3 caracteres',
-        initialValue: '',
+        initialValue: (!Cookies.get('registerData')) ? '' : JSON.parse(Cookies.get('registerData')!).name,
       },
       {
         name: 'lastName',
         validate: (value: string) => value.trim().length >= 3,
         validMessage: 'Apellido válido',
         errorMessage: 'Mínimo 3 caracteres',
-        initialValue: '',
+        initialValue: (!Cookies.get('registerData')) ? '' : JSON.parse(Cookies.get('registerData')!).lastName,
       },
       {
         name: 'birthdate',
         validate: (value: string) => value.trim().length >= 3,
         validMessage: 'Fecha de nacimiento válida',
         errorMessage: 'Fecha de nacimiento inválido',
-        initialValue: '',
+        initialValue: (!Cookies.get('registerData')) ? '' : JSON.parse(Cookies.get('registerData')!).birthdate,
       },
     ])
     const [email,password,name,lastName,birthdate] = parsedFields;
+    const { data } = useQuery(ExistEmail,{
+        variables: {email: email.value}
+    }); 
     const handleSubmit = async() => {
       setIsLoading(true)
-    //   Notification(isDark).fire({
-    //     title: 'Cargando',
-    //     icon: 'info',
-    //   })
+      Notification(isDark).fire({
+        title: 'Cargando',
+        icon: 'info',
+      })
       try {
-        //! Falta implementar el register nada más
-        // await register({ 
-        //     email: email.value,
-        //     username: email.value.split('@',1)[0],
-        //     password: password.value,
-        //     name: name.value,
-        //     birthdate: birthdate.value,
-        //     lastName: lastName.value,
-        // })
+        if (data) throw Error;
+        const registerData = {
+            email: email.value,
+            username: email.value.split('@',1)[0],
+            password: password.value,
+            name: name.value,
+            birthdate: birthdate.value,
+            lastName: lastName.value, 
+        }
+        Cookies.set('registerData', JSON.stringify(registerData), { expires: 7 })
         setTimeout(() => replace('/auth/register/membership'),700)
-        // Notification(isDark).fire({
-        //   title: 'Registro exitoso',
-        //   icon: 'success',
-        //   timer: 5000,
-        // })
+        Notification(isDark).fire({
+          title: 'Registro exitoso',
+          icon: 'success',
+          timer: 5000,
+        })
         setIsLoading(false)
       } catch (error: any) {
-        // Notification(isDark).fire({
-        //   title: error.response.data.message,
-        //   icon: 'error',
-        // })
+        Notification(isDark).fire({
+          title: "El correo ya se encuentra registrado",
+          icon: 'error',
+        })
         setIsLoading(false)
       }
     }

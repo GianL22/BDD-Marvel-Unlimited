@@ -2,13 +2,14 @@ import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button, Card, Input, Link, Loading, Spacer, Text, useTheme } from '@nextui-org/react'
 import { AuthLayout } from '../../../layouts';
-//import { AuthContext } from '../../../context/auth';
+import { AuthContext } from '../../../context/auth';
 import { useForm } from '../../../hooks/useForm';
-//import { Notification } from '../../../notification';
+import { Notification } from '../../../notification';
 
 const LoginPage = () => {
     const {replace} = useRouter()
-    //const {login} = useContext(AuthContext)
+    const {isDark} = useTheme()
+    const {login} = useContext(AuthContext)
     const [isLoading,setIsLoading] = useState(false)
     const {allowSubmit,parsedFields} = useForm([
         {
@@ -27,28 +28,28 @@ const LoginPage = () => {
         },
     ])
     const [email,password] = parsedFields;
-    // const handleSubmit = async() => {
-    //     setIsLoading(true)
-    //     Notification(isDark).fire({
-    //         title: 'Cargando',
-    //         icon: 'info',
-    //     })
-    //     try {
-    //         await login(email.value,password.value)
-    //         setTimeout(() => replace('/'),500)
-    //         Notification(isDark).fire({
-    //             title: 'Sesión iniciada',
-    //             icon: 'success',
-    //         })
-    //         setIsLoading(false)
-    //     } catch (error: any) {
-    //         Notification(isDark).fire({
-    //             title: error.response.data.message,
-    //             icon: 'error',
-    //         }) 
-    //         setIsLoading(false)
-    //     }
-    // }
+    const handleSubmit = async() => {
+        setIsLoading(true)
+        Notification(isDark).fire({
+            title: 'Cargando',
+            icon: 'info',
+        })
+        try {
+            await login(email.value,password.value)
+            setTimeout(() => replace('/app/profiles'),700)
+            Notification(isDark).fire({
+                title: 'Sesión iniciada',
+                icon: 'success',
+            })
+            setIsLoading(false)
+        } catch (error: any) {
+            Notification(isDark).fire({
+                title: error.message,
+                icon: 'error',
+            }) 
+            setIsLoading(false)
+        }
+    }
     return (
         <AuthLayout
             title='Login'
@@ -100,11 +101,11 @@ const LoginPage = () => {
                     />
                     <Button
                         size='lg'
-                        // onPress={handleSubmit}
+                        onPress={handleSubmit}
                         css={{
                             mt: '$5',
                         }}
-                        // disabled={!allowSubmit || isLoading}
+                        disabled={!allowSubmit || isLoading}
                     >
                         {!isLoading ? 'Iniciar Sesión' : <Loading type='points' />}
                     </Button>

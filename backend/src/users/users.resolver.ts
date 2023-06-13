@@ -24,11 +24,18 @@ export class UsersResolver {
   }
 
   //* Query -> Usuario
-  @Query(() => User, { name: 'user' })
-  async findOne(
+  @Query(() => User, { name: 'userById' })
+  async findOneById(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
   ): Promise<User> {
     return this.usersService.findOneById(id);
+  }
+
+  @Query(() => User, { name: 'userByEmail' })
+  async findOneByEmail(
+    @Args('email', { type: () => String }) email: string,
+  ): Promise<User> {
+    return this.usersService.findOneByEmail(email);
   }
 
   //* Actualizar usuario
@@ -71,5 +78,13 @@ export class UsersResolver {
     @CurrentUser() user: User,
   ): Promise<Profile> {
     return this.usersService.updateProfile(updateProfileInput.id, updateProfileInput, user);
+  }
+
+  @Query(() => [Profile], { name: 'profileByUser' })
+  @UseGuards( JwtAuthGuard )
+  async findProfileById(
+    @CurrentUser() user: User,
+  ): Promise<Profile[]> {
+    return this.usersService.findProfileById(user);
   }
 }

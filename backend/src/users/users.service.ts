@@ -91,7 +91,7 @@ export class UsersService {
     try {
       const newProfile = this.profileRepository.create( {
         ...createProfileInput,
-        user: user.id,
+        userId: user.id,
       });
       
       return await this.profileRepository.save( newProfile );
@@ -106,13 +106,25 @@ export class UsersService {
       const user = await this.profileRepository.preload(
         {
           ...updateProfileInput, 
-          user: userOwner.id,
+          userId: userOwner.id,
           id
         } ) 
       return await this.profileRepository.save( user );
 
     } catch (error) {
       this.handleDBError(error);
+    }
+  }
+
+  async findProfileById(user: User): Promise<Profile[]>{
+    try {
+      return await this.profileRepository.find({
+        where: {
+          userId: user.id
+        }
+      })
+    } catch (error) {
+      throw new NotFoundException(`${ user.id } not found`);
     }
   }
 
