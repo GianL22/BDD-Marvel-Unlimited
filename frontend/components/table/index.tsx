@@ -28,7 +28,7 @@ export const TableWrapper: FC<Props>= ({columns,rows}) => {
       </Table.Header>
       <Table.Body items={rows}>
         {(item) => (
-          <Table.Row key = {item.uid}>
+          <Table.Row>
             {(columnKey) => (
               <Table.Cell>
                 {item[columnKey] ? item[columnKey] : "N/A"}

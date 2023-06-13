@@ -36,20 +36,23 @@ const ProfilesPage: NextPage = () => {
         </Button>
         <Grid.Container gap={4} justify='center' alignItems='center' css={{minWidth:'auto', minHeight:'80vh'}}>
             {
-                data?.profileByUser.map( (profile)  => (
+                data?.profileByUser.map( (profile, i)  => (
                     <Grid md={2} justify='center' alignItems='center' key={profile.id}>
                         <Profile
                             profile={profile}
-                            nProfile={ 1 }
+                            nProfile={ i + 1 }
                             editable = { edit }
                         />
                     </Grid>
                 ))
             }
-            <Grid md={2} justify='center' alignItems='center'>
-                <AddProfile/>
-            </Grid>
-
+            {
+                (data?.profileByUser.length === 5)
+                    ? <></>
+                    :   <Grid md={2} justify='center' alignItems='center'>
+                            <AddProfile/>
+                        </Grid>
+            }
         </Grid.Container>
     </> 
   )

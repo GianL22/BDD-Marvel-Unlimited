@@ -2,9 +2,11 @@ import type { NextPage } from 'next'
 import { Flex } from '@/components/containers';
 import { AppLayout } from '@/layouts/AppLayout'
 import { Text, Row, Col, Grid, Link, Button, Spacer } from '@nextui-org/react';
+import { useRouter } from 'next/router';
 
 
 const ReportsPage: NextPage = () => {
+    const {push} = useRouter()
   return ( 
     <AppLayout
       title='Reportes'
@@ -60,8 +62,13 @@ const ReportsPage: NextPage = () => {
 
                 <Spacer y={4}/>
 
-                <Link href='' css={{'minWidth': '100%',}}>
-                    <Button auto bordered css={{'minWidth': '50%'}}>
+                <Link css={{'minWidth': '100%',}}>
+                    <Button
+                        auto
+                        bordered
+                        onPress={ async () => await push('reports/upgradepremium')}
+                        css={{'minWidth': '50%'}}
+                    >
                         Upgrade a Premium
                     </Button>
                 </Link>

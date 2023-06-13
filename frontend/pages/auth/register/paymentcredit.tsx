@@ -68,6 +68,7 @@ const PaymentPage = () => {
         })
         try {
             const signup = JSON.parse(Cookies.get('registerData')!)
+            const membershipId = Cookies.get('membershipId')!
             await register( 
                 {
                     ...signup
@@ -78,18 +79,21 @@ const PaymentPage = () => {
                     cvv: +cvv.value,
                     ownerName: ownerName.value,
                     ownerLastName: ownerLastName.value,
+                },
+                {
+                    dateSuscription: new Date().toISOString().slice(0,10),
+                    membership: membershipId,
                 }
             )
             setTimeout(() => replace('/app/profiles'),700)
-            Cookies.remove('registerData');
-            Cookies.remove('membershipId');
-
             Notification(isDark).fire({
                 title: 'Registro exitoso',
                 icon: 'success',
                 timer: 5000,
             })
             setIsLoading(false)
+            Cookies.remove('registerData');
+            Cookies.remove('membershipId');
         } catch (error: any) {
             Notification(isDark).fire({
             title: error.message,
