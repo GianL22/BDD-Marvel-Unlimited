@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { User } from "src/users/entities";
-import { Column, Entity, PrimaryColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryColumn, ManyToOne, OneToMany, Check } from 'typeorm';
 
 @Entity({name : 'CreditCards'})
 @ObjectType()
@@ -17,10 +17,11 @@ export class CreditCard {
     ownerLastName: string;
 
     @Column({
-        type: 'date',
-        nullable: false
+        type: "varchar",
+        nullable: false,
     })
-    expiration: Date;
+    @Check(`expiration ~ '^(0[1-9]|1[0-2])\/([0-9]{2})$'`)
+    expiration: string;
 
     @Column({
         type: 'int',

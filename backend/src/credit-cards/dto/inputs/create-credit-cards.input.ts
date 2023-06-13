@@ -1,5 +1,5 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsDateString, IsNotEmpty, IsString, Max, Min } from 'class-validator';
+import { IsNotEmpty, IsString, Max, Min } from 'class-validator';
 
 @InputType()
 export class CreateCreditCardInput {
@@ -20,7 +20,7 @@ export class CreateCreditCardInput {
 
     @Field(() => String)
     @IsNotEmpty()
-    @IsDateString()
+    @IsString()
     expiration: string;
     
     @Field(() => Int)

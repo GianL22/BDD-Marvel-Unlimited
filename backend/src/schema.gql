@@ -27,6 +27,7 @@ type User {
 
 type Profile {
   id: ID!
+  userId: ID!
   nickname: String!
   language: String!
   hourConexion: Int!
@@ -43,7 +44,9 @@ type AuthResponse {
 
 type Query {
   users: [User!]!
-  user(id: ID!): User!
+  userById(id: ID!): User!
+  userByEmail(email: String!): User!
+  profileByUser: [Profile!]!
   revalite: AuthResponse!
   memberships: [Membership!]!
   membership(id: String!): Membership!

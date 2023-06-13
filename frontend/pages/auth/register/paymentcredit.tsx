@@ -1,34 +1,40 @@
-import { Button, Card, Col, Divider, Grid, Input, Link, Loading, Row, Spacer, Text } from '@nextui-org/react'
+import { Button, Card, Col, Divider, Grid, Input, Link, Loading, Row, Spacer, Text, useTheme } from '@nextui-org/react'
 import { AuthLayout,  } from '../../../layouts';
 import { CardPlan } from '@/components/plan/CardPlan';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from '@/hooks/useForm';
-
-const memberships =
-    {
-      title: 'GOLD',
-      features : ['Acceso iimitado a las últimas películas y series de Marvel', 'Información detallada de los personajes de Marvel', 'Solo un perfil de usuario.'],
-      price: 9.99,
-      recommended: false,
-    }
+import { Notification } from '@/notification';
+import { AuthContext } from '@/context/auth';
+import Cookies from 'js-cookie';
+import { useQuery } from '@apollo/client';
+import { GetMembership } from '@/graphql/Membership';
+import { MemberData } from '@/models/Membership';
 
 const PaymentPage = () => {
+    const { data, error } = useQuery<MemberData>( GetMembership, {
+        variables:{
+            membershipId: `${ Cookies.get('membershipId') }`
+        }
+    } );
+
+    const { register } = useContext(AuthContext)
+    const {isDark} = useTheme();
     const [isLoading,setIsLoading] = useState(false);
     const {replace} = useRouter();
     const {allowSubmit,parsedFields} = useForm([
       {
-        name: 'creditNumber',
+        name: 'cardNumber',
         validate: (value: string) => value.match(/^\d{16}$/),
         validMessage: 'Tarjeta credito válida',
         errorMessage: 'Tarjeta credito invalida (Deben ser 16 digitos)',
         initialValue: '',
       },
       {
-        name: 'expeditionDate',
-        validate: (value: string) => value.match(/^(0[1-9]|1[0-2])-(\d{2})$/),
+        name: 'expiration',
+        validate: (value: string) => value.match(/^(0[1-9]|1[0-2])\/([0-9]{2})$/),
         validMessage: 'Fecha de vencimiento válida',
-        errorMessage: 'La fecha debe tener un formato MM-AA',
+        errorMessage: 'La fecha debe tener un formato MM/AA',
         initialValue: '',
       },
       {
@@ -39,49 +45,57 @@ const PaymentPage = () => {
         initialValue: '',
       },
       {
-        name: 'name',
+        name: 'ownerName',
         validate: (value: string) => value.trim().length >= 3,
         validMessage: 'Nombre válido',
         errorMessage: 'Mínimo 3 caracteres',
         initialValue: '',
       },
       {
-        name: 'lastName',
+        name: 'ownerLastName',
         validate: (value: string) => value.trim().length >= 3,
         validMessage: 'Apellido válido',
         errorMessage: 'Mínimo 3 caracteres',
         initialValue: '',
       }
     ])
-    const [creditNumber,expeditionDate,cvv,name,lastName] = parsedFields;
+    const [cardNumber,expiration,cvv,ownerName,ownerLastName] = parsedFields;
     const handleSubmit = async() => {
         setIsLoading(true)
-      //   Notification(isDark).fire({
-      //     title: 'Cargando',
-      //     icon: 'info',
-      //   })
+        Notification(isDark).fire({
+          title: 'Cargando',
+          icon: 'info',
+        })
         try {
-          //! Falta implementar el register pero de la tarjeta de credito
-          // await register({ 
-          //     creditNumber: creditNumber.value,
-          //     expeditionDate: expeditionDate.value,
-          //     cvv: cvv.value,
-          //     name: name.value,
-          //     lastName: lastName.value,
-          // })
-          setTimeout(() => replace('/auth/register/membership'),700)
-          // Notification(isDark).fire({
-          //   title: 'Registro exitoso',
-          //   icon: 'success',
-          //   timer: 5000,
-          // })
-          setIsLoading(false)
+            const signup = JSON.parse(Cookies.get('registerData')!)
+            await register( 
+                {
+                    ...signup
+                }, 
+                {
+                    cardNumber: cardNumber.value,
+                    expiration: expiration.value,
+                    cvv: +cvv.value,
+                    ownerName: ownerName.value,
+                    ownerLastName: ownerLastName.value,
+                }
+            )
+            setTimeout(() => replace('/app/profiles'),700)
+            Cookies.remove('registerData');
+            Cookies.remove('membershipId');
+
+            Notification(isDark).fire({
+                title: 'Registro exitoso',
+                icon: 'success',
+                timer: 5000,
+            })
+            setIsLoading(false)
         } catch (error: any) {
-          // Notification(isDark).fire({
-          //   title: error.response.data.message,
-          //   icon: 'error',
-          // })
-          setIsLoading(false)
+            Notification(isDark).fire({
+            title: error.message,
+            icon: 'error',
+            })
+            setIsLoading(false)
         }
       }
     return(
@@ -103,7 +117,15 @@ const PaymentPage = () => {
                     width: '100vw',
                 }}
             >
-                <CardPlan {...memberships}/>
+                <CardPlan 
+                    key={data?.membership.id} 
+                    id ={data?.membership.id}
+                    features={data?.membership.description.split('/')}
+                    price={data?.membership.price}
+                    title={data?.membership.type}
+                    recommended = { (data?.membership.type === 'premium') ? true : false }
+                    disableButton =  { true }
+                />
             </Grid>
             <Grid 
                 xs={ 12 } 
@@ -144,12 +166,12 @@ const PaymentPage = () => {
                         <Input
                             labelPlaceholder='Numero Tarjeta'
                             type='text'
-                            value={creditNumber.value}
-                            onChange={(e) => creditNumber.setValue(e.target.value)}
-                            helperText={creditNumber.message}
-                            helperColor={creditNumber.color}
-                            status={creditNumber.color}
-                            color={creditNumber.color}
+                            value={cardNumber.value}
+                            onChange={(e) => cardNumber.setValue(e.target.value)}
+                            helperText={cardNumber.message}
+                            helperColor={cardNumber.color}
+                            status={cardNumber.color}
+                            color={cardNumber.color}
                             size='lg'
                             bordered
                             clearable
@@ -159,14 +181,14 @@ const PaymentPage = () => {
                             <Col css={{alignContent: 'center', justifyItems: 'center', width: '50%'}} >
                                 <Input
                                     label='Vencimiento'
-                                    placeholder='MM-AA'
+                                    placeholder='MM/AA'
                                     type='text'
-                                    value={expeditionDate.value}
-                                    onChange={(e) => expeditionDate.setValue(e.target.value)}
-                                    helperText={expeditionDate.message}
-                                    helperColor={expeditionDate.color}
-                                    status={expeditionDate.color}
-                                    color={expeditionDate.color}
+                                    value={expiration.value}
+                                    onChange={(e) => expiration.setValue(e.target.value)}
+                                    helperText={expiration.message}
+                                    helperColor={expiration.color}
+                                    status={expiration.color}
+                                    color={expiration.color}
                                     size='lg'
                                     bordered
                                     clearable
@@ -192,12 +214,12 @@ const PaymentPage = () => {
                         </Row>   
                         <Input
                             labelPlaceholder='Nombre'
-                            value={name.value}
-                            onChange={(e) => name.setValue(e.target.value)}
-                            helperText={name.message}
-                            helperColor={name.color}
-                            status={name.color}
-                            color={name.color}
+                            value={ownerName.value}
+                            onChange={(e) => ownerName.setValue(e.target.value)}
+                            helperText={ownerName.message}
+                            helperColor={ownerName.color}
+                            status={ownerName.color}
+                            color={ownerName.color}
                             size='lg'
                             bordered
                             />
@@ -205,12 +227,12 @@ const PaymentPage = () => {
                         <Input 
                             labelPlaceholder='Apellido' 
                             type="text"
-                            value={lastName.value}
-                            onChange={(e) => lastName.setValue(e.target.value)}
-                            helperText={lastName.message}
-                            helperColor={lastName.color}
-                            status={lastName.color}
-                            color={lastName.color}
+                            value={ownerLastName.value}
+                            onChange={(e) => ownerLastName.setValue(e.target.value)}
+                            helperText={ownerLastName.message}
+                            helperColor={ownerLastName.color}
+                            status={ownerLastName.color}
+                            color={ownerLastName.color}
                             size='lg'
                             bordered 
                             />

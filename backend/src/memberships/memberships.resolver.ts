@@ -6,7 +6,6 @@ import { CreateMembershipInput, UpdateMembershipInput } from './dto/inputs';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Resolver(() => Membership)
-@UseGuards(JwtAuthGuard)
 export class MembershipsResolver {
   constructor(private readonly membershipsService: MembershipsService) {}
 
