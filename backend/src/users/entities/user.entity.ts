@@ -63,7 +63,7 @@ export class User {
   
   @OneToMany(
     () => Suscription,
-    (suscription) => suscription.isActive,
+    (suscription) => suscription.userId,
     {lazy: true}
   )
   suscription: Suscription;

@@ -3,6 +3,5 @@ import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateSuscriptionInput extends PartialType(CreateSuscriptionInput) {
-  @Field(() => Int)
-  id: number;
+  dateSuscription : string;
 }

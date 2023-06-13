@@ -10,6 +10,8 @@ import { LoginInput } from './dto/inputs/login.input';
 import { User } from 'src/users/entities/user.entity';
 import { CreateCreditCardInput } from 'src/credit-cards/dto/inputs/create-credit-cards.input';
 import { CreditCardsService } from 'src/credit-cards/credit-cards.service';
+import { CreateSuscriptionInput } from 'src/suscription/dto/inputs';
+import { SuscriptionService } from 'src/suscription/suscription.service';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
         private readonly usersService :UsersService,
         private readonly jwtService: JwtService,
         private readonly creditCardService: CreditCardsService,
+        private readonly suscriptionService: SuscriptionService,
     ){}
 
     private getJwtToken(userId: string){
@@ -26,12 +29,16 @@ export class AuthService {
     
     async signup(
         signupInput: SignupInput, 
-        createCreditCardInput: CreateCreditCardInput
+        createCreditCardInput: CreateCreditCardInput,
+        createSuscriptionInput : CreateSuscriptionInput
     ): Promise<AuthResponse>{
 
         await this.creditCardService.createCreditCard( createCreditCardInput );
         
-        const user = await this.usersService.create( signupInput, createCreditCardInput.cardNumber);
+        const user = await this.usersService.create( signupInput, createCreditCardInput.cardNumber );
+
+        await this.suscriptionService.createSuscription( createSuscriptionInput, user )
+        
         const token = this.getJwtToken( user.id )
 
         return { user, token };
