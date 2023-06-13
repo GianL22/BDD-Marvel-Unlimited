@@ -10,6 +10,7 @@ import { AuthResolver } from './auth.resolver';
 
 import { UsersModule } from '../users/users.module';
 import { CreditCardsModule } from 'src/credit-cards/credit-cards.module';
+import { SuscriptionModule } from 'src/suscription/suscription.module';
 
 @Module({
   providers: [AuthResolver, AuthService, JwtStrategy],
@@ -32,8 +33,8 @@ import { CreditCardsModule } from 'src/credit-cards/credit-cards.module';
     }),
 
     UsersModule,
-
     CreditCardsModule,
+    SuscriptionModule
   ],
 })
 export class AuthModule {}

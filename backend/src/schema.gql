@@ -4,6 +4,7 @@
 
 type CreditCard {
   cardNumber: String!
+  last4Digits: Int!
 }
 
 type Membership {
@@ -11,6 +12,16 @@ type Membership {
   price: Float!
   type: String!
   description: String!
+}
+
+type Suscription {
+  userId: ID!
+  membershipId: ID!
+  dateSuscription: String!
+  dateEnd: String!
+  isActive: Boolean!
+  user: User!
+  membership: Membership!
 }
 
 type User {
@@ -45,6 +56,8 @@ type Query {
   users: [User!]!
   user(id: ID!): User!
   revalite: AuthResponse!
+  reportSuscriptions: [Suscription!]!
+  suscriptionByUser: Suscription!
   memberships: [Membership!]!
   membership(id: String!): Membership!
 }
@@ -54,9 +67,11 @@ type Mutation {
   blockUser(id: ID!): User!
   createProfile(createProfileInput: CreateProfileInput!): Profile!
   updateProfile(updateProfileInput: UpdateProfileInput!): Profile!
-  signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!): AuthResponse!
+  signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!, suscriptionInput: CreateSuscriptionInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
   createCreditCard(createCreditCardInput: CreateCreditCardInput!): CreditCard!
+  createSuscription(createSuscriptionInput: CreateSuscriptionInput!): Suscription!
+  changeSuscription(createSuscriptionInput: CreateSuscriptionInput!): Suscription!
   createMembership(createMembershipInput: CreateMembershipInput!): Membership!
   removeMembership(id: String!): Membership!
 }
@@ -107,6 +122,11 @@ input CreateCreditCardInput {
   ownerLastName: String!
   expiration: String!
   cvv: Int!
+}
+
+input CreateSuscriptionInput {
+  membership: ID!
+  dateSuscription: String!
 }
 
 input LoginInput {

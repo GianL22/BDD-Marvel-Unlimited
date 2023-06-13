@@ -27,12 +27,12 @@ export class CreditCardsService {
        return await this.creditCardsRepository.findOneBy({ cardNumber });
     }
 
-    // async getLast4Digits(cardNumber : number): Promise<number> {
-    //     try {
-    //         const creditCard = await this.creditCardsRepository.findOneByOrFail({ cardNumber });
-    //         return creditCard.cardNumber % 10000;
-    //     } catch (error) {
-    //         throw new NotFoundException('No se encontro la tarjeta')
-    //     }
-    // }
+    async getLast4Digits(cardNumber : string): Promise<string> {
+        try {
+            const creditCard = await this.creditCardsRepository.findOneByOrFail({ cardNumber });
+            return creditCard.cardNumber.substring(12, 16);
+        } catch (error) {
+            throw new NotFoundException('No se encontro la tarjeta')
+        }
+    }
 }

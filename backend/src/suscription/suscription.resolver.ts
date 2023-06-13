@@ -1,35 +1,40 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { SuscriptionService } from './suscription.service';
 import { Suscription } from './entities/suscription.entity';
-import { CreateSuscriptionInput } from './dto/create-suscription.input';
-import { UpdateSuscriptionInput } from './dto/update-suscription.input';
-
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreateSuscriptionInput } from './dto/inputs';
+import { UseGuards } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'src/users/entities';
 @Resolver(() => Suscription)
+@UseGuards(JwtAuthGuard)
 export class SuscriptionResolver {
-  // constructor(private readonly suscriptionService: SuscriptionService) {}
+  constructor(private readonly suscriptionService: SuscriptionService) {}
 
-  // @Mutation(() => Suscription)
-  // createSuscription(@Args('createSuscriptionInput') createSuscriptionInput: CreateSuscriptionInput) {
-  //   return this.suscriptionService.create(createSuscriptionInput);
-  // }
+  @Mutation(() => Suscription, { name: 'createSuscription' })
+  async createSuscription(
+    @CurrentUser() user : User, 
+    @Args('createSuscriptionInput') createSuscriptionInput: CreateSuscriptionInput,
+  ) : Promise<Suscription> {
+    return await this.suscriptionService.createSuscription(createSuscriptionInput, user);
+  }
 
-  // @Query(() => [Suscription], { name: 'suscription' })
-  // findAll() {
-  //   return this.suscriptionService.findAll();
-  // }
+  @Query(() => [Suscription], { name: 'reportSuscriptions' })
+  async reportSuscriptions() : Promise<Suscription[]> {
+    return await this.suscriptionService.reportSuscriptions();
+  }
 
-  // @Query(() => Suscription, { name: 'suscription' })
-  // findOne(@Args('id', { type: () => Int }) id: number) {
-  //   return this.suscriptionService.findOne(id);
-  // }
+  @Mutation(() => Suscription, { name: 'changeSuscription' })
+  async changeSuscription(
+    @CurrentUser() user : User, 
+    @Args('createSuscriptionInput') createSuscriptionInput: CreateSuscriptionInput,
+  ) : Promise<Suscription> {
+    return await this.suscriptionService.changeSuscription(createSuscriptionInput, user);
+  }
 
-  // @Mutation(() => Suscription)
-  // updateSuscription(@Args('updateSuscriptionInput') updateSuscriptionInput: UpdateSuscriptionInput) {
-  //   return this.suscriptionService.update(updateSuscriptionInput.id, updateSuscriptionInput);
-  // }
+  @Query(() => Suscription, { name: 'suscriptionByUser' })
+  async findOneActiveByUser(@CurrentUser() user: User) : Promise<Suscription> {
+    return await this.suscriptionService.findOneActiveByUser(user);
+  }
 
-  // @Mutation(() => Suscription)
-  // removeSuscription(@Args('id', { type: () => Int }) id: number) {
-  //   return this.suscriptionService.remove(id);
-  // }
 }

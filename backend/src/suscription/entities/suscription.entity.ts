@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Membership } from 'src/memberships/entities/membership.entity';
 import { User } from 'src/users/entities';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
@@ -8,33 +8,42 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 export class Suscription {
 
   @PrimaryColumn({type: 'uuid'})
+  @Field(()=> ID)
   userId: string;
 
   @PrimaryColumn({type: 'uuid'})
+  @Field(()=> ID)
   membershipId: string;
 
-  @PrimaryColumn({type: 'date'})
-  dateSuscription: string;
+  @PrimaryColumn( { type : 'date' } )
+  @Field(()=> String)
+  dateSuscription: Date;
 
-  @Column({type: 'date', nullable: false})
-  dateEnd: string;
+  @Column( { type : 'date' } )
+  @Field(()=> String)
+  dateEnd: Date;
 
   @Column({type: 'boolean', default: true, nullable: false})
+  @Field(()=> Boolean)
   isActive: boolean;
+
 
   @ManyToOne(
     () => User,
     (user) => user.id,
-    {}
+    {lazy : true},
   )
   @JoinColumn({ name: "userId" })
-  user: User;
+  @Field(()=> User)
+  user: string;
 
   @ManyToOne(
     () => Membership,
     (membership) => membership.id,
-    {}
+    {lazy : true}
   )
   @JoinColumn({ name: "membershipId" })
-  membership: Membership;
+  @Field(()=> Membership)
+  membership: string;
+  
 }

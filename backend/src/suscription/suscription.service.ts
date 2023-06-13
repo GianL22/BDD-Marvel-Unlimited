@@ -1,19 +1,83 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSuscriptionInput } from './dto/create-suscription.input';
-import { UpdateSuscriptionInput } from './dto/update-suscription.input';
+import { Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Suscription } from './entities/suscription.entity';
+import { CreateSuscriptionInput, UpdateSuscriptionInput } from './dto/inputs';
+import { User } from 'src/users/entities';
+import { MembershipsService } from '../memberships/memberships.service';
+import { TypeMemberships } from 'src/memberships/enums/type-memberships.enum';
 
 @Injectable()
 export class SuscriptionService {
-  create(createSuscriptionInput: CreateSuscriptionInput) {
-    return 'This action adds a new suscription';
+
+  constructor(
+    private readonly membershipsService : MembershipsService,
+
+    @InjectRepository(Suscription)  
+    private readonly suscriptionRepository: Repository<Suscription>,
+  ){}
+
+  async createSuscription(createSuscriptionInput: CreateSuscriptionInput, user : User): Promise<Suscription> {
+    try { 
+      const { dateSuscription } = createSuscriptionInput;
+      const dateEnd = new Date(dateSuscription);
+      dateEnd.setMonth(dateEnd.getMonth() + 1);
+      
+      const membership = await this.membershipsService.findOne(createSuscriptionInput.membership);
+      const newSuscription = this.suscriptionRepository.create({
+        membership : membership.id,
+        user : user.id,
+        dateSuscription: new Date(dateSuscription),
+        dateEnd, 
+        userId : user.id,
+        membershipId : membership.id,
+      })
+      return await this.suscriptionRepository.save(newSuscription);
+    } catch (error) {
+      throw new InternalServerErrorException('Algo ocurrió mal en la creacion de la suscripcion')
+    }
+  }
+  async changeSuscription(createSuscriptionInput: CreateSuscriptionInput, user : User): Promise<Suscription> {
+    const suscription = await this.suscriptionRepository.findOne({ where: { userId : user.id, isActive : true }})
+    if ( suscription ){
+      suscription.isActive = false;
+      suscription.dateEnd = new Date();
+      await this.suscriptionRepository.save(suscription);
+    }
+    return await this.createSuscription(createSuscriptionInput, user);
   }
 
-  findAll() {
-    return `This action returns all suscription`;
+  async findOneActiveByUser(user : User) : Promise<Suscription> {
+    try {
+        return await this.suscriptionRepository.findOneOrFail({ where: { userId : user.id, isActive : true }})
+    } catch (error) {
+        throw new NotFoundException('No existe una suscripcion activa para este usuario')
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} suscription`;
+  async reportSuscriptions() : Promise<Suscription[]> {
+    try {
+
+      const { id  :  goldId } = await this.membershipsService.findOneByName(TypeMemberships.gold);  
+      const { id  :  premiumId } = await this.membershipsService.findOneByName(TypeMemberships.premium);  
+      const today = new Date()
+      const fourMonthsAgo = new Date()
+      fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
+      const queryBuilder = this.suscriptionRepository.createQueryBuilder()
+      .select('s')
+      .from(Suscription, 's')
+      .where("s.membershipId = :oldMembership", { oldMembership: goldId })
+      .andWhere("s.isActive = :active", { active: false })
+      .andWhere(`s.dateEnd BETWEEN '${fourMonthsAgo.toISOString().slice(0,10)}' AND '${today.toISOString().slice(0,10)}'`)
+      // .andWhere("suscription.dateSuscription >= DATE_SUB(NOW(), INTERVAL 4 MONTH)")
+      // .andWhere("suscription.dateEnd <= NOW()")
+      // .andWhere("um.active = :active", { active: true })
+      return await queryBuilder.getMany();      
+    } catch (error) {
+      console.log(error)
+      throw new InternalServerErrorException('Error en el servidor')
+    }
+
   }
 
   update(id: number, updateSuscriptionInput: UpdateSuscriptionInput) {

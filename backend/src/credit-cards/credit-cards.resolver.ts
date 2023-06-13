@@ -27,10 +27,10 @@ export class CreditCardsResolver {
   //   return this.creditCardsService.findOneByCardNumber(user);
   // }
 
-  // @ResolveField( () => Int, { name: 'last4Digits' })
-  // async last4DigitsByUser(
-  //   @Parent() creditCard: CreditCard
-  // ): Promise<number> {
-  //   return this.creditCardsService.getLast4Digits(creditCard.cardNumber);
-  // }
+  @ResolveField( () => Int, { name: 'last4Digits' })
+  async last4DigitsByUser(
+    @Parent() creditCard: CreditCard
+  ): Promise<string> {
+    return this.creditCardsService.getLast4Digits(creditCard.cardNumber);
+  }
 }

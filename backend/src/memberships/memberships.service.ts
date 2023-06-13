@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMembershipInput, UpdateMembershipInput } from './dto/inputs';
 import { Membership } from './entities/membership.entity';
 import { Repository } from 'typeorm';
+import { TypeMemberships } from './enums/type-memberships.enum';
 
 @Injectable()
 export class MembershipsService {
@@ -28,7 +29,15 @@ export class MembershipsService {
     } catch (error) {
       throw new NotFoundException(`membership #${id} not found`)
     }
-  
+  }
+
+  async findOneByName(type : TypeMemberships): Promise<Membership> {
+    try {
+      const membership = await this.membershipRepository.findOneByOrFail({ type })
+      return membership
+    } catch (error) {
+      throw new NotFoundException(`membership #${type} not found`)
+    }
   }
 
   // update(id: number, updateMembershipInput: UpdateMembershipInput) {

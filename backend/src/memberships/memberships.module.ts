@@ -8,6 +8,7 @@ import { Membership } from './entities/membership.entity';
   providers: [MembershipsResolver, MembershipsService],
   imports : [
       TypeOrmModule.forFeature([ Membership ]),
-  ]
+  ],
+  exports : [  MembershipsService ]
 })
 export class MembershipsModule {}
