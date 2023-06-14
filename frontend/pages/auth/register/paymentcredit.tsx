@@ -127,7 +127,7 @@ const PaymentPage = () => {
                     features={data?.membership.description.split('/')}
                     price={data?.membership.price}
                     title={data?.membership.type}
-                    recommended = { (data?.membership.type === 'premium') ? true : false }
+                    recommended = { (data?.membership.type === 'Premium') ? true : false }
                     disableButton =  { true }
                 />
             </Grid>
@@ -158,7 +158,7 @@ const PaymentPage = () => {
                             height: '20%'
                         }}
                     >
-                        <Text h1>Tarjeta Credito</Text>
+                        <Text h1>Metodo de Pago</Text>
                     </Card.Header>
                     <Card.Body 
                         css={{

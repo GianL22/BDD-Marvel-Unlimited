@@ -5,8 +5,9 @@ import { SidebarItem } from './SidebarItem';
 import { Box, Flex } from '../containers';
 import { LogoutButton } from './LogoutButton';
 import { ThemeSwitcher } from '../navbar/ThemeSwitcher';
-import { Search, Gamepad, Tv, HomeSimpleDoor, Movie, List, OpenBook } from 'iconoir-react';
-import { Text, Link, Avatar, Tooltip } from '@nextui-org/react';
+import { Search, Gamepad, Tv, HomeSimpleDoor, Movie, List, OpenBook, CoinsSwap } from 'iconoir-react';
+import { Text, Link, Avatar, Tooltip, Button} from '@nextui-org/react';
+import Cookies from 'js-cookie';
 
 export const SidebarWrapper = () => {
    // const {user} = useContext(AuthContext);
@@ -94,18 +95,29 @@ export const SidebarWrapper = () => {
                      href="/app/reports"
                      icon={<OpenBook/>}
                   />
+
+                  <SidebarItem
+                     title="Suscripcion"
+                     isActive={router.pathname.includes('changesuscription')}
+                     href="/app/changesuscription"
+                     icon={<CoinsSwap/>}
+                  />
                </Sidebar.Body>
 
                <Sidebar.Footer>
-               <Tooltip content={'Profile'} rounded color="primary">
-                  <Avatar
-                     size="xl"
-                     src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-                     color="primary"
-                     bordered
-                  />
-               </Tooltip>
-                  {/* <ThemeSwitcher/> */}
+                  <ThemeSwitcher/>
+                  {/*  Provisioal */}
+                  <Link href='/app/profiles'> 
+                     <Tooltip content={'Profile'} rounded color="primary">
+
+                        <Avatar
+                           size="xl"
+                           src={Cookies.get('profilePath') || '/profiles/1.png'}
+                           color="primary"
+                           bordered
+                           />
+                     </Tooltip>
+                  </Link>                                    
                   {/* <LogoutButton/> */}
                </Sidebar.Footer>
             </Flex>

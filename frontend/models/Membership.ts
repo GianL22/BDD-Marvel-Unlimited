@@ -4,7 +4,7 @@ export interface Memberships{
     memberships: Membership[]
 }
 
-interface Membership {
+export interface Membership {
     id: string;
     price: number;
     type: string;
