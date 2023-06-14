@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { MembershipsModule } from './memberships/memberships.module';
 import { CreditCardsModule } from './credit-cards/credit-cards.module';
 import { SuscriptionModule } from './suscription/suscription.module';
+import { CountriesModule } from './countries/countries.module';
 
 
 @Module({
@@ -48,6 +49,8 @@ import { SuscriptionModule } from './suscription/suscription.module';
     CreditCardsModule,
 
     SuscriptionModule,
+
+    CountriesModule,
   ],
   controllers: [],
   providers: [],

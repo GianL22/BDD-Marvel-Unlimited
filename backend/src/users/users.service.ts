@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, Logger, NotFoundException, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
 
 import { Profile, User } from './entities';
@@ -9,6 +9,7 @@ import { SignupInput } from '../auth/dto/inputs/signup.input';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProfileInput, UpdateProfileInput } from './dto/inputs';
+import { CountriesService } from '../countries/countries.service';
 
 @Injectable()
 export class UsersService {
@@ -21,13 +22,19 @@ export class UsersService {
 
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
+
+    private readonly countriesService: CountriesService,
   ){}
 
   //* Funciones para usuarios
   async create(signupInput: SignupInput, cardNumber: string): Promise<User> {
     try {
+
+      const city = await this.countriesService.findCitiesById(signupInput.city)
+
       const newUser = this.userRepository.create( {
         ...signupInput,
+        city,
         password: bcrypt.hashSync( signupInput.password, 10),
         creditCard: {cardNumber},
       });
@@ -35,6 +42,7 @@ export class UsersService {
       return await this.userRepository.save( newUser )
 
     } catch (error) {
+      console.log(error)
       this.handleDBError(error)
     }
   }

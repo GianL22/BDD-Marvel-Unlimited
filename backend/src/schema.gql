@@ -24,6 +24,17 @@ type Suscription {
   membership: Membership!
 }
 
+type Country {
+  description: String!
+  cities: [City!]!
+}
+
+type City {
+  id: ID!
+  description: String!
+  country: Country!
+}
+
 type User {
   id: ID!
   username: String!
@@ -33,6 +44,7 @@ type User {
   birthdate: String!
   isActive: Boolean!
   creditCard: CreditCard!
+  city: City!
   profiles: [Profile!]!
 }
 
@@ -58,6 +70,7 @@ type Query {
   userById(id: ID!): User!
   userByEmail(email: String!): User!
   profileByUser: [Profile!]!
+  countries: [Country!]!
   revalite: AuthResponse!
   reportSuscriptions: [Suscription!]!
   suscriptionByUser: Suscription!
@@ -117,6 +130,7 @@ input SignupInput {
   email: String!
   password: String!
   birthdate: String!
+  city: ID!
 }
 
 input CreateCreditCardInput {
