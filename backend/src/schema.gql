@@ -146,7 +146,7 @@ input CreateMembershipInput {
 }
 
 enum TypeMemberships {
-  gold
-  premium
-  vip
+  Gold
+  Premium
+  VIP
 }

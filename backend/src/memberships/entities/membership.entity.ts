@@ -22,7 +22,7 @@ export class Membership {
         nullable : false
     })
     @Field(() => String)
-    @Check(`"type" IN ('gold', 'premium', 'vip')`)
+    @Check(`"type" IN ('Gold', 'Premium', 'VIP')`)
     type  : string;
 
     @Column({nullable : false})

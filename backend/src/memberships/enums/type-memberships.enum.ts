@@ -1,5 +1,5 @@
 export enum TypeMemberships {
-    gold = 'gold',
-    premium = 'premium',
-    vip = 'vip'
+    Gold = 'Gold',
+    Premium = 'Premium',
+    VIP = 'VIP'
 }
