@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int, ID, Float } from '@nestjs/graphql';
 import { Suscription } from 'src/suscription/entities/suscription.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Check, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({name : 'Memberships'})
 @ObjectType()
@@ -22,6 +22,7 @@ export class Membership {
         nullable : false
     })
     @Field(() => String)
+    @Check(`"type" IN ('gold', 'premium', 'vip')`)
     type  : string;
 
     @Column({nullable : false})
