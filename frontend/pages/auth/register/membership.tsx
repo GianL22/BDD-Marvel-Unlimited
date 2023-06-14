@@ -36,7 +36,7 @@ const MembershipPage = () => {
                 ¡Únete gratis a la comunidad de Marvel por tiempo limitado! Acceso exclusivo a contenido épico de Marvel
               </Text>
             </Flex>
-            //! Hacerlo responsive
+            {/* //! Hacerlo responsive */}
             <Flex css={{h : '100%'}}  direction={'row'} justify={'center'} align={'center'} >
               {
                 data?.memberships.map((membership) => 
@@ -47,7 +47,7 @@ const MembershipPage = () => {
                         features={membership.description.split('/')}
                         price={membership.price}
                         title={membership.type}
-                        recommended = { (membership.type === 'premium') ? true : false }
+                        recommended = { (membership.type === 'Premium') ? true : false }
                       />
                       </Grid>
                   )

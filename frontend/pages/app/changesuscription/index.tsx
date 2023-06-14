@@ -1,46 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import type { NextPage } from 'next'
 import { Flex } from '@/components/containers';
 import { AppLayout } from '@/layouts/AppLayout'
-import { Text, Row, Col, Grid, Link, Button, Spacer } from '@nextui-org/react';
-import { useRouter } from 'next/router';
-import { useMutation, useQuery } from '@apollo/client';
-import { Memberships } from '@/models/Membership';
-import { ChangeSuscription, GetMemberships } from '@/graphql/Membership';
+import { Text, Grid } from '@nextui-org/react';
+import { useQuery } from '@apollo/client';
+import { UpdateMembershipData } from '@/graphql/Membership';
 import { CardPlan } from '@/components/plan/CardPlan';
+import { AuthContext } from '@/context/auth';
+import { Membership, Memberships } from '@/models/Membership';
 
 
 const ChangeSuscriptionPage: NextPage = () => {
-    const [membershipIdSelected, setMembershipIdSelected] = useState<string>("")
-    const { data, error } = useQuery<Memberships>(GetMemberships);
-
-
-    const [changeSuscription] = useMutation(ChangeSuscription, 
-        {
-            variables : {
-                createSuscriptionInput: {
-                    dateSuscription: new Date().toISOString().slice(0, 10),
-                    membership: membershipIdSelected
-                }
-            }
-        }
-    )
-        
-    useEffect(() => {
-        if ( membershipIdSelected === "" ) return 
-        changeSuscription()
-
-    }, [membershipIdSelected])
-    
-    const onChangeSuscription = (membershipId : string) => {
-        setMembershipIdSelected(membershipId)
-    }
+    const { user } = useContext(AuthContext);
+    const { data } = useQuery(UpdateMembershipData,{
+        variables: {
+            userByIdId: user?.id
+        }, 
+        pollInterval : 1000
+    });
 
   return ( 
     <AppLayout
       title='change Suscription'
       description='Reportes sobre Marvel'
     >
+
         <Flex
             css={{
             'mt': '$5',
@@ -59,16 +43,24 @@ const ChangeSuscriptionPage: NextPage = () => {
         </Flex>
 
         <Grid.Container css={{h : '100%'}} justify='center' alignItems='center' >
+            <Flex css={{h : '100%'}}  direction={'row'} justify={'center'} align={'center'} >
               {
-                data?.memberships.map((membership) => 
-                    <Grid xs={ 12 } sm={4}  css={{height: "50%"}} key={membership.id} >
-                        <Button auto bordered css={{'minWidth': '50%'}} onPress={() => onChangeSuscription(membership.id)}>
-                            {membership.type}
-                        </Button>
-                    </Grid>
+                data?.userById.getMembership.map((membership: Membership) => 
+                    <Grid xs={ 12 } sm={12}  css={{height: "50%"}} key={membership.id} >
+                      <CardPlan  
+                        key={membership.id} 
+                        id ={membership.id}
+                        features={membership.description.split('/')}
+                        price={membership.price}
+                        title={membership.type}
+                        recommended = { (membership.type === 'Premium') ? true : false }
+                        control = {true}
+                      />
+                      </Grid>
                   )
               }
-            </Grid.Container>
+            </Flex>
+        </Grid.Container>
     </AppLayout>
   )
 }

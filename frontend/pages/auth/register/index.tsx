@@ -38,7 +38,7 @@ const RegisterPage = () => {
     const {replace} = useRouter();
 
     const {data : dataCountries, error, loading} =  useQuery<countriesResponse>(GetCountries)
-    const [countrySelected, setCountrySelected] = useState<string>('Pais')
+    const [countrySelected, setCountrySelected] = useState<string>('País')
     const [citySelected, setCitySelected] = useState({ description: 'Ciudad', id : '' })
 
     const countries = useMemo(()=> {
@@ -83,9 +83,7 @@ const RegisterPage = () => {
       },
       {
         name: 'password',
-        // validate: (value: string) => value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
-        validate: (value: string) => value.match(/^[^A-Z]*[A-Z][^A-Z]*$/),
-
+        validate: (value: string) => value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
         validMessage: 'Contraseña segura',
         errorMessage: 'Debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
         initialValue: (!Cookies.get('registerData')) ? '' : JSON.parse(Cookies.get('registerData')!).password,
