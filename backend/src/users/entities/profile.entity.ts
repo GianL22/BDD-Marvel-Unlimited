@@ -1,12 +1,11 @@
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Check, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity({name: 'profiles'})
+@Entity({name: 'Profiles'})
 @ObjectType()
 export class Profile {
     
-    //* Implementar luego la clave debil
     @PrimaryGeneratedColumn('uuid')
     @Field( () => ID)
     id: string;
@@ -28,6 +27,7 @@ export class Profile {
         type: 'int',
     })
     @Field( () => Int)
+    @Check(`"hourConexion" >= 0`)
     hourConexion: number;
     
     @Column()
@@ -39,6 +39,7 @@ export class Profile {
         type: 'int',
     })
     @Field( () => Int)
+    @Check(`"timeWatched" >= 0`)
     timeWatched: number;
     
     @Column({ unique: true })
@@ -49,12 +50,16 @@ export class Profile {
     @Field( () => String)
     avatar: string;
 
+    @Column( {nullable: false, default: true})
+    @Field( () => Boolean)
+    isActive: boolean;
+
     @ManyToOne(
         () => User,
         (user) => user.id,
         {lazy: true}
     )
-    @JoinColumn({ name: "userId" })
+    @JoinColumn({ name: "userId", foreignKeyConstraintName:'user_FK' })
     user: string;
     //TODO: Realizar la relación luego con la entidad user
 }

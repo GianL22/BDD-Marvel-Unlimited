@@ -5,7 +5,7 @@ import { CreditCard } from 'src/credit-cards/entities/credit-card.entity';
 import { Suscription } from 'src/suscription/entities/suscription.entity';
 import { City } from '../../countries/entities/city.entity';
 
-@Entity({name: 'User'})
+@Entity({name: 'Users'})
 @ObjectType()
 export class User {
   
@@ -13,7 +13,7 @@ export class User {
   @Field( () => ID)
   id: string;
 
-  @Column()
+  @Column({nullable: false, unique: true})
   @Field( () => String)
   username: string
 

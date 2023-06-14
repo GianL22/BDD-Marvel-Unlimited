@@ -59,12 +59,9 @@ export class SuscriptionService {
 
   async reportSuscriptions() : Promise<Suscription[]> {
     try {
-
-
-      const { id  :  goldId } = await this.membershipsService.findOneByName(TypeMemberships.gold);  
-      const { id  :  premiumId } = await this.membershipsService.findOneByName(TypeMemberships.premium);  
-
-  
+      
+      const { id  :  goldId } = await this.membershipsService.findOneByName(TypeMemberships.Gold);  
+      const { id  :  premiumId } = await this.membershipsService.findOneByName(TypeMemberships.Premium);  
       const today = new Date()
       const fourMonthsAgo = new Date()
       fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);

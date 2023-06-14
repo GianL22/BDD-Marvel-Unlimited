@@ -33,11 +33,20 @@ export const GetProfilesByUser = gql`
 export const UpdateProfile = gql`
     mutation Mutation($updateProfileInput: UpdateProfileInput!) {
         updateProfile(updateProfileInput: $updateProfileInput) {
-        id
-        device
-        avatar
-        language
-        nickname
+            id
+            device
+            avatar
+            language
+            nickname
+        }
+    }
+`;
+
+export const DeleteProfile = gql`
+    mutation Mutation($blockProfileId: ID!) {
+        blockProfile(id: $blockProfileId) {
+            nickname
+            isActive
         }
     }
 `;

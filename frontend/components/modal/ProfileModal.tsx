@@ -9,7 +9,7 @@ import Cookies from 'js-cookie';
 import { Profile } from '@/models/Client';
 import { useRouter } from 'next/router';
 import { AddProfile } from '../profile/AddProfile';
-import { UpdateProfile } from '@/graphql/Profile';
+import { DeleteProfile, UpdateProfile } from '@/graphql/Profile';
 
 interface Props {
    bindings: {
@@ -22,7 +22,6 @@ interface Props {
 }
 
 export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} ) => {
-   const { replace, asPath } = useRouter();
    const [createProfile] = useMutation(CreateProfile);
    const {isDark} = useTheme()
    const [avatar,setAvatar] = useState(1);
@@ -108,6 +107,20 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
          setIsLoading(false)
      }
    }
+
+   const [deleteProfile] = useMutation(DeleteProfile);
+   const handleDeleteProfile = () => {
+      setVisible(false);
+      deleteProfile({
+         variables:{
+            blockProfileId: profile.id,
+         }
+      })
+      Notification(isDark).fire({
+         title: 'Perfil Eliminado',
+         icon: 'success',
+     })
+   }
    
    const handleSubmit = async() => {
       setIsLoading(true)
@@ -189,7 +202,7 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                         overflow: 'hidden',
                     }}
                   />
-                  <Row  gap={2.5} css={{width: 'fit-content', justifyContent: 'center'}}>
+                  <Row  gap={0} css={{width: 'fit-content', justifyContent: 'center'}}>
                      <Col>
                         <Button 
                            icon={<ArrowLeftCircle fontSize={'20px'} color='#ED1D24'/>}
@@ -291,16 +304,24 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
             </Grid.Container>
          </Modal.Body>
          <Modal.Footer>
+            {
+               (edit)
+                  ?  <Button
+                        size='md'
+                        onPress={ handleDeleteProfile }
+
+                     >
+                        Eliminar Perfil
+                     </Button>
+                  : <></>
+            }
             <Button
-               size='lg'
+               size='md'
                onPress={
                   (edit) 
                      ? handleUpdate
                      : handleSubmit
                }
-               css={{
-                     mt: '$5',
-               }}
                disabled={!allowSubmit || isLoading || avatarPath === ''}
             >
                {
