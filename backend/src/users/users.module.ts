@@ -6,12 +6,14 @@ import { UsersResolver } from './users.resolver';
 import { User } from './entities/user.entity';
 import { Profile } from './entities/profile.entity';
 import { CountriesModule } from 'src/countries/countries.module';
+import { SuscriptionModule } from 'src/suscription/suscription.module';
 
 @Module({
   providers: [UsersResolver, UsersService],
   imports: [
     TypeOrmModule.forFeature([User, Profile]),
-    CountriesModule
+    CountriesModule,
+    SuscriptionModule,
   ],
   exports:[
     TypeOrmModule,

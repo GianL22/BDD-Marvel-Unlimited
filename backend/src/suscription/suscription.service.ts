@@ -1,11 +1,12 @@
-import { Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Not, Repository } from 'typeorm';
 import { Suscription } from './entities/suscription.entity';
 import { CreateSuscriptionInput, UpdateSuscriptionInput } from './dto/inputs';
 import { User } from 'src/users/entities';
 import { MembershipsService } from '../memberships/memberships.service';
 import { TypeMemberships } from 'src/memberships/enums/type-memberships.enum';
+
 
 @Injectable()
 export class SuscriptionService {
@@ -15,6 +16,10 @@ export class SuscriptionService {
 
     @InjectRepository(Suscription)  
     private readonly suscriptionRepository: Repository<Suscription>,
+
+    
+    @InjectRepository(User)  
+    private readonly userRepository: Repository<User>,
   ){}
 
   async createSuscription(createSuscriptionInput: CreateSuscriptionInput, user : User): Promise<Suscription> {
@@ -34,6 +39,7 @@ export class SuscriptionService {
       })
       return await this.suscriptionRepository.save(newSuscription);
     } catch (error) {
+      console.log(error)
       throw new InternalServerErrorException('Algo ocurrió mal en la creacion de la suscripcion')
     }
   }
@@ -44,7 +50,7 @@ export class SuscriptionService {
     if ( suscription ){
       suscription.isActive = false;
       suscription.dateEnd = new Date();
-      return await this.suscriptionRepository.save(suscription);
+      await this.suscriptionRepository.save(suscription);
     }
     return await this.createSuscription(createSuscriptionInput, user);
   }
@@ -66,25 +72,18 @@ export class SuscriptionService {
       const fourMonthsAgo = new Date()
       fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
 
-
-      const subQuery = this.suscriptionRepository.createQueryBuilder("Suscription")
-        .select('Suscription.userId')
-        // .addSelect('Suscription.dateSuscription')
-        .where("Suscription.membershipId = :oldMembership", { oldMembership: premiumId })
-        .andWhere("Suscription.isActive = :active", { active: true })
-        // .andWhere(`Suscription.dateSuscription > '${fourMonthsAgo.toISOString().slice(0,10)}'`)
-
-      const queryBuilder = this.suscriptionRepository.createQueryBuilder()
-        .select('Suscription')
-        .where("Suscription.membershipId = :oldMembership", { oldMembership: goldId })
-        .andWhere("Suscription.isActive = :active", { active: false })
-        .andWhere(`Suscription.dateEnd BETWEEN '${fourMonthsAgo.toISOString().slice(0,10)}' AND '${today.toISOString().slice(0,10)}'`)
-        .andWhere("Suscription.userId IN (" + subQuery.getQuery() + ")")
-        .setParameters( subQuery.getParameters() )
-        
-        console.log(queryBuilder.getQuery())
-
-      return  await queryBuilder.getMany(); 
+      const queryresult = await this.suscriptionRepository.query(`
+        SELECT *
+        from "Suscription"
+        where "membershipId" = '${premiumId}'
+          AND "isActive" = TRUE
+          AND "userId" IN ( SELECT "userId"
+                            from "Suscription"
+                            where "membershipId" = '${goldId}'
+                            AND "isActive" = false
+                            AND "dateEnd" BETWEEN '${fourMonthsAgo.toISOString().slice(0,10)}' AND '${today.toISOString().slice(0,10)}')
+      `)
+      return queryresult
 
     } catch (error) {
       console.log(error)
@@ -93,6 +92,21 @@ export class SuscriptionService {
 
   }
 
+  async findMembershipByUser(id: string): Promise<any[]>{
+    const suscriptionActive = await this.suscriptionRepository.findOne({
+      where:{
+        userId: id,
+        isActive: true,
+      }
+    })
+    return await this.membershipsService.findOtherMembership(suscriptionActive.membershipId);
+  }
+
+  async findUserById(userId : string) : Promise<User>{
+    return await this.userRepository.findOneBy({
+        id : userId
+      })
+  }
 
   update(id: number, updateSuscriptionInput: UpdateSuscriptionInput) {
     return `This action updates a #${id} suscription`;

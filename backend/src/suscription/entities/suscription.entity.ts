@@ -16,11 +16,11 @@ export class Suscription {
   membershipId: string;
 
   @PrimaryColumn( { type : 'date' } )
-  @Field(()=> String)
+  @Field(()=> Date)
   dateSuscription: Date;
 
   @Column( { type : 'date' } )
-  @Field(()=> String)
+  @Field(()=> Date)
   dateEnd: Date;
 
   @Column({type: 'boolean', default: true, nullable: false})
@@ -34,7 +34,7 @@ export class Suscription {
     {lazy : true},
   )
   @JoinColumn({ name: "userId" })
-  @Field(()=> User)
+  // @Field(()=> User)
   user: string;
 
   @ManyToOne(

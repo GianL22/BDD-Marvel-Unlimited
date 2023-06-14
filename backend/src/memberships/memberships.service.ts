@@ -2,15 +2,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMembershipInput, UpdateMembershipInput } from './dto/inputs';
 import { Membership } from './entities/membership.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { TypeMemberships } from './enums/type-memberships.enum';
+import { Suscription } from 'src/suscription/entities/suscription.entity';
 
 @Injectable()
 export class MembershipsService {
 
   constructor(
     @InjectRepository(Membership)
-    private readonly membershipRepository : Repository<Membership>
+    private readonly membershipRepository : Repository<Membership>,
   ){}
 
   async create(createMembershipInput: CreateMembershipInput): Promise<Membership> {
@@ -50,4 +51,13 @@ export class MembershipsService {
     await this.membershipRepository.remove(membership)
     return {...membership, id}
   }
+
+  async findOtherMembership(membershipId: string): Promise<Membership[]>{
+    return await this.membershipRepository.find({
+      where:{
+        id: Not(membershipId),
+      }
+    })
+  }
+
 }

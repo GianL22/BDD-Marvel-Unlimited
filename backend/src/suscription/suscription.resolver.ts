@@ -6,11 +6,15 @@ import { CreateSuscriptionInput } from './dto/inputs';
 import { UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities';
+import { UsersService } from '../users/users.service';
 
 @Resolver(() => Suscription)
 @UseGuards(JwtAuthGuard)
 export class SuscriptionResolver {
-  constructor(private readonly suscriptionService: SuscriptionService) {}
+  constructor(
+    private readonly suscriptionService: SuscriptionService,
+    private readonly usersService : UsersService
+  ) {}
 
   @Mutation(() => Suscription, { name: 'createSuscription' })
   async createSuscription(
@@ -37,5 +41,11 @@ export class SuscriptionResolver {
   async findOneActiveByUser(@CurrentUser() user: User) : Promise<Suscription> {
     return await this.suscriptionService.findOneActiveByUser(user);
   }
+
+  @ResolveField(() => User, { name : 'user'})
+  async findUserById( @Parent() suscription : Suscription): Promise<User>{
+      return await this.usersService.findOneById(suscription.userId)
+  }
+
 
 }
