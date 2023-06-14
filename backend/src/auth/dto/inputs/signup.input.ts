@@ -1,5 +1,5 @@
-import { Field, InputType } from '@nestjs/graphql';
-import { IsDateString, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Field, ID, InputType } from '@nestjs/graphql';
+import { IsDateString, IsEmail, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 @InputType()
 export class SignupInput{
@@ -27,4 +27,10 @@ export class SignupInput{
     @Field( () => String)
     @IsDateString()
     birthdate: string;
+
+    @Field(() => ID, {nullable: false})
+    @IsNotEmpty()
+    @IsUUID()
+    city : string;
+
 }

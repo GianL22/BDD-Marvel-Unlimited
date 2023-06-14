@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
-import { Button, Card, Input, Link, Loading, Spacer, Text, useTheme } from '@nextui-org/react'
+import { Button, Card, Grid, Input, Link, Loading, Spacer, Text, useTheme } from '@nextui-org/react'
 import { useForm } from '../../../hooks/useForm';
 import { AuthLayout } from '../../../layouts/AuthLayout';
 import { Notification } from '../../../notification';
 import { useQuery } from '@apollo/client';
 import { ExistEmail } from '@/graphql/User';
+import { DropdownRegister } from '@/components/dropdown/DropdownRegister';
+import { GetCountries } from '@/graphql/Countries';
 
 interface RegisterData{
     email:string,
@@ -15,12 +17,62 @@ interface RegisterData{
     name: string,
     birthdate: string,
     lastName: string, 
+    city : string
 }
+
+interface countriesResponse {
+    countries: {
+      description: string;
+      cities : {
+        description: string;
+        id : string
+      }[]
+    }[]
+}
+
 
 const RegisterPage = () => {
     const {isDark} = useTheme()
     const [isLoading,setIsLoading] = useState(false);
+    
     const {replace} = useRouter();
+
+    const {data : dataCountries, error, loading} =  useQuery<countriesResponse>(GetCountries)
+    const [countrySelected, setCountrySelected] = useState<string>('Pais')
+    const [citySelected, setCitySelected] = useState({ description: 'Ciudad', id : '' })
+
+    const countries = useMemo(()=> {
+
+        if ( !dataCountries ) return ;
+        return dataCountries.countries.map(({description}) => description)
+
+      }, [ dataCountries ])
+
+
+      const cities = useMemo(()=> {
+      
+      
+        if ( !dataCountries || !countries ) return;
+        return dataCountries.countries.find(
+                  ({description}) => description === countrySelected
+                )?.cities.map(
+                  (city) => city
+                )
+        
+      }, [ countrySelected ])
+      
+    const onSelectCountry = (country : string) => {
+      setCountrySelected(country)
+      setCitySelected({ description: 'Ciudad', id : '' })
+    }
+
+    const onSelectCity = (cityDescription : string) => {
+      const city = cities?.find(({description}) => description === cityDescription)
+      if ( !city ) return;
+      setCitySelected(city)
+    }
+
+
     const {allowSubmit,parsedFields} = useForm([
       {
         name: 'email',
@@ -31,7 +83,9 @@ const RegisterPage = () => {
       },
       {
         name: 'password',
-        validate: (value: string) => value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
+        // validate: (value: string) => value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
+        validate: (value: string) => value.match(/^[^A-Z]*[A-Z][^A-Z]*$/),
+
         validMessage: 'Contraseña segura',
         errorMessage: 'Debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
         initialValue: (!Cookies.get('registerData')) ? '' : JSON.parse(Cookies.get('registerData')!).password,
@@ -69,7 +123,7 @@ const RegisterPage = () => {
         icon: 'info',
       })
       try {
-        if (data) throw Error;
+        if (data || !dataCountries) throw Error;
         const registerData = {
             email: email.value,
             username: email.value.split('@',1)[0],
@@ -77,6 +131,7 @@ const RegisterPage = () => {
             name: name.value,
             birthdate: birthdate.value,
             lastName: lastName.value, 
+            city : citySelected.id
         }
         Cookies.set('registerData', JSON.stringify(registerData), { expires: 7 })
         setTimeout(() => replace('/auth/register/membership'),700)
@@ -94,6 +149,7 @@ const RegisterPage = () => {
         setIsLoading(false)
       }
     }
+    if ( loading ) return <Loading size='lg' />
     return (
         <AuthLayout
           title='Regístrate'
@@ -189,11 +245,33 @@ const RegisterPage = () => {
                         size='lg'
                         bordered 
                     />
+                    <Grid.Container  alignContent='center'  justify='center' css={{ width : '100%'}}>
+                      <Grid xs={6}>
+                        {
+                          (cities)
+                          ? 
+                          <DropdownRegister
+                              listkeys={cities.map(({description}) => description)}
+                              selected={citySelected.description}
+                              onSelectKey={onSelectCity}  
+                            />
+                          :
+                          <></>
+                        }
+                      </Grid>
+                      <Grid xs={6}>
+                        <DropdownRegister
+                          listkeys={countries!}
+                          selected={countrySelected}
+                          onSelectKey={onSelectCountry} 
+                        />
+                      </Grid>
+                    </Grid.Container>
                     <Button
                         css={{ maxWidth: '100%' }}
                         size='lg'
                         onPress={handleSubmit}
-                        disabled={!allowSubmit || isLoading }
+                        disabled={!allowSubmit || isLoading || citySelected.id === ''}
                     >
                         {!isLoading ? 'Registrarse' : <Loading type='points' />}
                     </Button>

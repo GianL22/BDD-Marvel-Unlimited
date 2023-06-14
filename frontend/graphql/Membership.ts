@@ -21,3 +21,13 @@ export const GetMembership = gql`
         }
     }
 `
+
+export const ChangeSuscription = gql`
+    mutation Mutation($createSuscriptionInput: CreateSuscriptionInput!) {
+        changeSuscription(createSuscriptionInput: $createSuscriptionInput) {
+            membership {
+                type
+            }
+        }
+    }
+`

@@ -44,7 +44,7 @@ export class SuscriptionService {
     if ( suscription ){
       suscription.isActive = false;
       suscription.dateEnd = new Date();
-      await this.suscriptionRepository.save(suscription);
+      return await this.suscriptionRepository.save(suscription);
     }
     return await this.createSuscription(createSuscriptionInput, user);
   }
@@ -59,29 +59,30 @@ export class SuscriptionService {
 
   async reportSuscriptions() : Promise<Suscription[]> {
     try {
-
+      
       const { id  :  goldId } = await this.membershipsService.findOneByName(TypeMemberships.Gold);  
       const { id  :  premiumId } = await this.membershipsService.findOneByName(TypeMemberships.Premium);  
       const today = new Date()
       const fourMonthsAgo = new Date()
       fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
 
-      const subQuery = this.suscriptionRepository.createQueryBuilder()
-        .select('s.userId')
-        .from(Suscription, 's')
-        .where("s.membershipId = :oldMembership", { oldMembership: premiumId })
-        .andWhere("s.isActive = :active", { active: true })
+
+      const subQuery = this.suscriptionRepository.createQueryBuilder("Suscription")
+        .select('Suscription.userId')
+        // .addSelect('Suscription.dateSuscription')
+        .where("Suscription.membershipId = :oldMembership", { oldMembership: premiumId })
+        .andWhere("Suscription.isActive = :active", { active: true })
+        // .andWhere(`Suscription.dateSuscription > '${fourMonthsAgo.toISOString().slice(0,10)}'`)
 
       const queryBuilder = this.suscriptionRepository.createQueryBuilder()
-        .select('s')
-        .from(Suscription, 's')
-        .where("s.membershipId = :oldMembership", { oldMembership: goldId })
-        .andWhere("s.isActive = :active", { active: false })
-        .andWhere(`s.dateEnd BETWEEN '${fourMonthsAgo.toISOString().slice(0,10)}' AND '${today.toISOString().slice(0,10)}'`)
-        .andWhere("s.userId IN (" + subQuery.getQuery() + ")")
+        .select('Suscription')
+        .where("Suscription.membershipId = :oldMembership", { oldMembership: goldId })
+        .andWhere("Suscription.isActive = :active", { active: false })
+        .andWhere(`Suscription.dateEnd BETWEEN '${fourMonthsAgo.toISOString().slice(0,10)}' AND '${today.toISOString().slice(0,10)}'`)
+        .andWhere("Suscription.userId IN (" + subQuery.getQuery() + ")")
         .setParameters( subQuery.getParameters() )
-
-        // console.log(queryBuilder.getQuery())
+        
+        console.log(queryBuilder.getQuery())
 
       return  await queryBuilder.getMany(); 
 

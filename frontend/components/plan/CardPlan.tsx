@@ -16,9 +16,9 @@ interface Props {
 
 export const CardPlan = ({id = '', title='',  features = [], price = 0, recommended= false, disableButton = false } : Props) => {
     const {replace} = useRouter();
-    const saveSuscription = (membershipId: string) => {
-        Cookies.set('membershipId', membershipId , { expires: 7 })
-        setTimeout(() => replace('/auth/register/paymentcredit'),700)
+    const saveSuscription = (membershipId: string) => { 
+            Cookies.set('membershipId', membershipId , { expires: 7 })
+            setTimeout(() => replace('/auth/register/paymentcredit'),700)
     }
     return (
         <Card

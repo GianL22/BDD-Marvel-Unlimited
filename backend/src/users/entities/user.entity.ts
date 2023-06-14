@@ -3,6 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'ty
 import { Profile } from './profile.entity';
 import { CreditCard } from 'src/credit-cards/entities/credit-card.entity';
 import { Suscription } from 'src/suscription/entities/suscription.entity';
+import { City } from '../../countries/entities/city.entity';
 
 @Entity({name: 'Users'})
 @ObjectType()
@@ -47,7 +48,7 @@ export class User {
   @ManyToOne(
     () => CreditCard, 
     (creditCard) => creditCard.user, 
-    {lazy : true}
+    {lazy : true, nullable : false}
   )
   @Field(() => CreditCard)
   creditCard : CreditCard;
@@ -67,4 +68,12 @@ export class User {
     {lazy: true}
   )
   suscription: Suscription;
+
+  @ManyToOne(
+    () => City,
+    (city) => city.user,
+    { nullable : false, lazy: true }
+  )
+  @Field(() => City)
+  city : City
 }

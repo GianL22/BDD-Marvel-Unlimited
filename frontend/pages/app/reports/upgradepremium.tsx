@@ -1,36 +1,36 @@
+import { useMemo } from 'react';
 import type { NextPage } from 'next'
-import { AppLayout } from '@/layouts/AppLayout'
+import { useQuery } from '@apollo/client';
 import { Text, Row, Col, Grid, Link, Button, Spacer } from '@nextui-org/react';
+import { AppLayout } from '@/layouts/AppLayout'
 import { TableWrapper } from '../../../components/table/index';
 import { CellCalculation } from '@/components/table/CellCalculation';
-import { useQuery } from '@apollo/client';
 import { GetUpgragePremiumReport } from '@/graphql/UpgradePremium';
-import { useMemo } from 'react';
 
 
 
 const columns = [
   {label: 'Nombre', uid: 'name'},
-  {label: 'Apellido', uid: 'lastname'},
+  {label: 'Apellido', uid: 'lastName'},
   {label: 'F.InicioPremium', uid: 'dateSuscription'},
   {label: 'Correo', uid: 'email'},
 ]
 
 interface User {
   name : string,
-  lastname : string,
+  lastName : string,
   email : string,
 }
  
 interface RowReport{
   user : User,
-  dateSuscription : Date,
+  dateSuscription : Date | string,
 }
-interface reportResponse {
-  reportSuscriptions :{
-    rows : RowReport[]
-  } 
+interface ReportResponse {
+  reportSuscriptions : RowReport[]
 }
+
+
 
 // const users = [
 //   {uid:1, nombre: 'Juan', apellido: 'Perez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'JuanPerez@gmail.com'},
@@ -45,10 +45,10 @@ interface reportResponse {
 
 const UpgradePremiumReportPage: NextPage = () => {
 
-  const { data , error } = useQuery<reportResponse>(GetUpgragePremiumReport)
-  // console.log(data.reportSuscriptions.rows)
+  const { data , error } = useQuery<ReportResponse>(GetUpgragePremiumReport)
+  console.log(data)
   const users = useMemo(() => (
-    data?.reportSuscriptions.rows?.map(({dateSuscription, user},i) => ({
+    data?.reportSuscriptions.map(({dateSuscription, user},i) => ({
       id: i,
       dateSuscription,
       ...user
@@ -75,7 +75,7 @@ const UpgradePremiumReportPage: NextPage = () => {
           </Grid>
           <Grid.Container gap={10} direction='row' justify='flex-start'>
             <Grid css={{maxW:'max-content'}}>
-              <CellCalculation label='Total Upgrades' value='2'/>
+              <CellCalculation label='Total Upgrades' value={(users) ? users.length.toString() : '0'}/>
             </Grid>
           </Grid.Container>
         </Grid.Container>
