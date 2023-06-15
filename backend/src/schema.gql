@@ -17,12 +17,17 @@ type Membership {
 type Suscription {
   userId: ID!
   membershipId: ID!
-  dateSuscription: String!
-  dateEnd: String!
+  dateSuscription: DateTime!
+  dateEnd: DateTime!
   isActive: Boolean!
-  user: User!
   membership: Membership!
+  user: User!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Country {
   description: String!
@@ -46,6 +51,7 @@ type User {
   creditCard: CreditCard!
   city: City!
   profiles: [Profile!]!
+  getMembership: [Membership!]!
 }
 
 type Profile {
@@ -72,11 +78,11 @@ type Query {
   userByEmail(email: String!): User!
   profileByUser: [Profile!]!
   countries: [Country!]!
-  revalite: AuthResponse!
   reportSuscriptions: [Suscription!]!
   suscriptionByUser: Suscription!
   memberships: [Membership!]!
   membership(id: String!): Membership!
+  revalite: AuthResponse!
 }
 
 type Mutation {
@@ -85,13 +91,13 @@ type Mutation {
   createProfile(createProfileInput: CreateProfileInput!): Profile!
   updateProfile(updateProfileInput: UpdateProfileInput!): Profile!
   blockProfile(id: ID!): Profile!
-  signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!, suscriptionInput: CreateSuscriptionInput!): AuthResponse!
-  login(loginInput: LoginInput!): AuthResponse!
-  createCreditCard(createCreditCardInput: CreateCreditCardInput!): CreditCard!
   createSuscription(createSuscriptionInput: CreateSuscriptionInput!): Suscription!
   changeSuscription(createSuscriptionInput: CreateSuscriptionInput!): Suscription!
   createMembership(createMembershipInput: CreateMembershipInput!): Membership!
   removeMembership(id: String!): Membership!
+  signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!, suscriptionInput: CreateSuscriptionInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
+  createCreditCard(createCreditCardInput: CreateCreditCardInput!): CreditCard!
 }
 
 input UpdateUserInput {
@@ -125,6 +131,23 @@ input UpdateProfileInput {
   timeWatched: Int
 }
 
+input CreateSuscriptionInput {
+  membership: ID!
+  dateSuscription: String!
+}
+
+input CreateMembershipInput {
+  price: Float!
+  type: TypeMemberships!
+  description: String!
+}
+
+enum TypeMemberships {
+  Gold
+  Premium
+  VIP
+}
+
 input SignupInput {
   username: String!
   name: String!
@@ -143,24 +166,7 @@ input CreateCreditCardInput {
   cvv: Int!
 }
 
-input CreateSuscriptionInput {
-  membership: ID!
-  dateSuscription: String!
-}
-
 input LoginInput {
   email: String!
   password: String!
-}
-
-input CreateMembershipInput {
-  price: Float!
-  type: TypeMemberships!
-  description: String!
-}
-
-enum TypeMemberships {
-  Gold
-  Premium
-  VIP
 }

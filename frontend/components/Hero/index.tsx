@@ -76,7 +76,7 @@ export const Hero = () => {
                >
                   <Link href='/auth/register'>
                         <Button>
-                           ¡Unete a la Aventura!
+                           ¡Únete a la Aventura!
                         </Button>
                   </Link>
                </Flex>

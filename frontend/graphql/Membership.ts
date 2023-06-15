@@ -25,7 +25,20 @@ export const GetMembership = gql`
 export const ChangeSuscription = gql`
     mutation Mutation($createSuscriptionInput: CreateSuscriptionInput!) {
         changeSuscription(createSuscriptionInput: $createSuscriptionInput) {
-            membership {
+            isActive
+            dateSuscription
+            dateEnd
+        }
+    }
+`
+
+export const UpdateMembershipData = gql`
+    query Query($userByIdId: ID!) {
+        userById(id: $userByIdId) {
+            getMembership {
+                description
+                id
+                price
                 type
             }
         }

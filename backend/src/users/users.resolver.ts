@@ -9,12 +9,15 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Profile } from './entities';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateProfileInput, UpdateProfileInput } from './dto/inputs';
+import { Membership } from 'src/memberships/entities/membership.entity';
+import { SuscriptionService } from 'src/suscription/suscription.service';
 
 @Resolver(() => User)
 // @UseGuards( JwtAuthGuard ) //*Si lo activo pide Token
 export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
+    private readonly suscriptionService: SuscriptionService,
   ) {}
 
   //* Query -> Users
@@ -95,5 +98,12 @@ export class UsersResolver {
     @CurrentUser() user: User,
   ): Promise<Profile> {
     return this.usersService.blockProfile(id, user);
+  }
+
+  @ResolveField( () => [Membership], {name: 'getMembership'} )
+  async getMembership(
+    @Parent() user: User,
+  ): Promise<Membership[]>{
+    return this.suscriptionService.findMembershipByUser(user.id);
   }
 }

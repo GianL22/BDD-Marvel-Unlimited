@@ -12,7 +12,8 @@ import { GetUpgragePremiumReport } from '@/graphql/UpgradePremium';
 const columns = [
   {label: 'Nombre', uid: 'name'},
   {label: 'Apellido', uid: 'lastName'},
-  {label: 'F.InicioPremium', uid: 'dateSuscription'},
+  {label: 'Fecha Suscripción ', uid: 'dateSuscription'},
+  {label: 'Fecha Fin', uid: 'dateEnd'},
   {label: 'Correo', uid: 'email'},
 ]
 
@@ -24,33 +25,24 @@ interface User {
  
 interface RowReport{
   user : User,
-  dateSuscription : Date | string,
+  dateSuscription : string,
+  dateEnd: string;
 }
 interface ReportResponse {
   reportSuscriptions : RowReport[]
 }
 
-
-
-// const users = [
-//   {uid:1, nombre: 'Juan', apellido: 'Perez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'JuanPerez@gmail.com'},
-//   {uid:2, nombre:'Pedro', apellido: 'Rodriguez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'PedroRodriguez@gmail.com'},
-//   {uid:3, nombre:'Maria', apellido: 'Gonzalez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'MariaGonzalez@gmail.com'},
-//   {uid:4, nombre : 'Carlos', apellido: 'Gutierrez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'CarlosGutierrez@gmail.com'},
-//   {uid:5, nombre: 'Juan', apellido: 'Perez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'JuanPerez@gmail.com'},
-//   {uid:6, nombre:'Pedro', apellido: 'Rodriguez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'PedroRodriguez@gmail.com'},
-//   {uid:7, nombre:'Maria', apellido: 'Gonzalez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'MariaGonzalez@gmail.com'},
-//   {uid:8, nombre : 'Carlos', apellido: 'Gutierrez', fechaInicioGold: '2021/01/01', fechaInicioPremium: '2021/05/01', email: 'CarlosGutierrez@gmail.com'},
-// ]
-
 const UpgradePremiumReportPage: NextPage = () => {
 
-  const { data , error } = useQuery<ReportResponse>(GetUpgragePremiumReport)
-  console.log(data)
+  const { data , error} = useQuery<ReportResponse>(GetUpgragePremiumReport,
+    {
+      pollInterval: 1000
+    })
   const users = useMemo(() => (
-    data?.reportSuscriptions.map(({dateSuscription, user},i) => ({
+    data?.reportSuscriptions.map(({dateSuscription, user, dateEnd},i) => ({
       id: i,
-      dateSuscription,
+      dateSuscription: dateSuscription.slice(0,10),
+      dateEnd: dateEnd.slice(0,10),
       ...user
     }))
   ),[data])
@@ -67,10 +59,10 @@ const UpgradePremiumReportPage: NextPage = () => {
           <Grid>
             <Text span size='$xl'>
               ¡Descubre quiénes han dado el salto de Gold a Premium en los últimos 4 meses! Al igual que los héroes de Marvel, nuestros usuarios buscan mejorar su experiencia.
-              Descubre cómo aprovechar al máximo tu membresía y conviértete en un héroe de Marvel.
+              Descubre cómo aprovechar al máximo tu membresía y  conviértete en un héroe de Marvel.
             </Text>
           </Grid>
-          <Grid css={{margin:'$4', minWidth:'80%', maxWidth:'600px'}}>
+          <Grid css={{margin:'$8', minWidth:'90%', maxWidth:'600px', display: 'inline-grid'}}>
             <TableWrapper columns={columns} rows={users!}/>
           </Grid>
           <Grid.Container gap={10} direction='row' justify='flex-start'>

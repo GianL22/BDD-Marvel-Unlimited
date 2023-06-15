@@ -4,6 +4,8 @@ import { ProfileModal } from '../modal/ProfileModal';
 import { EditPencil } from 'iconoir-react'
 import { Box } from '../containers';
 import { Profile as ProfileModel } from '@/models/Client';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 interface Props {
     profile: ProfileModel;
@@ -12,7 +14,13 @@ interface Props {
 }
 
 export const Profile:FC<Props> = ({profile,nProfile, editable} : Props) => {
+    const { replace } = useRouter()
     const { bindings, setVisible } = useModal();
+    // !Por AHORA
+    const handleAvatar = () => {
+        replace('/app')
+        Cookies.set('profilePath', profile.avatar, {expires: 8})
+    }
   return (
     <>
         <ProfileModal profile={profile} bindings={bindings} setVisible={setVisible} edit={true} />
@@ -24,7 +32,7 @@ export const Profile:FC<Props> = ({profile,nProfile, editable} : Props) => {
             onClick={
                 (editable)
                     ? () => setVisible(true)
-                    : () => console.log('Te mando al main')
+                    : handleAvatar
             }
         >
             <Card.Body css={{ p: 0 }}>

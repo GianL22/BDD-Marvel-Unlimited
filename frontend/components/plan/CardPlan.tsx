@@ -3,6 +3,8 @@ import { Box, Flex } from "../containers"
 import { Check } from "iconoir-react"
 import Cookies from 'js-cookie';
 import { useRouter } from "next/router";
+import { useMutation } from "@apollo/client";
+import { ChangeSuscription } from "@/graphql/Membership";
 
 
 interface Props {
@@ -11,10 +13,32 @@ interface Props {
     features: string[] | undefined,
     price: number | undefined,
     recommended?: boolean | undefined,
-    disableButton?: boolean
+    disableButton?: boolean,
+    control?: boolean
 }
 
-export const CardPlan = ({id = '', title='',  features = [], price = 0, recommended= false, disableButton = false } : Props) => {
+export const CardPlan = ({
+    id = '', 
+    title='',  
+    features = [], 
+    price = 0, 
+    recommended= false, 
+    disableButton = false,
+    control = false,
+
+} : Props) => {
+
+    const [changeSuscription] = useMutation(ChangeSuscription)
+    const handleSuscription = async () =>{
+        const { data } = await changeSuscription({
+            variables: {
+                createSuscriptionInput: {
+                    dateSuscription: new Date().toISOString().slice(0, 10),
+                    membership: id,
+                },
+            },
+        });
+    }
     const {replace} = useRouter();
     const saveSuscription = (membershipId: string) => { 
             Cookies.set('membershipId', membershipId , { expires: 7 })
@@ -90,9 +114,17 @@ export const CardPlan = ({id = '', title='',  features = [], price = 0, recommen
                                 ? <></>
                                 :   <Button 
                                         css={{mt: '$7', mb: '$12', width:'80%'}}
-                                        onClick={() => saveSuscription(id)}
+                                        onPress={
+                                            (control) 
+                                            ? handleSuscription
+                                            : () => saveSuscription(id)
+                                        }
                                     >
-                                        Suscribete
+                                        {
+                                            (control)
+                                            ? 'Cambiar Suscripcion'
+                                            : 'Suscribete'
+                                        }
                                     </Button>
                         }
                     </Flex>

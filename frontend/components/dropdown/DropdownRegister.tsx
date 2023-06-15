@@ -11,7 +11,7 @@ interface DropdownRegisterProps {
 export const DropdownRegister : FC<DropdownRegisterProps> = ({listkeys = [], selected, onSelectKey}) => {
   return (
     <Dropdown >
-      <Dropdown.Button flat css={{  tt: "capitalize", width : '100%', m: '2px' }}>
+      <Dropdown.Button flat color={'error'} css={{  tt: "capitalize", width : '100%', m: '2px' }}>
         {selected}
       </Dropdown.Button>
       <Dropdown.Menu

@@ -9,6 +9,7 @@ export const GetUpgragePremiumReport = gql`
                 name
             }
             dateSuscription
+            dateEnd
         }
     }
 `;
