@@ -18,7 +18,7 @@ const MembershipPage = () => {
             <Text h2 css={{lineHeight: '$xs', pb:'$8'}}> 
                 SELECCIONA EL PLAN IDEAL PARA TI
             </Text>
-            <Flex direction={'row'} justify={'center'} align={'center'} css={{pb:'$8'}}> 
+            <Flex direction={'row'} justify={'center'} align={'center'} css={{pb:'$8'}} wrap={'wrap'}> 
               <Box>
                 <Image 
                       src="/Suscripcion.jpg"
@@ -36,23 +36,21 @@ const MembershipPage = () => {
                 ¡Únete gratis a la comunidad de Marvel por tiempo limitado! Acceso exclusivo a contenido épico de Marvel
               </Text>
             </Flex>
-            {/* //! Hacerlo responsive */}
-            <Flex css={{h : '100%'}}  direction={'row'} justify={'center'} align={'center'} >
+            <Grid.Container gap={2} >
               {
                 data?.memberships.map((membership) => 
-                    <Grid xs={ 12 } sm={12}  css={{height: "50%"}} key={membership.id} >
+                    <Grid xs={ 12 }  sm={ 6 } md = { 4 } css={{height: "50%"}} key={membership.id} justify='center'>
                       <CardPlan  
-                        key={membership.id} 
                         id ={membership.id}
                         features={membership.description.split('/')}
                         price={membership.price}
                         title={membership.type}
                         recommended = { (membership.type === 'Premium') ? true : false }
                       />
-                      </Grid>
+                    </Grid>
                   )
               }
-            </Flex>
+            </Grid.Container>
         </Flex>
 
       </LandingLayout>
