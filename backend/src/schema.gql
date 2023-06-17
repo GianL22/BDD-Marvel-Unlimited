@@ -20,8 +20,8 @@ type Suscription {
   dateSuscription: DateTime!
   dateEnd: DateTime!
   isActive: Boolean!
-  membership: Membership!
   user: User!
+  membership: Membership!
 }
 
 """
@@ -51,7 +51,7 @@ type User {
   creditCard: CreditCard!
   city: City!
   profiles: [Profile!]!
-  getMembership: [Membership!]!
+  membership: Membership!
 }
 
 type Profile {
@@ -78,11 +78,11 @@ type Query {
   userByEmail(email: String!): User!
   profileByUser: [Profile!]!
   countries: [Country!]!
-  reportSuscriptions: [Suscription!]!
   suscriptionByUser: Suscription!
   memberships: [Membership!]!
   membership(id: String!): Membership!
   revalite: AuthResponse!
+  reportSuscription: [Suscription!]!
 }
 
 type Mutation {
