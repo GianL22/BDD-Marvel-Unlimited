@@ -121,15 +121,20 @@ const PaymentPage = () => {
                     width: '100vw',
                 }}
             >
-                <CardPlan 
-                    key={data?.membership.id} 
-                    id ={data?.membership.id}
-                    features={data?.membership.description.split('/')}
-                    price={data?.membership.price}
-                    title={data?.membership.type}
-                    recommended = { (data?.membership.type === 'Premium') ? true : false }
-                    disableButton =  { true }
-                />
+                {
+                    (Cookies.get('membershipId')) ? 
+                        <CardPlan 
+                        key={data?.membership.id} 
+                        id ={data?.membership.id}
+                        features={data?.membership.description.split('/')}
+                        price={data?.membership.price}
+                        title={data?.membership.type}
+                        recommended = { (data?.membership.type === 'Premium') ? true : false }
+                        disableButton =  { true }
+                    />
+                    : <Loading />
+                }
+
             </Grid>
             <Grid 
                 xs={ 12 } 
@@ -158,7 +163,7 @@ const PaymentPage = () => {
                             height: '20%'
                         }}
                     >
-                        <Text h1>Metodo de Pago</Text>
+                    <Text h1>Método de Pago</Text>
                     </Card.Header>
                     <Card.Body 
                         css={{
@@ -257,7 +262,7 @@ const PaymentPage = () => {
                     >
                         <Spacer x={12} />
                         <Link href='/auth/register/membership'>
-                            Seleccionar otra Membresia
+                            Seleccionar otra Membresía
                         </Link>
                     </Card.Footer>
                 </Card>
