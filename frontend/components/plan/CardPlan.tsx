@@ -98,7 +98,6 @@ export const CardPlan = ({
                                     as={'li'}
                                     css={{py: '$2', gap: '$2'}}
                                     align={'center'}
-                                    key={ feature }
                                 >
                                     <Box>
                                         <Check />

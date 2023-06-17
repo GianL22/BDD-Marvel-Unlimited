@@ -59,24 +59,17 @@ export const NavbarWrapper = ( {type}: Props) => {
                      >
                         LOGOUT
                      </Button>
-                  : <></>
-            }
-            {
-               (type)
-                  ? (
-                     <Link
-                        href={'/auth/login'}
-                     >
-                        <Button 
-                           auto 
-                           ghost 
-                           bordered
-                        >
-                           LOGIN
-                        </Button>
-                     </Link>
-                  )
-                  : null
+                  :  <Link
+                  href={'/auth/login'}
+               >
+                  <Button 
+                     auto 
+                     ghost 
+                     bordered
+                  >
+                     LOGIN
+                  </Button>
+               </Link>
             }
          </Navbar.Content>
       </Navbar>
