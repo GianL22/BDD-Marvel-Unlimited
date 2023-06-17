@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { Card, Row, Text, Col, useModal } from '@nextui-org/react';
 import { ProfileModal } from '../modal/ProfileModal';
 import { EditPencil } from 'iconoir-react'
@@ -6,6 +6,7 @@ import { Box } from '../containers';
 import { Profile as ProfileModel } from '@/models/Client';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
+import { ProfileContext } from '@/context/profile';
 
 interface Props {
     profile: ProfileModel;
@@ -16,10 +17,14 @@ interface Props {
 export const Profile:FC<Props> = ({profile,nProfile, editable} : Props) => {
     const { replace } = useRouter()
     const { bindings, setVisible } = useModal();
+    const { setActiveProfile } = useContext(ProfileContext)
+
     // !Por AHORA
-    const handleAvatar = () => {
+    const handleSelectProfile = () => {
         replace('/app')
-        Cookies.set('profilePath', profile.avatar, {expires: 8})
+        setActiveProfile(profile)
+        //Cookies.set('profilePath', profile.avatar, {expires: 8})
+
     }
   return (
     <>
@@ -32,7 +37,7 @@ export const Profile:FC<Props> = ({profile,nProfile, editable} : Props) => {
             onClick={
                 (editable)
                     ? () => setVisible(true)
-                    : handleAvatar
+                    : handleSelectProfile
             }
         >
             <Card.Body css={{ p: 0 }}>
