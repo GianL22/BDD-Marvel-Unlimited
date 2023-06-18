@@ -50,26 +50,29 @@ export const NavbarWrapper = ( {type}: Props) => {
          >
             <ThemeSwitcher />
             {
-               ( Cookies.get('token') )
-                  ? <Button 
+               (type) ? 
+                  ( Cookies.get('token') )
+                     ? <Button 
+                           auto 
+                           ghost 
+                           bordered
+                           onPress={ handleLogout }
+                        >
+                           LOGOUT
+                        </Button>
+                     :  <Link
+                     href={'/auth/login'}
+                  >
+                     <Button 
                         auto 
                         ghost 
                         bordered
-                        onPress={ handleLogout }
                      >
-                        LOGOUT
+                        LOGIN
                      </Button>
-                  :  <Link
-                  href={'/auth/login'}
-               >
-                  <Button 
-                     auto 
-                     ghost 
-                     bordered
-                  >
-                     LOGIN
-                  </Button>
-               </Link>
+                  </Link>
+               :
+               <></>
             }
          </Navbar.Content>
       </Navbar>
