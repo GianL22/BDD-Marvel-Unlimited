@@ -72,6 +72,11 @@ type AuthResponse {
   user: User!
 }
 
+type Color {
+  id: ID!
+  description: String!
+}
+
 type Query {
   users: [User!]!
   userById(id: ID!): User!
@@ -83,6 +88,7 @@ type Query {
   memberships: [Membership!]!
   membership(id: String!): Membership!
   revalite: AuthResponse!
+  colors: [Color!]!
 }
 
 type Mutation {
@@ -98,6 +104,7 @@ type Mutation {
   signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!, suscriptionInput: CreateSuscriptionInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
   createCreditCard(createCreditCardInput: CreateCreditCardInput!): CreditCard!
+  createColor(createColorInput: CreateColorInput!): Color!
 }
 
 input UpdateUserInput {
@@ -169,4 +176,9 @@ input CreateCreditCardInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateColorInput {
+  """Se guarda el nombre del color"""
+  description: String!
 }
