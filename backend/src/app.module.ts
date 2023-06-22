@@ -13,7 +13,10 @@ import { MembershipsModule } from './memberships/memberships.module';
 import { CreditCardsModule } from './credit-cards/credit-cards.module';
 import { SuscriptionModule } from './suscription/suscription.module';
 import { CountriesModule } from './countries/countries.module';
+import { ColorsModule } from './colors/colors.module';
+import { CharactersModule } from './characters/characters.module';
 import { ReportsModule } from './reports/reports.module';
+
 
 
 @Module({
@@ -53,7 +56,12 @@ import { ReportsModule } from './reports/reports.module';
 
     CountriesModule,
 
+    ColorsModule,
+
+    CharactersModule,
+
     ReportsModule,
+
   ],
   controllers: [],
   providers: [],
