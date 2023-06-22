@@ -12,9 +12,9 @@ export class Villain{
     @PrimaryColumn({ type: "uuid" })
     characterId: string;
   
-    @ManyToOne(
+    @OneToOne(
         () => Character,
-        (character) => character.villain,
+        (character) => character.id,
         {lazy: true, onDelete: 'CASCADE'}
     )
     @JoinColumn({ name: "characterId", foreignKeyConstraintName:'character_FK' })

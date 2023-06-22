@@ -35,22 +35,22 @@ export class Character{
   @Field( () => Color, {name: 'hairColor'} )
   hairColorId: string;
 
-  @OneToMany(
-    () => Hero,
-    (hero) => hero.character,
-  )
-  hero: Hero;
+  // @OneToMany(
+  //   () => Hero,
+  //   (hero) => hero.character,
+  // )
+  // hero: Hero;
 
-  @OneToMany(
-    () => Villain,
-    (villain) => villain.character,
-  )
-  villain: Villain;
+  // @OneToMany(
+  //   () => Villain,
+  //   (villain) => villain.character,
+  // )
+  // villain: Villain;
 
-  @OneToMany(
-    () => Civil,
-    (civil) => civil.character,
-  )
-  civil: Civil;
+  // @OneToMany(
+  //   () => Civil,
+  //   (civil) => civil.character,
+  // )
+  // civil: Civil;
 
 }
