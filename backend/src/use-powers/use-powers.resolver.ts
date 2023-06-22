@@ -1,8 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent, ID } from '@nestjs/graphql';
 import { UsePowersService } from './use-powers.service';
 import { UsePower } from './entities/use-power.entity';
-import { Power } from 'src/powers/entities/power.entity';
-import { PowersService } from '../powers/powers.service';
 import { CharacterResponse } from './types/character-response.type';
 import { CharactersService } from 'src/characters/characters.service';
 import { CreateUsePowerInput } from './dto/inputs';
@@ -12,7 +10,6 @@ import { ParseUUIDPipe } from '@nestjs/common';
 export class UsePowersResolver {
   constructor(
     private readonly usePowersService: UsePowersService,
-    private readonly powersRepository: PowersService,
     private readonly charactersRepository: CharactersService,
   ) {}
 
@@ -42,11 +39,4 @@ export class UsePowersResolver {
   ): Promise<CharacterResponse>{
     return this.charactersRepository.findCharacterById(usePowers.characterId);
   }
-
-  // @ResolveField( () => Power, {name: 'power'} )
-  // async getPowerById(
-  //   @Parent() usePowers: UsePower,
-  // ): Promise<Power>{
-  //   return this.powersRepository.findOneById(usePowers.powerId);
-  // }
 }

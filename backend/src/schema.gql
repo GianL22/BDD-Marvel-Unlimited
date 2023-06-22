@@ -122,6 +122,24 @@ type UsePower {
   character: CharacterResponse!
 }
 
+type ObjectsType {
+  id: ID!
+  description: String!
+}
+
+type Objects {
+  id: ID!
+  name: String!
+  description: String!
+  material: String!
+  objectTypeId: ObjectsType!
+}
+
+type UseObject {
+  object: Objects!
+  character: CharacterResponse!
+}
+
 type Character {
   id: ID!
   eyeColor: Color!
@@ -163,6 +181,9 @@ type Query {
   reportSuscription: [Suscription!]!
   Powers: [Power!]!
   usePowers: [UsePower!]!
+  objects: [Objects!]!
+  objectsType: [ObjectsType!]!
+  UseObjects: [UseObject!]!
 }
 
 type Mutation {
@@ -191,6 +212,11 @@ type Mutation {
   removePower(id: ID!): Boolean!
   relatePower(createUsePowerInput: CreateUsePowerInput!): UsePower!
   removePowerFromCharacter(characterId: ID!, powerId: ID!): Boolean!
+  createObject(createObjectInput: CreateObjectInput!): Objects!
+  updateObject(updateObjectInput: UpdateObjectInput!): Objects!
+  removeObject(id: ID!): Boolean!
+  relateObject(createUseObjectInput: CreateUseObjectInput!): UseObject!
+  removeObjectFromCharacter(characterId: ID!, objectId: ID!): Boolean!
 }
 
 input UpdateUserInput {
@@ -386,4 +412,24 @@ input CreateUsePowerInput {
 enum TypePower {
   Natural
   Artificial
+}
+
+input CreateObjectInput {
+  name: String!
+  description: String!
+  material: String!
+  objectTypeId: String!
+}
+
+input UpdateObjectInput {
+  name: String
+  description: String
+  material: String
+  objectTypeId: String
+  id: ID!
+}
+
+input CreateUseObjectInput {
+  characterId: ID!
+  objectId: ID!
 }

@@ -1,8 +1,8 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Color } from '../../colors/entities/color.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Civil, Hero, Villain } from './';
 import { UsePower } from 'src/use-powers/entities/use-power.entity';
+import { UseObject } from 'src/use-objects/entities/use-object.entity';
 
 @Entity({name: 'Character'})
 @ObjectType()
@@ -42,4 +42,11 @@ export class Character{
     {lazy: true}
   )
   usePower: UsePower;
+
+  @OneToMany(
+    () => UseObject,
+    (usePower) => usePower.character,
+    {lazy: true}
+  )
+  useObject: UseObject;
 }
