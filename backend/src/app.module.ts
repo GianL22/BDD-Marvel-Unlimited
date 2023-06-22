@@ -14,6 +14,7 @@ import { CreditCardsModule } from './credit-cards/credit-cards.module';
 import { SuscriptionModule } from './suscription/suscription.module';
 import { CountriesModule } from './countries/countries.module';
 import { ColorsModule } from './colors/colors.module';
+import { CharactersModule } from './characters/characters.module';
 
 
 @Module({
@@ -54,6 +55,8 @@ import { ColorsModule } from './colors/colors.module';
     CountriesModule,
 
     ColorsModule,
+
+    CharactersModule,
   ],
   controllers: [],
   providers: [],

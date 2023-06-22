@@ -1,4 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Character } from '../../characters/entities/character.entity';
 import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 
@@ -14,17 +15,19 @@ export class Color{
   @Field(()=> String)
   description: string
 
-  // @OneToMany(
-  //   () => Character,
-  //   (character) => character.id
-  // )
-  // characterEyeColor: string
+  @OneToMany(
+    () => Character,
+    (character) => character.eyeColorId,
+    {lazy: true}
+  )
+  characterEyeColor: Character;
 
-  // @OneToMany(
-  //   () => Character,
-  //   (character) => character.id
-  // )
-  // characterHairColor: string
+  @OneToMany(
+    () => Character,
+    (character) => character.hairColorId,
+    {lazy: true}
+  )
+  characterHairColor: Character;
 
   // @OneToMany(
   //   () => SuitColors,
