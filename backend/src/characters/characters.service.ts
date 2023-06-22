@@ -3,7 +3,8 @@ import { Repository } from 'typeorm';
 import { Character, Civil, Hero, Villain } from './entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCharacterInput, CreateCivilInput, CreateHeroInput, CreateVillainInput, UpdateCivilInput, UpdateHeroInput, UpdateVillainInput } from './dto/inputs';
-import { CharacterResponse } from './types/character-response.type';
+import { CharactersResponse } from './types/characters-response.type';
+import { CharacterResponse } from '../use-powers/types/character-response.type';
 
 @Injectable()
 export class CharactersService {
@@ -91,7 +92,7 @@ export class CharactersService {
     }
   }
 
-  async findCharacters(): Promise<CharacterResponse>{
+  async findCharacters(): Promise<CharactersResponse>{
     const repositories = [this.heroRepository, this.villainRepository, this.civilRepository];
     const repositoriesPromise = [];
     
@@ -105,6 +106,23 @@ export class CharactersService {
       villain,
       civil
     }
+  }
+
+  async findCharacterById(id: string): Promise<CharacterResponse>{
+    const repositories = [this.heroRepository, this.villainRepository, this.civilRepository];
+    const repositoriesPromise = [];
+    for (const repository of repositories) { 
+      repositoriesPromise.push( repository.findOneBy({characterId: id}) )
+    }
+    const character = await this.charactersRepository.findOneBy({id})
+    const [ hero, villain, civil ] = await Promise.all(repositoriesPromise)
+    const characterResponse = {
+      ...character,
+      hero,
+      villain,
+      civil
+    }
+    return characterResponse;
   }
 
   async updateHero(id: string, updateHeroInput: UpdateHeroInput): Promise<Hero> {

@@ -109,6 +109,19 @@ type Civil {
   villain: Villain
 }
 
+type Power {
+  id: ID!
+  name: String!
+  description: String!
+}
+
+type UsePower {
+  type: String!
+  inherited: Boolean!
+  power: Power!
+  character: CharacterResponse!
+}
+
 type Character {
   id: ID!
   eyeColor: Color!
@@ -120,10 +133,19 @@ type Color {
   description: String!
 }
 
-type CharacterResponse {
+type CharactersResponse {
   hero: [Hero!]
   villain: [Villain!]
   civil: [Civil!]
+}
+
+type CharacterResponse {
+  id: ID!
+  eyeColor: ID!
+  hairColor: ID!
+  hero: Hero
+  villain: Villain
+  civil: Civil
 }
 
 type Query {
@@ -137,8 +159,10 @@ type Query {
   membership(id: String!): Membership!
   revalite: AuthResponse!
   colors: [Color!]!
-  findCharacters: CharacterResponse!
+  findCharacters: CharactersResponse!
   reportSuscription: [Suscription!]!
+  Powers: [Power!]!
+  usePowers: [UsePower!]!
 }
 
 type Mutation {
@@ -162,6 +186,11 @@ type Mutation {
   updateVillain(updateVillainInput: UpdateVillainInput!): Villain!
   updateCivil(updateCivilInput: UpdateCivilInput!): Civil!
   removeCharacter(id: ID!): Boolean!
+  createPower(createPowerInput: CreatePowerInput!): Power!
+  updatePower(updatePowerInput: UpdatePowerInput!): Power!
+  removePower(id: ID!): Boolean!
+  relatePower(createUsePowerInput: CreateUsePowerInput!): UsePower!
+  removePowerFromCharacter(characterId: ID!, powerId: ID!): Boolean!
 }
 
 input UpdateUserInput {
@@ -334,4 +363,27 @@ input UpdateCivilInput {
   id: ID!
   eyeColor: ID
   hairColor: ID
+}
+
+input CreatePowerInput {
+  name: String!
+  description: String!
+}
+
+input UpdatePowerInput {
+  name: String
+  description: String
+  id: ID!
+}
+
+input CreateUsePowerInput {
+  characterId: ID!
+  powerId: ID!
+  type: TypePower!
+  inherited: Boolean!
+}
+
+enum TypePower {
+  Natural
+  Artificial
 }

@@ -16,6 +16,8 @@ import { CountriesModule } from './countries/countries.module';
 import { ColorsModule } from './colors/colors.module';
 import { CharactersModule } from './characters/characters.module';
 import { ReportsModule } from './reports/reports.module';
+import { PowersModule } from './powers/powers.module';
+import { UsePowersModule } from './use-powers/use-powers.module';
 
 
 
@@ -61,6 +63,10 @@ import { ReportsModule } from './reports/reports.module';
     CharactersModule,
 
     ReportsModule,
+
+    PowersModule,
+
+    UsePowersModule,
 
   ],
   controllers: [],
