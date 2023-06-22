@@ -11,6 +11,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateProfileInput, UpdateProfileInput } from './dto/inputs';
 import { Membership } from 'src/memberships/entities/membership.entity';
 import { SuscriptionService } from 'src/suscription/suscription.service';
+import { Suscription } from 'src/suscription/entities/suscription.entity';
 
 @Resolver(() => User)
 // @UseGuards( JwtAuthGuard ) //*Si lo activo pide Token
@@ -100,10 +101,17 @@ export class UsersResolver {
     return this.usersService.blockProfile(id, user);
   }
 
-  @ResolveField( () => [Membership], {name: 'getMembership'} )
-  async getMembership(
+  @ResolveField( () => Membership, {name: 'membership'} )
+  async getActiveMembership(
     @Parent() user: User,
-  ): Promise<Membership[]>{
-    return this.suscriptionService.findMembershipByUser(user.id);
+  ): Promise<Membership>{
+    return this.suscriptionService.findMembershipByUser(user);
   }
+
+  // @ResolveField( () => [Membership], {name: 'otherMemberships'} )
+  // async getOtherMemberships(
+  //   @Parent() user: User,
+  // ): Promise<Membership[]>{
+  //   return this.suscriptionService.findOtherSuscriptionsByUser(user);
+  // }
 }

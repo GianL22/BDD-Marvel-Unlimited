@@ -15,6 +15,8 @@ import { SuscriptionModule } from './suscription/suscription.module';
 import { CountriesModule } from './countries/countries.module';
 import { ColorsModule } from './colors/colors.module';
 import { CharactersModule } from './characters/characters.module';
+import { ReportsModule } from './reports/reports.module';
+
 
 
 @Module({
@@ -57,6 +59,9 @@ import { CharactersModule } from './characters/characters.module';
     ColorsModule,
 
     CharactersModule,
+
+    ReportsModule,
+
   ],
   controllers: [],
   providers: [],

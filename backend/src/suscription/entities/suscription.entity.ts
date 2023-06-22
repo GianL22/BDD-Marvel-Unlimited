@@ -34,7 +34,7 @@ export class Suscription {
     {lazy : true},
   )
   @JoinColumn({ name: "userId" })
-  // @Field(()=> User)
+  @Field(()=> User)
   user: string;
 
   @ManyToOne(

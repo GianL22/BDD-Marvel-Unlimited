@@ -33,14 +33,17 @@ export const ChangeSuscription = gql`
 `
 
 export const UpdateMembershipData = gql`
-    query Query($userByIdId: ID!) {
+    query UserById($userByIdId: ID!) {
         userById(id: $userByIdId) {
-            getMembership {
-                description
-                id
-                price
+            membership{
                 type
             }
+        }
+        memberships {
+            type
+            description
+            id
+            price
         }
     }
 `

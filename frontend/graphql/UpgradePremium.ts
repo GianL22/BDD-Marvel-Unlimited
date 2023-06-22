@@ -1,15 +1,15 @@
 import { gql } from "@apollo/client";
 
 export const GetUpgragePremiumReport = gql`
-    query Query {
-        reportSuscriptions {
-            user {
-                lastName
-                email
-                name
-            }
+    query ReportSuscription {
+        reportSuscription {
             dateSuscription
             dateEnd
+            user {
+                lastName
+                name
+                email
+            }
         }
     }
 `;

@@ -8,11 +8,14 @@ import { ThemeSwitcher } from '../navbar/ThemeSwitcher';
 import { Search, Gamepad, Tv, HomeSimpleDoor, Movie, List, OpenBook, CoinsSwap } from 'iconoir-react';
 import { Text, Link, Avatar, Tooltip, Button} from '@nextui-org/react';
 import Cookies from 'js-cookie';
+import { ProfileContext } from '@/context/profile';
 
 export const SidebarWrapper = () => {
    // const {user} = useContext(AuthContext);
    const router = useRouter();
    const [collapsed,setCollapsed] = useState(false)
+   const {activeProfile} = useContext(ProfileContext)
+
    return (
       <Box
          as="aside"
@@ -112,7 +115,7 @@ export const SidebarWrapper = () => {
 
                         <Avatar
                            size="xl"
-                           src={Cookies.get('profilePath') || '/profiles/1.png'}
+                           src={activeProfile?.avatar}
                            color="primary"
                            bordered
                            />

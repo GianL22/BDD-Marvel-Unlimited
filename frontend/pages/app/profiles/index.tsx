@@ -6,19 +6,25 @@ import { EditPencil, Cancel } from 'iconoir-react';
 import { useQuery } from '@apollo/client';
 import { GetProfilesByUser } from '@/graphql/Profile';
 import { Profile } from '@/components/profile/Profile';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Profile as ProfileModel } from '@/models/Client';
+import { ProfileContext } from '@/context/profile';
 
 interface RequestType {
     profileByUser: ProfileModel[],
 }
 
 const ProfilesPage: NextPage = () => {
-
+    
     const { data } = useQuery<RequestType>(GetProfilesByUser,{
         pollInterval: 1000
     });
     const [edit,setEdit] = useState(false);
+    const { setActiveProfile } = useContext(ProfileContext)
+
+    useEffect( ( ) => {
+        setActiveProfile(undefined)
+    }, [])
 
   return (
     <>
