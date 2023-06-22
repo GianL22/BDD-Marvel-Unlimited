@@ -72,6 +72,35 @@ type AuthResponse {
   user: User!
 }
 
+type Director {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type Creator {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type Actor {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type PersonsResponse {
+  actors: [Actor!]
+  directors: [Director!]
+  creators: [Creator!]
+}
+
+type Company {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   users: [User!]!
   userById(id: ID!): User!
@@ -83,6 +112,9 @@ type Query {
   membership(id: String!): Membership!
   revalite: AuthResponse!
   reportSuscription: [Suscription!]!
+  persons: PersonsResponse!
+  companies: [Company!]!
+  company(id: Int!): Company!
 }
 
 type Mutation {
@@ -98,6 +130,12 @@ type Mutation {
   signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!, suscriptionInput: CreateSuscriptionInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
   createCreditCard(createCreditCardInput: CreateCreditCardInput!): CreditCard!
+  createDirector(createPersonInput: CreatePersonInput!): Director!
+  createCreator(createPersonInput: CreatePersonInput!): Creator!
+  createActor(createPersonInput: CreatePersonInput!): Actor!
+  createCompany(createCompanyInput: CreateCompanyInput!): Company!
+  updateCompany(updateCompanyInput: UpdateCompanyInput!): Company!
+  removeCompany(id: Int!): Company!
 }
 
 input UpdateUserInput {
@@ -169,4 +207,20 @@ input CreateCreditCardInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreatePersonInput {
+  name: String!
+  lastName: String!
+}
+
+input CreateCompanyInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCompanyInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

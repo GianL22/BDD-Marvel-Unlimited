@@ -14,7 +14,8 @@ import { CreditCardsModule } from './credit-cards/credit-cards.module';
 import { SuscriptionModule } from './suscription/suscription.module';
 import { CountriesModule } from './countries/countries.module';
 import { ReportsModule } from './reports/reports.module';
-
+import { PersonsModule } from './persons/persons.module';
+import { CompaniesModule } from './companies/companies.module';
 
 @Module({
   imports: [
@@ -54,6 +55,10 @@ import { ReportsModule } from './reports/reports.module';
     CountriesModule,
 
     ReportsModule,
+
+    PersonsModule,
+
+    CompaniesModule,
   ],
   controllers: [],
   providers: [],
