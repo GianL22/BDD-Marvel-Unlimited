@@ -8,7 +8,7 @@ import { ApolloProvider } from '@apollo/client'
 import { ThemeProvider } from 'next-themes'
 import { darkTheme, lightTheme } from '../themes'
 import { useApollo } from '@/hooks/useApollo'
-import { AuthProvider } from '@/context'
+import { AuthProvider, ProfileProvider } from '@/context'
 
 function App({ Component, pageProps }: AppProps) {
   const { isBrowser } = useSSR()
@@ -17,18 +17,20 @@ function App({ Component, pageProps }: AppProps) {
     isBrowser && (
       <ApolloProvider client={client}>
         <AuthProvider>
-          <ThemeProvider
-            defaultTheme='system'
-            attribute='class'
-            value={{
-              light: lightTheme.className,
-              dark: darkTheme.className
-            }}
-            >
-            <NextUIProvider>
-                <Component {...pageProps} />
-            </NextUIProvider>
-          </ThemeProvider>
+          <ProfileProvider>
+            <ThemeProvider
+              defaultTheme='system'
+              attribute='class'
+              value={{
+                light: lightTheme.className,
+                dark: darkTheme.className
+              }}
+              >
+              <NextUIProvider>
+                  <Component {...pageProps} />
+              </NextUIProvider>
+            </ThemeProvider>
+          </ProfileProvider>
         </AuthProvider>
       </ApolloProvider>
     )

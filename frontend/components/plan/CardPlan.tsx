@@ -91,13 +91,13 @@ export const CardPlan = ({
             <Card.Body css={{py: '$2'}}>
                 
                     <Box as={'ul'} css={{h:'80%', overflow:'hidden'}}>
-                        {features.map((feature) => {
+                        {features.map(( feature, i ) => {
                             return (
                                 <Flex
+                                    key = { i }
                                     as={'li'}
                                     css={{py: '$2', gap: '$2'}}
                                     align={'center'}
-                                    key={ feature }
                                 >
                                     <Box>
                                         <Check />

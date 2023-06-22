@@ -39,7 +39,7 @@ const ReportsPage: NextPage = () => {
                 
             >
                 <Link href='' css={{'minWidth': '100%',}}>
-                    <Button auto bordered css={{'minWidth': '50%'}}>
+                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Lideres con Poderes Artificiales
                     </Button>
                 </Link>
@@ -47,7 +47,7 @@ const ReportsPage: NextPage = () => {
                 <Spacer y={4}/>
 
                 <Link href='' css={{'minWidth': '100%'}}>
-                    <Button auto bordered css={{'minWidth': '50%'}}>
+                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Objetos de Superhéroes y Supervillanos
                     </Button>
                 </Link>
@@ -55,7 +55,7 @@ const ReportsPage: NextPage = () => {
                 <Spacer y={4}/>
 
                 <Link href='' css={{'minWidth': '100%',}}>
-                    <Button auto bordered css={{'minWidth': '50%'}}>
+                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Películas Animadas Rentables y Largas
                     </Button>
                 </Link>
@@ -67,7 +67,8 @@ const ReportsPage: NextPage = () => {
                         auto
                         bordered
                         onPress={ async () => await push('reports/upgradepremium')}
-                        css={{'minWidth': '50%'}}
+                        size={'xl'}
+                        css={{'minWidth': '100%', fontSize : '$2xl'}}
                     >
                         Upgrade a Premium
                     </Button>
@@ -83,7 +84,7 @@ const ReportsPage: NextPage = () => {
                 sm={ 6 } 
             >
                 <Link href='' css={{'minWidth': '100%'}}>
-                    <Button auto bordered css={{'minWidth': '50%'}}>
+                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Series Extensas
                     </Button>
                 </Link>
@@ -92,7 +93,7 @@ const ReportsPage: NextPage = () => {
 
 
                 <Link href='' css={{'minWidth': '100%',}}>
-                    <Button auto bordered css={{'minWidth': '50%'}}>
+                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Locaciones de Combate
                     </Button>
                 </Link>
@@ -101,7 +102,7 @@ const ReportsPage: NextPage = () => {
 
 
                 <Link href='' css={{'minWidth': '100%',}}>
-                    <Button auto bordered css={{'minWidth': '50%'}}>
+                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Poderes Heredados "Super" en Villanos
                     </Button>
                 </Link>
@@ -109,7 +110,7 @@ const ReportsPage: NextPage = () => {
                 <Spacer y={4}/>
 
                 <Link href='' css={{'minWidth': '100%'}}>
-                    <Button auto bordered css={{'minWidth': '50%'}}>
+                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Jugando al Límite
                     </Button>
                 </Link>
