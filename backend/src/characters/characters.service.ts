@@ -6,6 +6,11 @@ import { CreateCharacterInput, CreateCivilInput, CreateHeroInput, CreateVillainI
 import { CharactersResponse } from './types/characters-response.type';
 import { CharacterResponse } from '../use-powers/types/character-response.type';
 
+interface ReportParent {
+  powerId:      string;
+  characterIds: string[];
+}
+
 @Injectable()
 export class CharactersService {
 
@@ -123,6 +128,13 @@ export class CharactersService {
       civil
     }
     return characterResponse;
+  }
+
+  async findVillain(villains: string[]): Promise<Villain[]>{
+    const result = await Promise.all(villains.map(async (villainId) => {
+      return await this.villainRepository.findOneBy({characterId: villainId});
+    }));
+    return result
   }
 
   async updateHero(id: string, updateHeroInput: UpdateHeroInput): Promise<Hero> {

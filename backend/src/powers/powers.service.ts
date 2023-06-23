@@ -58,4 +58,12 @@ export class PowersService {
     } 
   }
 
+  async getPowerName(id: string){
+    return (await this.findOneById(id)).name
+  }
+
+  async getPowerDescription(id: string){
+    return (await this.findOneById(id)).description
+  }
+
 }

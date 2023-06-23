@@ -120,6 +120,9 @@ type UsePower {
   inherited: Boolean!
   power: Power!
   character: CharacterResponse!
+  villain: [Villain!]!
+  powerName: String!
+  powerDescription: String!
 }
 
 type ObjectsType {
@@ -179,8 +182,9 @@ type Query {
   colors: [Color!]!
   findCharacters: CharactersResponse!
   reportSuscription: [Suscription!]!
-  Powers: [Power!]!
+  reportInheritedPowers: [UsePower!]!
   usePowers: [UsePower!]!
+  Powers: [Power!]!
   objects: [Objects!]!
   objectsType: [ObjectsType!]!
   UseObjects: [UseObject!]!
@@ -207,11 +211,11 @@ type Mutation {
   updateVillain(updateVillainInput: UpdateVillainInput!): Villain!
   updateCivil(updateCivilInput: UpdateCivilInput!): Civil!
   removeCharacter(id: ID!): Boolean!
+  relatePower(createUsePowerInput: CreateUsePowerInput!): UsePower!
+  removePowerFromCharacter(characterId: ID!, powerId: ID!): Boolean!
   createPower(createPowerInput: CreatePowerInput!): Power!
   updatePower(updatePowerInput: UpdatePowerInput!): Power!
   removePower(id: ID!): Boolean!
-  relatePower(createUsePowerInput: CreateUsePowerInput!): UsePower!
-  removePowerFromCharacter(characterId: ID!, powerId: ID!): Boolean!
   createObject(createObjectInput: CreateObjectInput!): Objects!
   updateObject(updateObjectInput: UpdateObjectInput!): Objects!
   removeObject(id: ID!): Boolean!
@@ -391,17 +395,6 @@ input UpdateCivilInput {
   hairColor: ID
 }
 
-input CreatePowerInput {
-  name: String!
-  description: String!
-}
-
-input UpdatePowerInput {
-  name: String
-  description: String
-  id: ID!
-}
-
 input CreateUsePowerInput {
   characterId: ID!
   powerId: ID!
@@ -412,6 +405,17 @@ input CreateUsePowerInput {
 enum TypePower {
   Natural
   Artificial
+}
+
+input CreatePowerInput {
+  name: String!
+  description: String!
+}
+
+input UpdatePowerInput {
+  name: String
+  description: String
+  id: ID!
 }
 
 input CreateObjectInput {
