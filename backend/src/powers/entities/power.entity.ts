@@ -1,7 +1,7 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Character } from 'src/characters/entities';
-import { UsePower } from 'src/use-powers/entities/use-power.entity';
 import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import { UsePower } from './use-power.entity';
 // import { Fight } from './fight.entity';
 
 @Entity({name: 'Power'})

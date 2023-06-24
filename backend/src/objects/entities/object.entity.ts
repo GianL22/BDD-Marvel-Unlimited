@@ -1,8 +1,6 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { ObjectsType } from './objectType.entity';
-import { UseObject } from 'src/use-objects/entities/use-object.entity';
-// import { UseObject } from './useObject.entity';
 // import { CreatedBy } from './createdBy.entity';
 // import { Fight } from './fight.entity';
 
@@ -37,13 +35,6 @@ export class Objects{
   @JoinColumn({name:'objectTypeId',foreignKeyConstraintName:'objectType_FK'})
   @Field(()=> ObjectsType, {name: 'objectTypeId'})
   objectType: string;
-
-  @OneToMany(
-    () => UseObject,
-    (useObject) => useObject.object,
-    {lazy: true}
-  )
-  useObject: UseObject;
 
   // @OneToMany(
   //   () => CreatedBy,

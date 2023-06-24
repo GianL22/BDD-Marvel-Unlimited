@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 import { PowersService } from './powers.service';
 import { PowersResolver } from './powers.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Power } from './entities/power.entity';
+import { UsePower, Power } from './entities';
+import { CharactersModule } from 'src/characters/characters.module';
 
 @Module({
   providers: [PowersResolver, PowersService],
   imports: [
-    TypeOrmModule.forFeature([Power]),
+    TypeOrmModule.forFeature([Power, UsePower]),
+    CharactersModule,
   ],
   exports : [
     TypeOrmModule,
