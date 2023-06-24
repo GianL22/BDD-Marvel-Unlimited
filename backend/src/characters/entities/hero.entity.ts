@@ -1,8 +1,9 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { Check, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Check, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Character } from './character.entity';
 import { Villain } from './villain.entity';
 import { Civil } from './civil.entity';
+import { Color } from 'src/colors/entities/color.entity';
 // import { FightWith } from './fightWith.entity';
 
 @Entity({name: 'Hero'})
@@ -70,8 +71,29 @@ export class Hero{
     @OneToMany(
         () => Civil,
         (civil) => civil.hero,
+        {lazy: true}
     )
     civil: string
+
+    @ManyToMany(
+        () => Color, 
+        {lazy: true, onDelete: 'CASCADE'}
+      )
+    @JoinTable({
+      name: "SuitColors",
+      joinColumn: {
+        name: "heroId",
+        referencedColumnName: "characterId",
+        foreignKeyConstraintName:'hero_FK'
+      },
+      inverseJoinColumn: {
+        name: "colorId",
+        referencedColumnName: "id",
+        foreignKeyConstraintName:'color_FK'
+      },
+    })
+    @Field(()=> [Color])
+    suitColors: Color[]
 
     //TODO: Recordar hacer la tabla de peleas
     // @OneToMany(

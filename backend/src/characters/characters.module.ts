@@ -3,6 +3,10 @@ import { CharactersService } from './characters.service';
 import { CharactersResolver } from './characters.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Civil, Hero, Villain, Character } from './entities';
+import { NacionalityModule } from 'src/nacionality/nacionality.module';
+import { ObjectsModule } from 'src/objects/objects.module';
+import { ColorsModule } from 'src/colors/colors.module';
+import { OccupationsModule } from 'src/occupations/occupations.module';
 
 @Module({
   providers: [CharactersResolver, CharactersService],
@@ -13,6 +17,10 @@ import { Civil, Hero, Villain, Character } from './entities';
       Civil,
       Villain
     ]),
+    NacionalityModule,
+    ObjectsModule,
+    ColorsModule,
+    OccupationsModule,
   ],
   exports : [
     TypeOrmModule,
