@@ -16,7 +16,9 @@ import { CountriesModule } from './countries/countries.module';
 import { ColorsModule } from './colors/colors.module';
 import { CharactersModule } from './characters/characters.module';
 import { ReportsModule } from './reports/reports.module';
-
+import { PersonsModule } from './persons/persons.module';
+import { CompaniesModule } from './companies/companies.module';
+import { MediaModule } from './media/media.module';
 
 
 @Module({
@@ -61,6 +63,12 @@ import { ReportsModule } from './reports/reports.module';
     CharactersModule,
 
     ReportsModule,
+
+    PersonsModule,
+
+    CompaniesModule,
+
+    MediaModule,
 
   ],
   controllers: [],
