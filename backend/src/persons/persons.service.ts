@@ -25,17 +25,7 @@ export class PersonsService {
 
   async createDirector(createPersonInput: CreatePersonInput):Promise<Director> {
     
-    
     try {  
-      
-      const directorExists = await this.directorRepository.findOne( {
-        where:{
-          name: createPersonInput.name,
-          lastName: createPersonInput.lastName
-        }
-      } )
-
-      if( directorExists ) return directorExists
 
       const newDirector = this.directorRepository.create(createPersonInput)
       return await this.directorRepository.save(newDirector)
@@ -46,42 +36,22 @@ export class PersonsService {
 
   }
 
-  async createCreator(createPersonInput: CreatePersonInput):Promise<Director> {
-    
+  async createCreator(createPersonInput: CreatePersonInput):Promise<Creator> {
     
     try {  
-      
-      const creatorExists = await this.creatorRepository.findOne( {
-        where:{
-          name: createPersonInput.name,
-          lastName: createPersonInput.lastName
-        }
-      } )
 
-      if ( creatorExists ) return creatorExists
-
-      const newCreator = this.directorRepository.create(createPersonInput)
-      return await this.directorRepository.save(newCreator)
+      const newCreator = this.creatorRepository.create(createPersonInput)
+      return await this.creatorRepository.save(newCreator)
       
     } catch (error) {
       throw new BadRequestException(error)
     }
     
-  }
+  }n
 
-  async createActor(createPersonInput: CreatePersonInput):Promise<Director> {
-    
-    
+  async createActor(createPersonInput: CreatePersonInput):Promise<Actor> {
+        
     try {  
-      
-      const createActor = await this.actorRepository.findOne( {
-        where:{
-          name: createPersonInput.name,
-          lastName: createPersonInput.lastName
-        }
-      } )
-
-      if( createActor ) return createActor
 
       const newActor = this.actorRepository.create( createPersonInput )
       return await this.actorRepository.save( newActor )
@@ -96,12 +66,49 @@ export class PersonsService {
   async findAll() : Promise<PersonsResponse> {
     
     const repositories = [ this.directorRepository, this.creatorRepository, this.actorRepository ]
-    const [ directors, creators, actors ] = await Promise.all(
-      repositories.map( repository => repository.find() )
-    )
+    const promiseRepositories = []
+    
+    
+    for ( const repository of repositories ){
+      promiseRepositories.push( repository.find() ) 
+    }
+
+    const [directors, creators, actors] = await Promise.all( promiseRepositories )
+
+    
 
     return { directors, creators, actors }
   }
+
+
+  async findCreatorById( id : string ) : Promise<Creator>{
+
+    try {
+    
+      const creator = await this.creatorRepository.findOneByOrFail( { id })
+      return creator
+
+    } catch (error) {
+
+      throw new BadRequestException(error)
+
+    }
+  }
+
+  async findDirectorById( id : string ) : Promise<Director>{
+
+    try {
+    
+      const director = await this.directorRepository.findOneByOrFail( { id })
+      return director
+
+    } catch (error) {
+
+      throw new BadRequestException(error)
+
+    }
+  }
+
 
   // findOne(id: number) {
   //   return `This action returns a #${id} person`;

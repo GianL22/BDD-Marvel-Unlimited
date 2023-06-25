@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Actor, Creator, Director } from '../entities';
 
 
-@ObjectType('PersonsResponse')
+@ObjectType()
 export class PersonsResponse {
 
     @Field(() => [Actor], { nullable: true })

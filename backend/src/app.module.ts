@@ -16,6 +16,7 @@ import { CountriesModule } from './countries/countries.module';
 import { ReportsModule } from './reports/reports.module';
 import { PersonsModule } from './persons/persons.module';
 import { CompaniesModule } from './companies/companies.module';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
@@ -59,6 +60,8 @@ import { CompaniesModule } from './companies/companies.module';
     PersonsModule,
 
     CompaniesModule,
+
+    MediaModule,
   ],
   controllers: [],
   providers: [],
