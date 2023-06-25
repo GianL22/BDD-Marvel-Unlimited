@@ -154,6 +154,59 @@ type MediaResponse {
   series: [Serie!]
   movies: [Movie!]
   videoGames: [VideoGame!]
+=======
+type Villain {
+  character: Character!
+  name: String!
+  lastName: String!
+  gender: String!
+  phrase: String!
+  maritialStatus: String!
+  firstApparition: String!
+  nameVillain: String!
+  objective: String!
+}
+
+type Hero {
+  character: Character!
+  name: String!
+  lastName: String!
+  gender: String!
+  phrase: String!
+  maritialStatus: String!
+  firstApparition: String!
+  nameHero: String!
+  logo: String!
+  archEnemy: Villain!
+}
+
+type Civil {
+  character: Character!
+  name: String!
+  lastName: String!
+  gender: String!
+  phrase: String!
+  maritialStatus: String!
+  firstApparition: String!
+  hero: Hero
+  villain: Villain
+}
+
+type Character {
+  id: ID!
+  eyeColor: Color!
+  hairColor: Color!
+}
+
+type Color {
+  id: ID!
+  description: String!
+}
+
+type CharacterResponse {
+  hero: [Hero!]
+  villain: [Villain!]
+  civil: [Civil!]
 }
 
 type Query {
@@ -166,6 +219,8 @@ type Query {
   memberships: [Membership!]!
   membership(id: String!): Membership!
   revalite: AuthResponse!
+  colors: [Color!]!
+  findCharacters: CharacterResponse!
   reportSuscription: [Suscription!]!
   persons: PersonsResponse!
   companies: [Company!]!
@@ -189,6 +244,7 @@ type Mutation {
   signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!, suscriptionInput: CreateSuscriptionInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
   createCreditCard(createCreditCardInput: CreateCreditCardInput!): CreditCard!
+
   createDirector(createPersonInput: CreatePersonInput!): Director!
   createCreator(createPersonInput: CreatePersonInput!): Creator!
   createActor(createPersonInput: CreatePersonInput!): Actor!
@@ -198,6 +254,15 @@ type Mutation {
   createVideoGame(createVideoGame: CreateVideoGameInput!): VideoGame!
   createAudioVisualType(createAudioVisualTypeInput: CreateAudioVisualTypeInput!): AudioVisualType!
   removeMedia(id: String!): Medio!
+  createColor(createColorInput: CreateColorInput!): Color!
+  createVillain(createVillainInput: CreateVillainInput!, createCharacterInput: CreateCharacterInput!): Villain!
+  createHero(createHeroInput: CreateHeroInput!, createCharacterInput: CreateCharacterInput!): Hero!
+  createCivil(createCivilInput: CreateCivilInput!, createCharacterInput: CreateCharacterInput!): Civil!
+  updateHero(updateHeroInput: UpdateHeroInput!): Hero!
+  updateVillain(updateVillainInput: UpdateVillainInput!): Villain!
+  updateCivil(updateCivilInput: UpdateCivilInput!): Civil!
+  removeCharacter(id: ID!): Boolean!
+
 }
 
 input UpdateUserInput {
@@ -318,4 +383,104 @@ input CreateVideoGameInput {
 
 input CreateAudioVisualTypeInput {
   description: String!
+=======
+input CreateColorInput {
+  """Se guarda el nombre del color"""
+  description: String!
+}
+
+input CreateVillainInput {
+  name: String!
+  lastName: String!
+  gender: TypeGender!
+  phrase: String!
+  maritialStatus: TypeMaritialStatus!
+  firstApparition: String!
+  nameVillain: String!
+  objective: String!
+}
+
+enum TypeGender {
+  M
+  F
+  Desc
+  Otro
+}
+
+enum TypeMaritialStatus {
+  Soltero
+  Casado
+  Viudo
+  Divorcio
+}
+
+input CreateCharacterInput {
+  eyeColor: String!
+  hairColor: String!
+}
+
+input CreateHeroInput {
+  name: String!
+  lastName: String!
+  gender: TypeGender!
+  phrase: String!
+  maritialStatus: TypeMaritialStatus!
+  firstApparition: String!
+  nameHero: String!
+  logo: String!
+  archEnemy: String!
+}
+
+input CreateCivilInput {
+  name: String!
+  lastName: String!
+  gender: TypeGender!
+  phrase: String!
+  maritialStatus: TypeMaritialStatus!
+  firstApparition: String!
+  heroId: String
+  villainId: String
+}
+
+input UpdateHeroInput {
+  name: String
+  lastName: String
+  gender: TypeGender
+  phrase: String
+  maritialStatus: TypeMaritialStatus
+  firstApparition: String
+  nameHero: String
+  logo: String
+  archEnemy: String
+  id: ID!
+  eyeColor: String
+  hairColor: String
+}
+
+input UpdateVillainInput {
+  name: String
+  lastName: String
+  gender: TypeGender
+  phrase: String
+  maritialStatus: TypeMaritialStatus
+  firstApparition: String
+  nameVillain: String
+  objective: String
+  id: ID!
+  eyeColor: ID
+  hairColor: ID
+}
+
+input UpdateCivilInput {
+  name: String
+  lastName: String
+  gender: TypeGender
+  phrase: String
+  maritialStatus: TypeMaritialStatus
+  firstApparition: String
+  heroId: String
+  villainId: String
+  id: ID!
+  eyeColor: ID
+  hairColor: ID
 }
