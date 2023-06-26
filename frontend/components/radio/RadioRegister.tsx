@@ -13,10 +13,10 @@ interface RadioRegisterProps {
 
 export const RadioRegister : FC<RadioRegisterProps> = ({listValue, label, valueRadio,onSelectKey, size="md"}) => {
   return (
-    <Radio.Group orientation="horizontal" value={valueRadio} label={label} onChange={onSelectKey}>
+    <Radio.Group size= {size} orientation="horizontal" value={valueRadio} label={label} onChange={onSelectKey}>
         {
             listValue.map((value)=>(
-                <Radio key={value}  value= { value } size= {`${size}`}>
+                <Radio key={value}  value= { value } size= {size}>
                     {value}
                 </Radio>
             ))
