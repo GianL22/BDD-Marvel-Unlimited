@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
-import { Check, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Check, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity({name: 'Profiles'})
@@ -20,6 +20,7 @@ export class Profile {
     
     @Column()
     @Field( () => String)
+    @Check(`"language" IN ('Español', 'Inglés', 'Árabe','Hebreo')`)
     language: string
     
     @Column({
@@ -32,6 +33,7 @@ export class Profile {
     
     @Column()
     @Field( () => String)
+    @Check(`"device" IN ('Laptop', 'Movil', 'Tablet')`)
     device: string;
     
     @Column({
@@ -42,7 +44,7 @@ export class Profile {
     @Check(`"timeWatched" >= 0`)
     timeWatched: number;
     
-    @Column({ unique: true })
+    @Column({ nullable: false })
     @Field( () => String)
     emailProfile: string;
 

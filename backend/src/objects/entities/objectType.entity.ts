@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Objects } from './object.entity';
 
 @Entity({name: 'ObjectType'})
@@ -22,9 +22,12 @@ export class ObjectsType {
   objects: Objects;
 
   @BeforeInsert()
+  @BeforeUpdate()
   checkDescriptionInsert(){
     this.description = this.description
       .toLowerCase()
-      .charAt(0).toUpperCase() + this.description.toLowerCase().slice(1)
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+      .join(" ");
   }
 }

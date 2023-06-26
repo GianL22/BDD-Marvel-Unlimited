@@ -38,8 +38,10 @@ export class Color{
   @BeforeInsert()
   @BeforeUpdate()
   checkDescriptionInsert(){
-      this.description = this.description
-          .toLowerCase()
-          .charAt(0).toUpperCase() + this.description.toLowerCase().slice(1)
+    this.description = this.description
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+    .join(" ");
   }
 }

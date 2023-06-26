@@ -53,10 +53,14 @@ export class Objects{
   checkInsert(){
     this.material = this.material
       .toLowerCase()
-      .charAt(0).toUpperCase() + this.material.toLowerCase().slice(1)
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+      .join(" ");
 
     this.name = this.name
       .toLowerCase()
-      .charAt(0).toUpperCase() + this.name.toLowerCase().slice(1)
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+      .join(" ");
   }
 }

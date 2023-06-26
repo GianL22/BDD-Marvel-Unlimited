@@ -1,6 +1,5 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { Character } from 'src/characters/entities';
-import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, BeforeUpdate } from 'typeorm';
 import { UsePower } from './use-power.entity';
 // import { Fight } from './fight.entity';
 
@@ -34,8 +33,12 @@ export class Power {
   // fight: string
 
   @BeforeInsert()
+  @BeforeUpdate()
   checkNameInsert(){
-      this.name = this.name
-          .toLowerCase()
+    this.name = this.name
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+    .join(" ");
   }
 }
