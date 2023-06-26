@@ -11,9 +11,9 @@ export class Civil{
     @PrimaryColumn({ type: "uuid" })
     characterId: string;
 
-    @ManyToOne(
+    @OneToOne(
         () => Character,
-        (character) => character.civil,
+        (character) => character.id,
         {lazy: true, onDelete: 'CASCADE'}
     )
     @JoinColumn({ name: "characterId", foreignKeyConstraintName:'character_FK' })

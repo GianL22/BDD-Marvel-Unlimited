@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Character } from '../../characters/entities/character.entity';
-import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 
 @Entity({name: 'Color'})
@@ -36,9 +36,12 @@ export class Color{
   // characterSuitColor: string
 
   @BeforeInsert()
+  @BeforeUpdate()
   checkDescriptionInsert(){
-      this.description = this.description
-          .toLowerCase()
-          .charAt(0).toUpperCase() + this.description.toLowerCase().slice(1)
+    this.description = this.description
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+    .join(" ");
   }
 }

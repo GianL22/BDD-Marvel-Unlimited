@@ -1,17 +1,29 @@
-import { FC, useMemo, useState } from 'react'
+import { FC } from 'react'
 import { Dropdown } from '@nextui-org/react'
 
-
-interface DropdownRegisterProps {
-    listkeys: string[];
-    selected : string;
-    onSelectKey : (key : string) => void;
+interface Data{
+  id: string;
+  description: string
 }
 
-export const DropdownRegister : FC<DropdownRegisterProps> = ({listkeys = [], selected, onSelectKey}) => {
+interface DropdownRegisterProps {
+    listkeys: Data[];
+    selected : string;
+    setValue :(value: any) => void;
+    width?: number 
+}
+
+export const DropdownRegister : FC<DropdownRegisterProps> = ({listkeys = [], selected, setValue, width = 100}) => {
+
+  const onSelectKey = (value : string) => {
+    const onValue = listkeys.find((list) => list.description === value)
+    if ( !onValue ) return;
+    setValue(onValue)
+  }
+
   return (
     <Dropdown >
-      <Dropdown.Button color = {'primary'}  css={{ tt: "capitalize", width : '100%', m: '2px' }}>
+      <Dropdown.Button color = {'primary'}  css={{ tt: "capitalize", width : `${width}%`, m: '2px' }}>
         {selected}
       </Dropdown.Button>
       <Dropdown.Menu
@@ -22,7 +34,7 @@ export const DropdownRegister : FC<DropdownRegisterProps> = ({listkeys = [], sel
         onSelectionChange={(keys) => onSelectKey(Array.from(keys).toString())}
       >
         {
-            listkeys.map((key) => <Dropdown.Item key={key}>{key}</Dropdown.Item>)
+            listkeys.map((key) => <Dropdown.Item key={key.description}>{key.description}</Dropdown.Item>)
         }
       </Dropdown.Menu>
     </Dropdown>

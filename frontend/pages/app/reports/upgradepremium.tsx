@@ -5,9 +5,7 @@ import { Text, Row, Col, Grid, Link, Button, Spacer, Loading } from '@nextui-org
 import { AppLayout } from '@/layouts/AppLayout'
 import { TableWrapper } from '../../../components/table/index';
 import { CellCalculation } from '@/components/table/CellCalculation';
-import { GetUpgragePremiumReport } from '@/graphql/UpgradePremium';
-
-
+import { GetUpgragePremiumReport } from '@/graphql/Reports';
 
 const columns = [
   {label: 'Nombre', uid: 'name'},
@@ -38,9 +36,7 @@ const UpgradePremiumReportPage: NextPage = () => {
     {
       pollInterval: 1000
     })
-  
-  
-  
+
     const users = useMemo(() => (
     data?.reportSuscription.map(({dateSuscription, user, dateEnd},i) => ({
       id: i,
@@ -49,8 +45,6 @@ const UpgradePremiumReportPage: NextPage = () => {
       ...user
     }))
   ),[data])
-
-
 
   if ( !data ) return <Loading />
 
@@ -61,11 +55,9 @@ const UpgradePremiumReportPage: NextPage = () => {
     >
         <Grid.Container gap={2} direction='column' alignItems='flex-start' css={{margin:'$4', width:'100%'}}>
 
-
           <Grid>
             <Text h1 >Upgrades a Premium</Text>
           </Grid>
-          
           
           <Grid>
             <Text span size='$xl'>
@@ -74,18 +66,15 @@ const UpgradePremiumReportPage: NextPage = () => {
             </Text>
           </Grid>
           
-          
           <Grid css={{margin:'$8', minWidth:'90%', maxWidth:'600px', display: 'inline-grid'}}>
             <TableWrapper columns={columns} rows={users!}/>
           </Grid>
-          
           
           <Grid.Container gap={10} direction='row' justify='flex-start'>
             <Grid css={{maxW:'max-content'}}>
               <CellCalculation label='Total Upgrades' value={(users) ? users.length.toString() : '0'}/>
             </Grid>
           </Grid.Container>
-        
         
         </Grid.Container>
     </AppLayout>

@@ -1,15 +1,13 @@
 import { useForm } from '@/hooks/useForm';
-import { Button, Image, Modal, Row, Text, Col, Grid, Input, Radio, Spacer, Divider, useTheme, Loading } from '@nextui-org/react'
+import { Button, Image, Modal, Row, Text, Col, Grid, Input, useTheme, Loading, Checkbox, Spacer } from '@nextui-org/react'
 import { FC, useState } from 'react';
 import { ArrowRightCircle, ArrowLeftCircle  } from 'iconoir-react'
 import { Notification } from '@/notification';
 import { useMutation } from '@apollo/client';
 import { CreateProfile } from '@/graphql';
-import Cookies from 'js-cookie';
 import { Profile } from '@/models/Client';
-import { useRouter } from 'next/router';
-import { AddProfile } from '../profile/AddProfile';
 import { DeleteProfile, UpdateProfile } from '@/graphql/Profile';
+import { RadioRegister } from '../radio/RadioRegister';
 
 interface Props {
    bindings: {
@@ -18,13 +16,16 @@ interface Props {
    };
    setVisible: (visible: boolean) => void;
    edit: boolean;
-   profile: Profile;
+   profile?: Profile;
 }
 
 export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} ) => {
    const [createProfile] = useMutation(CreateProfile);
+   const [language,setLanguage] = useState(`${(!profile?.language) ? 'Español' : profile.language}`);
+   const [device,setDevice] = useState(`${(!profile?.device) ? 'Lapto' : profile.device}`);
+   const [confirmDelete, setConfirmDelete] = useState(false)
    const {isDark} = useTheme()
-   const [avatar,setAvatar] = useState(1);
+   const [avatar,setAvatar] = useState((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')));
    const [avatarPath,setAvatarPath] = useState((!profile?.avatar) ? '' : profile?.avatar);
 
    const handleAdd = () => {
@@ -53,22 +54,8 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
          errorMessage: 'Debe tener al menos 3 caracteres',
          initialValue: (!profile?.nickname) ? '' : profile.nickname,
       },
-      {
-         name: 'language',
-         validate: (value: string) => value.trim().length >= 3,
-         validMessage: 'Idioma válido',
-         errorMessage: 'Mínimo 3 caracteres',
-         initialValue: (!profile?.language) ? '' : profile.language,
-      },
-      {
-         name: 'device',
-         validate: (value: string) => value.trim().length >= 3,
-         validMessage: 'Dispositivo válido',
-         errorMessage: 'Mínimo 3 caracteres',
-         initialValue: (!profile?.device) ? '' : profile.device,
-      },
    ])
-   const [email,nickname,language,device] = parsedFields;
+   const [email,nickname] = parsedFields;
    
    const [updateProfile] = useMutation(UpdateProfile);
 
@@ -82,22 +69,22 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
          await updateProfile({
             variables:{
                updateProfileInput:{
-                  id: profile.id,
+                  id: profile?.id,
                   nickname: nickname.value,
-                  language: language.value,
-                  device: device.value,
+                  language: language,
+                  device: device,
                   emailProfile: email.value,
                   avatar: avatarPath,
                }
             }
          })
          nickname.setValue('');
-         language.setValue('');
-         device.setValue('');
          email.setValue('');
          setAvatarPath('');
          setIsLoading(false);
          setVisible(false);
+         setLanguage('Español')
+         setDevice('Lapto')
 
       } catch (error: any) {
          Notification(isDark).fire({
@@ -113,7 +100,7 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
       setVisible(false);
       deleteProfile({
          variables:{
-            blockProfileId: profile.id,
+            blockProfileId: profile?.id,
          }
       })
       Notification(isDark).fire({
@@ -133,20 +120,20 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
             variables: {
                createProfileInput: {
                   nickname: nickname.value,
-                  language: language.value,
-                  device: device.value,
+                  language: language,
+                  device: device,
                   emailProfile: email.value,
                   avatar: avatarPath,
                },
             },
          });
          nickname.setValue('');
-         language.setValue('');
-         device.setValue('');
          email.setValue('');
          setAvatarPath('');
          setIsLoading(false);
          setVisible(false);
+         setLanguage('Español')
+         setDevice('Lapto')
       } catch (error: any) {
           Notification(isDark).fire({
               title: error.message,
@@ -202,7 +189,7 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                         overflow: 'hidden',
                     }}
                   />
-                  <Row  gap={0} css={{width: 'fit-content', justifyContent: 'center'}}>
+                  <Row  gap={2} css={{width: 'fit-content', justifyContent: 'center'}}>
                      <Col>
                         <Button 
                            icon={<ArrowLeftCircle fontSize={'20px'} color='#ED1D24'/>}
@@ -240,7 +227,7 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                      gap: '$17',
                      display: 'flex',
                      flexDirection: 'column',
-                     py: '$12',
+                     py: '$11',
                      justifyContent: 'space-between',
                      margin: '$0'
                  }}
@@ -272,33 +259,19 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                      bordered
                      clearable
                   />
-
-                  <Input
-                     labelPlaceholder='Idioma'
-                     type='text'
-                     value={language.value}
-                     onChange={(e) => language.setValue(e.target.value)}
-                     helperText={language.message}
-                     helperColor={language.color}
-                     status={language.color}
-                     color={language.color}
-                     size='lg'
-                     bordered
-                     clearable
+                  <RadioRegister 
+                     label='Idioma'
+                     listValue={['Español', 'Inglés', 'Árabe','Hebreo']}
+                     onSelectKey={setLanguage}
+                     valueRadio={language}
+                     size='sm'
                   />
-
-                  <Input  
-                     labelPlaceholder='Dispositivo'
-                     type='text'
-                     value={device.value}
-                     onChange={(e) => device.setValue(e.target.value)}
-                     helperText={device.message}
-                     helperColor={device.color}
-                     status={device.color}
-                     color={device.color}
-                     size='lg'
-                     bordered
-                     clearable
+                  <RadioRegister 
+                     label='Dispositivo'
+                     listValue={['Laptop', 'Movil', 'Tablet']}
+                     onSelectKey={setDevice}
+                     valueRadio={device}
+                     size='sm'
                   />
                </Grid>
             </Grid.Container>
@@ -306,13 +279,19 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
          <Modal.Footer>
             {
                (edit)
-                  ?  <Button
-                        size='md'
-                        onPress={ handleDeleteProfile }
-
-                     >
-                        Eliminar Perfil
-                     </Button>
+                  ?  <> 
+                        <Checkbox isSelected={confirmDelete} color="success" onChange={setConfirmDelete} size='sm'>
+                           Habilitar eliminación
+                        </Checkbox>
+                        <Spacer x={1} />
+                        <Button
+                           size='md'
+                           onPress={ handleDeleteProfile }
+                           disabled = { !confirmDelete }
+                           >
+                           Eliminar Perfil
+                        </Button>
+                     </>
                   : <></>
             }
             <Button

@@ -30,7 +30,6 @@ interface countriesResponse {
     }[]
 }
 
-
 const RegisterPage = () => {
     const {isDark} = useTheme()
     const [isLoading,setIsLoading] = useState(false);
@@ -38,40 +37,31 @@ const RegisterPage = () => {
     const {replace} = useRouter();
 
     const {data : dataCountries, error, loading} =  useQuery<countriesResponse>(GetCountries)
-    const [countrySelected, setCountrySelected] = useState<string>('País')
+    const [countrySelected, setCountrySelected] = useState({description: 'País', id: ''})
     const [citySelected, setCitySelected] = useState({ description: 'Ciudad', id : '' })
 
     const countries = useMemo(()=> {
+      if ( !dataCountries ) return ;
+      return dataCountries.countries.map((country) => {
+        return {
+          id: country.description,
+          description: country.description,
+        };
+      });
+    }, [ dataCountries ])
 
-        if ( !dataCountries ) return ;
-        return dataCountries.countries.map(({description}) => description)
-
-      }, [ dataCountries ])
-
-
-      const cities = useMemo(()=> {
+    const cities = useMemo(()=> {
+      if ( !dataCountries || !countries ) return;
+      return dataCountries.countries.find(
+        ({description}) => description === countrySelected.description
+        )
+        ?.cities.map( (city) => city)
+    }, [ countrySelected ])
       
-      
-        if ( !dataCountries || !countries ) return;
-        return dataCountries.countries.find(
-                  ({description}) => description === countrySelected
-                )?.cities.map(
-                  (city) => city
-                )
-        
-      }, [ countrySelected ])
-      
-    const onSelectCountry = (country : string) => {
+    const onSelectCountry = (country : any) => {
       setCountrySelected(country)
       setCitySelected({ description: 'Ciudad', id : '' })
     }
-
-    const onSelectCity = (cityDescription : string) => {
-      const city = cities?.find(({description}) => description === cityDescription)
-      if ( !city ) return;
-      setCitySelected(city)
-    }
-
 
     const {allowSubmit,parsedFields} = useForm([
       {
@@ -249,9 +239,9 @@ const RegisterPage = () => {
                           (cities)
                           ? 
                           <DropdownRegister
-                              listkeys={cities.map(({description}) => description)}
+                              listkeys={cities}
                               selected={citySelected.description}
-                              onSelectKey={onSelectCity}  
+                              setValue={setCitySelected}  
                             />
                           :
                           <></>
@@ -260,8 +250,8 @@ const RegisterPage = () => {
                       <Grid xs={6}>
                         <DropdownRegister
                           listkeys={countries!}
-                          selected={countrySelected}
-                          onSelectKey={onSelectCountry} 
+                          selected={countrySelected.description}
+                          setValue={onSelectCountry} 
                         />
                       </Grid>
                     </Grid.Container>
