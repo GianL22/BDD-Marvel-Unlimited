@@ -72,9 +72,95 @@ type AuthResponse {
   user: User!
 }
 
+
 type Nacionality {
   id: ID!
   name: String!
+}
+
+=======
+type Medio {
+  id: ID!
+  companyProduction: Company!
+}
+
+type VideoGame {
+  medioId: ID!
+  medio: Medio!
+  title: String!
+  releaseDate: String!
+  synopsis: String!
+  based: String!
+  type: String!
+  companyPublisher: Company!
+}
+
+type Company {
+  id: ID!
+  description: String!
+}
+
+type Actor {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type AudioVisualType {
+  id: ID!
+  description: String!
+}
+
+type Serie {
+  medioId: ID!
+  medio: Medio!
+  title: String!
+  releaseDate: String!
+  synopsis: String!
+  based: String!
+  channel: String!
+  episodes: String!
+  creator: Creator!
+  audioVisualType: AudioVisualType!
+}
+
+type Creator {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type Movie {
+  medioId: ID!
+  medio: Medio!
+  title: String!
+  releaseDate: String!
+  synopsis: String!
+  duration: Int!
+  based: String!
+  cost: Float!
+  revenue: Float!
+  director: Director!
+  companyDist: Company!
+  audioVisualType: AudioVisualType!
+}
+
+type Director {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type PersonsResponse {
+  actors: [Actor!]
+  directors: [Director!]
+  creators: [Creator!]
+}
+
+type MediaResponse {
+  series: [Serie!]
+  movies: [Movie!]
+  videoGames: [VideoGame!]
 }
 
 type Villain {
@@ -189,6 +275,14 @@ type Query {
   reportSuscription: [Suscription!]!
   reportInheritedPowers: [Power!]!
   Powers: [Power!]!
+  persons: PersonsResponse!
+  companies: [Company!]!
+  media: MediaResponse!
+  AudioVisualTypes: [AudioVisualType!]!
+  serie(id: String!): Serie!
+  movie(id: String!): Movie!
+  videoGame(id: String!): VideoGame!
+
 }
 
 type Mutation {
@@ -204,6 +298,16 @@ type Mutation {
   signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!, suscriptionInput: CreateSuscriptionInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
   createCreditCard(createCreditCardInput: CreateCreditCardInput!): CreditCard!
+
+  createDirector(createPersonInput: CreatePersonInput!): Director!
+  createCreator(createPersonInput: CreatePersonInput!): Creator!
+  createActor(createPersonInput: CreatePersonInput!): Actor!
+  createCompany(createCompanyInput: CreateCompanyInput!): Company!
+  createSerie(createSerieInput: CreateSerieInput!): Serie!
+  createMovie(createMovieInput: CreateMovieInput!): Movie!
+  createVideoGame(createVideoGame: CreateVideoGameInput!): VideoGame!
+  createAudioVisualType(createAudioVisualTypeInput: CreateAudioVisualTypeInput!): AudioVisualType!
+  removeMedia(id: String!): Medio!
   createColor(createColorInput: CreateColorInput!): Color!
   createVillain(createVillainInput: CreateVillainInput!, createCharacterInput: CreateCharacterInput!): Villain!
   createHero(createHeroInput: CreateHeroInput!, createCharacterInput: CreateCharacterInput!): Hero!
@@ -295,6 +399,54 @@ input LoginInput {
   password: String!
 }
 
+input CreatePersonInput {
+  name: String!
+  lastName: String!
+}
+
+input CreateCompanyInput {
+  description: String!
+}
+
+input CreateSerieInput {
+  title: String!
+  companyId: ID!
+  synopsis: String!
+  based: String!
+  releaseDate: String!
+  channel: String!
+  episodes: Int!
+  creatorId: ID!
+  audioVisualTypeId: ID!
+}
+
+input CreateMovieInput {
+  title: String!
+  companyId: ID!
+  synopsis: String!
+  based: String!
+  releaseDate: String!
+  duration: Int!
+  cost: Float!
+  revenue: Float!
+  directorId: ID!
+  audioVisualTypeId: ID!
+  companyDistId: ID!
+}
+
+input CreateVideoGameInput {
+  title: String!
+  companyId: ID!
+  synopsis: String!
+  based: String!
+  releaseDate: String!
+  type: String!
+  companyPublisherId: ID!
+}
+
+input CreateAudioVisualTypeInput {
+  description: String!
+=======
 input CreateColorInput {
   """Se guarda el nombre del color"""
   description: String!

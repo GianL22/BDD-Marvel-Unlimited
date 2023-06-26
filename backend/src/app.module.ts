@@ -20,7 +20,9 @@ import { PowersModule } from './powers/powers.module';
 import { ObjectsModule } from './objects/objects.module';
 import { NacionalityModule } from './nacionality/nacionality.module';
 import { OccupationsModule } from './occupations/occupations.module';
-
+import { PersonsModule } from './persons/persons.module';
+import { CompaniesModule } from './companies/companies.module';
+import { MediaModule } from './media/media.module';
 
 
 @Module({
@@ -73,6 +75,13 @@ import { OccupationsModule } from './occupations/occupations.module';
     NacionalityModule,
 
     OccupationsModule,
+
+    PersonsModule,
+
+    CompaniesModule,
+
+    MediaModule,
+
 
   ],
   controllers: [],
