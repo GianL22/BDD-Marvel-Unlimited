@@ -5,12 +5,34 @@ export interface InformationResponse {
   objects:     GenericResponse[];
 }
 
-export interface Color {
+interface Color {
   id:          string;
   description: string;
 }
 
-export interface GenericResponse {
+interface GenericResponse {
   id:   string;
   description: string;
+}
+
+export interface FormMedia {
+  AudioVisualTypes: AudioVisualType[];
+  companies:        AudioVisualType[];
+  persons:          Persons;
+}
+
+interface AudioVisualType {
+  id:          string;
+  description: string;
+}
+
+interface Persons {
+  directors: Person[];
+  creators:  Person[];
+}
+
+interface Person{
+  id:       string;
+  name:     string;
+  lastName: string;
 }

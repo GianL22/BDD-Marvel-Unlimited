@@ -4,9 +4,11 @@ import { Table } from "@nextui-org/react";
 interface Props{
   columns: { label: string; uid: string}[];
   rows: any[];
+  cellReducer: (row: any, columnKey: string, onDelete:(id: string) => Promise<void> ) => JSX.Element;
+  onDelete?: (id: string) => Promise<void>;
 }
 
-export const TableWrapper: FC<Props>= ({columns,rows}) => {
+export const TableWrapper: FC<Props>= ({columns,rows,cellReducer,onDelete }) => {
   return (
     <Table
       aria-label="table"
@@ -21,6 +23,8 @@ export const TableWrapper: FC<Props>= ({columns,rows}) => {
         {(column) => (
           <Table.Column
             key={column.uid}
+            hideHeader={column.uid === "actions"}
+            align={column.uid === "actions" ? "center" : "start"}
           >
             {column.label}
           </Table.Column>
@@ -30,8 +34,10 @@ export const TableWrapper: FC<Props>= ({columns,rows}) => {
         {(item) => (
           <Table.Row>
             {(columnKey) => (
-              <Table.Cell>
-                {item[columnKey] ? item[columnKey] : "N/A"}
+              <Table.Cell css={{fontSize:'$xl'}}>
+                { 
+                  cellReducer(item, columnKey as string, onDelete!)
+                }
               </Table.Cell>
             )}
           </Table.Row>

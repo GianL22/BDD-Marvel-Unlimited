@@ -2,7 +2,7 @@ export interface Object {
     objectById: ObjectByID;
 }
 
-interface ObjectByID {
+export interface ObjectByID {
     id:           string;
     name:         string;
     description:  string;

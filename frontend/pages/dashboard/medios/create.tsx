@@ -1,4 +1,4 @@
-import { Grid, Input, Spacer, Text, useTheme, Button, Loading, Textarea, Row, Col } from '@nextui-org/react';
+import { Grid, Input, Spacer, Text, useTheme, Button, Loading, Textarea } from '@nextui-org/react';
 import { Flex } from '../../../components/containers';
 import { AppLayout } from '@/layouts/AppLayout';
 import { useState } from 'react';
@@ -7,9 +7,16 @@ import { DropdownRegister } from '@/components/dropdown/DropdownRegister';
 import { RadioRegister } from '@/components/radio/RadioRegister';
 import { useForm } from '@/hooks/useForm';
 import { Notification } from '@/notification';
+import { GetInformationToCreateMedio } from '@/graphql/Information';
+import { FormMedia } from '@/models/Information';
+import { CreateMovie, CreateSerie, CreateVideoGame } from '@/graphql/Medio';
 
 const MediosCreatePage = ( ) => {  
   const { isDark } = useTheme();
+  const {data} = useQuery<FormMedia>(GetInformationToCreateMedio)
+  const [createMovie] = useMutation(CreateMovie);
+  const [createSerie] = useMutation(CreateSerie);
+  const [createVideoGame] = useMutation(CreateVideoGame);
   const [isLoading,setIsLoading] = useState(false);
   const [medio,setMedio] = useState('Película');
   const [duration, setDuration] = useState<number>(0)
@@ -22,6 +29,18 @@ const MediosCreatePage = ( ) => {
   const [companyDist, setCompanyDist] = useState({id: '', description: `Compañia Distribuidora`})
   const [companyPublisher, setCompanyPublisher] = useState({id: '', description: `Compañia Publicadora`})
   const [companyProducer, setCompanyProducer] = useState({id: '', description: `Compañia Productora`})
+  const directors = data?.persons.directors.map(director => {
+    return {
+      id: director.id,
+      description: director.name + ' ' + director.lastName
+    };
+  });
+  const creators = data?.persons.creators.map(creator => {
+    return {
+      id: creator.id,
+      description: creator.name + ' ' + creator.lastName
+    };
+  });
 
   const {allowSubmit: allowSerieSubmit, parsedFields: parsedSerie} = useForm([
     {
@@ -71,85 +90,86 @@ const MediosCreatePage = ( ) => {
         initialValue: '',
     },
 ])
-// const onSubmit = async () => {
-//   setIsLoading(true)
-//   Notification(isDark).fire({
-//       title: 'Cargando',
-//       icon: 'info',
-//   })
-//   try {
-//       const createCharacterInput ={
-//         eyeColor: eyeColor.id,
-//         hairColor: hairColor.id,
-//         nacionalities: nacionalities,
-//         occupations: occuptations,
-//         objects: (objects.length === 0) ? [] : objects,
-//       }
-//       const createCharacterCommon = {
-//         name: name.value,
-//         lastName: lastName.value,
-//         gender: gender,
-//         phrase: phrase.value,
-//         maritialStatus: maritialStatus,
-//         firstApparition: firstApparition.value
-//       }
-//       if(character === 'Hero'){
-//         await createHero({
-//             variables: {
-//                 createHeroInput: {
-//                     ...createCharacterCommon,
-//                     nameHero: nameHero.value,
-//                     logo: logo.value,
-//                     archEnemy: villain.id,
-//                     suitColors: suitColors,
-//                 },
-//                 createCharacterInput:{...createCharacterInput,}
-//             },
-//         });
-//       }
-//       if(character === 'Villain'){
-//         await createVillain({
-//           variables: {
-//             createVillainInput:{
-//               ...createCharacterCommon,
-//               nameVillain: nameVillain.value,
-//               objective: objective.value,
-//             },
-//             createCharacterInput:{...createCharacterInput,}
-//           }
-//         })
-//       }
-//       if(character === 'Civil'){
-//         await createCivil({
-//           variables: {
-//             createCivilInput:{
-//               ...createCharacterCommon,
-//               heroId: (hero.id === '' ? null : hero.id),
-//               villainId: (villain.id === '' ? null : villain.id),
-//             },
-//             createCharacterInput:{...createCharacterInput,}
-//           }
-//         })
-//       }
-//       Notification(isDark).fire({
-//           title: 'Personaje creado',
-//           icon: 'success',
-//       })
-//       setIsLoading(false)
-//   } catch (error: any) {
-//       Notification(isDark).fire({
-//           title: error.message,
-//           icon: 'error',
-//           timer: 3000
-//       })
-//       setIsLoading(false)
-//   }
-// }
+const onSubmit = async () => {
+  setIsLoading(true)
+  Notification(isDark).fire({
+      title: 'Cargando',
+      icon: 'info',
+  })
+  try {
+      const createMedioInput ={
+        title: title.value,
+        synopsis: synopsis.value,
+        based: based.value,
+        releaseDate: releaseDate.value,
+        companyId: companyProducer.id,
+      }
+      if(medio === 'Película'){
+        await createMovie({
+            variables: {
+                createMovieInput: {
+                    ...createMedioInput,
+                    duration: duration,
+                    cost: cost,
+                    revenue: revenue,
+                    directorId: director.id,
+                    audioVisualTypeId: audioVisualType.id,
+                    companyDistId: companyDist.id
+                },
+            },
+        });
+        if(cost > revenue){
+            console.log('Mas caro')
+            await Notification(isDark).fire({
+                title: 'Información',
+                icon: 'info',
+                text: 'El costo de la pelicula fue mayor a las ganancias 😟'
+            })
+        }
+      }
+      if(medio === 'Serie'){
+        await createSerie({
+          variables: {
+            createSerieInput:{
+              ...createMedioInput,
+              channel: channel.value,
+              episodes: episodes,
+              creatorId: creator.id,
+              audioVisualTypeId: audioVisualType.id,
+            }
+          }
+        })
+      }
+      if(medio === 'Video-juego'){
+        await createVideoGame({
+          variables: {
+            createVideoGame:{
+              ...createMedioInput,
+              type: type.value,
+              companyPublisherId: companyPublisher.id,
+            }
+          }
+        })
+      }
+      Notification(isDark).fire({
+          title: 'Medio creado',
+          icon: 'success',
+      })
+      setIsLoading(false)
+  } catch (error: any) {
+      Notification(isDark).fire({
+          title: error.message,
+          icon: 'error',
+          timer: 3000
+      })
+      setIsLoading(false)
+  }
+}
 const [title,synopsis, based, releaseDate] = parsedFields;
 const [channel ] = parsedSerie;
 const [type] = parsedVideoGame;
 
-//   if(!data || !characters) return <Text>No Hay info pana</Text>
+  if(!data) return <Text>No Hay info pana</Text>
   return (
     <AppLayout 
       title='Creación de un Medio'
@@ -172,7 +192,7 @@ const [type] = parsedVideoGame;
         />
       </Flex>
       <Grid.Container gap={2} justify="center" >
-        <Grid alignContent='center' alignItems='center' xs={ 12 } sm={ 12 } direction="row" css={{px: '$10', py:'$10', gap:'$15'}}>
+        <Grid alignContent='center' alignItems='center' xs={ 12 } sm={ 12 } direction="row" css={{px: '$10', py:'$8', gap:'$15'}}>
             <Input
                 label='Titulo'
                 width='100%'
@@ -204,14 +224,14 @@ const [type] = parsedVideoGame;
                 status={releaseDate.color}
                 color={releaseDate.color}
             />
-            {/* <DropdownRegister
-                listkeys={companies!}
+            <DropdownRegister
+                listkeys={data.companies!}
                 selected={companyProducer.description}
                 setValue={setCompanyProducer}
-                width={60} 
-            /> */}
+                width={100} 
+            />
         </Grid>
-        <Grid xs={12} direction="row" css={{px: '$3', py:'$12', height: 'max-content'}}>
+        <Grid xs={12} direction="row" css={{px: '$3', py:'$14', height: 'max-content'}}>
             <Spacer y={1} />
             <Textarea 
                 labelPlaceholder="Sinópsis" 
@@ -224,7 +244,7 @@ const [type] = parsedVideoGame;
                 color={synopsis.color}
             />
         </Grid>
-        <Grid xs={12} direction="row" css={{px: '$3', py:'$5', height: 'max-content'}}>    
+        <Grid xs={12} direction="row" css={{px: '$3', py:'$0', height: 'max-content'}}>    
             <Grid xs={12} sm={6} direction='column' css={{px: '$10', height: 'max-content', gap:'$15'}}>
                 {
                     (medio === 'Película') &&
@@ -314,72 +334,72 @@ const [type] = parsedVideoGame;
                         </>
                 }
             </Grid>
-            <Grid xs={12} sm={6} direction='column' css={{px: '$10', height: 'max-content', gap:'$15'}}>
+            <Grid xs={12} sm={6} direction='column' css={{px: '$12',py:'$15', height: 'max-content', gap:'$18'}}>
                 {
                    (medio === 'Película') &&
                     <>
-                        {/* <DropdownRegister
+                        <DropdownRegister
                             listkeys={directors!}
                             selected={director.description}
                             setValue={setDirector}
-                            width={60} 
-                        /> */}
-                        {/* <DropdownRegister
-                            listkeys={audioVisualTypes!}
+                            width={100} 
+                        />
+                        <DropdownRegister
+                            listkeys={data.AudioVisualTypes!}
                             selected={audioVisualType.description}
                             setValue={setAudioVisualType}
-                            width={60} 
-                        /> */}
-                        {/* <DropdownRegister
-                            listkeys={companies!}
+                            width={100} 
+                        />
+                        <DropdownRegister
+                            listkeys={data.companies!}
                             selected={companyDist.description}
                             setValue={setCompanyDist}
-                            width={60} 
-                        /> */}
+                            width={100} 
+                        />
                     </> 
                 }
                 {
                     (medio === 'Serie') &&
                         <>
-                            {/* <DropdownRegister
+                            <DropdownRegister
                                 listkeys={creators!}
                                 selected={creator.description}
                                 setValue={setCreator}
-                                width={60} 
+                                width={100} 
                             />
                             <DropdownRegister
-                                listkeys={audioVisualTypes!}
+                                listkeys={data.AudioVisualTypes!}
                                 selected={audioVisualType.description}
                                 setValue={setAudioVisualType}
-                                width={60} 
-                            /> */}
+                                width={100} 
+                            />
                         </>
                 }
                 {
                     (medio === 'Video-juego') &&
                         <>
-                            {/* <DropdownRegister
-                                listkeys={companies!}
+                            <DropdownRegister
+                                listkeys={data.companies!}
                                 selected={companyPublisher.description}
                                 setValue={setCompanyPublisher}
-                                width={60} 
-                            /> */}
+                                width={100} 
+                            />
                         </>
                 }
             </Grid>     
         </Grid>
         <Grid xs ={12} alignContent='flex-end' alignItems='flex-start' direction='row-reverse'>
           <Button
-            //   disabled={
-            //     !allowSubmit || isLoading || (hairColor.description === 'Color Cabello') ||
-            //     (eyeColor.description === 'Color Ojos') || (nacionalities.length === 0) || (occuptations.length === 0) ||
-            //     ((character==='Hero') && (!allowHeroSubmit || !(villain.description !== 'Archienemigo') || (suitColors.length === 0))) ||
-            //     ( (character==='Villain') && !allowVillainSubmit )
-            //   }
-            //   onPress={onSubmit}
+              disabled={
+                !allowSubmit || isLoading || (companyProducer.description === 'Compañia Productora') ||
+                ((medio==='Película') && ( !(director.description !== 'Director') || !(audioVisualType.description !== 'Tipo AudioVisual') || !(companyDist.description !== 'Compañia Distribuidora'))) ||
+                ((medio==='Serie') && (!allowSerieSubmit || !(creator.description !== 'Creador') || !(audioVisualType.description !== 'Tipo AudioVisual'))) ||
+                ((medio==='Video-juego') && (!allowVideoGameSubmit || !(companyPublisher.description !== 'Compañia Publicadora')))
+              }
+              onPress={onSubmit}
               size='lg'
           >
-              {!isLoading ? 'Crear Personaje' : <Loading type='points'/>}
+              {!isLoading ? 'Crear Medio' : <Loading type='points'/>}
           </Button>
         </Grid>
       </Grid.Container> 

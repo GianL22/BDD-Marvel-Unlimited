@@ -75,7 +75,7 @@ const PowersDetailsPage: NextPage<Props>= ( {power} ) => {
   return (
     <AppLayout 
       title='Creación de Poderes'
-      description='Pagina administrativa de Tienda'
+      description='Pagina administrativa de Marvel United'
     >
       <Flex
         css={{'mt': '$5', 'px': '$6','@sm': {mt: '$10',px: '$16',}}}
