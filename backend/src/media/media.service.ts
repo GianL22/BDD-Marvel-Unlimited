@@ -269,6 +269,55 @@ export class MediaService {
       throw new NotFoundException(`El personaje: ${id} tiene otras relaciones`)
     }    
   }
+
+  async reportSerie() : Promise<Serie[]>{
+
+
+    const querybuilder = this.serieRepository.createQueryBuilder('serie')
+
+    const series = await querybuilder
+    .select()
+    .where(
+      `serie.episodes > ${querybuilder
+        .subQuery()
+        .select('AVG(episodes)')
+        .from(Serie, 'serie')
+        .getQuery()}`
+    )
+    .getMany();
+
+    return series
+  
+  }
+
+
+  async reportMovie() : Promise<Movie[]>{
+
+    const querybuilder = this.movieRepository.createQueryBuilder('movie')
+    
+    const { id } = await this.audiovisualTypeRepository.findOneByOrFail({
+      description : 'animacion' //por cambiar
+    })
+
+
+    const movies = await querybuilder
+    .select()
+    .where(`"audioVisualType" = '${id}'`)
+    .andWhere(`"duration" > '150'`)
+    .andWhere(`"revenue" > ${querybuilder
+      .subQuery()
+      .select('AVG("revenue")')
+      .from(Movie, 'movie')
+      .getQuery()}`
+      )
+    .getMany();
+
+    return movies
+  
+  }
+
+
+
   // findOne(id: number) {
   //   return `This action returns a #${id} media`;
   // }

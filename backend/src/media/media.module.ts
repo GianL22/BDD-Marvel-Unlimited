@@ -16,5 +16,9 @@ import { PersonsModule } from 'src/persons/persons.module';
     PersonsModule
   ],
 
+  exports : [
+    MediaService
+  ]
+
 })
 export class MediaModule {}
