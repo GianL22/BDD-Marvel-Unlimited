@@ -28,6 +28,10 @@ export class ObjectsService {
     return await this.objectsRepository.find();
   }
 
+  async findOneById(id: string): Promise<Objects>{
+    return await this.objectsRepository.findOneByOrFail({id})
+  }
+
   async updateObject(id: string, updateObjectInput: UpdateObjectInput): Promise<Objects> {
     try {
       const object = await this.objectsRepository.preload({ ...updateObjectInput, id  })

@@ -30,6 +30,13 @@ export class PowersResolver {
     return this.powersService.findAll();
   }
 
+  @Query(() => Power, { name: 'powerBy' })
+  async findPowerById(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+  ): Promise<Power> {
+    return this.powersService.findOneById(id);
+  }
+
   @Mutation(() => Power, {name: 'updatePower'})
   async update(
     @Args('updatePowerInput') updatePowerInput: UpdatePowerInput, 

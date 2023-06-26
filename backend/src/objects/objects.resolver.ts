@@ -36,6 +36,13 @@ export class ObjectsResolver {
     return this.objectsService.findAllObjects();
   }
 
+  @Query(() => Objects, { name: 'objectById' })
+  async findOneObject(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+  ): Promise<Objects> {
+    return this.objectsService.findOneById(id);
+  }
+
   @Query(() => [ObjectsType], { name: 'objectsType' })
   async findAllObjectsType(): Promise<ObjectsType[]> {
     return this.objectsService.findAllObjectsType();
