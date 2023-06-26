@@ -72,6 +72,13 @@ type AuthResponse {
   user: User!
 }
 
+
+type Nacionality {
+  id: ID!
+  name: String!
+}
+
+=======
 type Medio {
   id: ID!
   companyProduction: Company!
@@ -154,7 +161,8 @@ type MediaResponse {
   series: [Serie!]
   movies: [Movie!]
   videoGames: [VideoGame!]
-=======
+}
+
 type Villain {
   character: Character!
   name: String!
@@ -165,6 +173,7 @@ type Villain {
   firstApparition: String!
   nameVillain: String!
   objective: String!
+  suitColors: [Villain!]!
 }
 
 type Hero {
@@ -178,6 +187,7 @@ type Hero {
   nameHero: String!
   logo: String!
   archEnemy: Villain!
+  suitColors: [Color!]!
 }
 
 type Civil {
@@ -192,10 +202,47 @@ type Civil {
   villain: Villain
 }
 
+type UsePower {
+  type: String!
+  inherited: Boolean!
+  power: Power!
+}
+
+type Power {
+  id: ID!
+  name: String!
+  description: String!
+  villain: [Villain!]!
+  powerName: String!
+  powerDescription: String!
+}
+
+type ObjectsType {
+  id: ID!
+  description: String!
+}
+
+type Objects {
+  id: ID!
+  name: String!
+  description: String!
+  material: String!
+  objectTypeId: ObjectsType!
+}
+
+type Occupation {
+  id: ID!
+  name: String!
+}
+
 type Character {
   id: ID!
   eyeColor: Color!
   hairColor: Color!
+  nacionalities: [Nacionality!]!
+  objects: [Objects!]!
+  occupations: [Occupation!]!
+  powers: [UsePower!]!
 }
 
 type Color {
@@ -203,7 +250,7 @@ type Color {
   description: String!
 }
 
-type CharacterResponse {
+type CharactersResponse {
   hero: [Hero!]
   villain: [Villain!]
   civil: [Civil!]
@@ -220,8 +267,14 @@ type Query {
   membership(id: String!): Membership!
   revalite: AuthResponse!
   colors: [Color!]!
-  findCharacters: CharacterResponse!
+  findCharacters: CharactersResponse!
+  nacionality: [Nacionality!]!
+  objects: [Objects!]!
+  objectsType: [ObjectsType!]!
+  occupations: [Occupation!]!
   reportSuscription: [Suscription!]!
+  reportInheritedPowers: [Power!]!
+  Powers: [Power!]!
   persons: PersonsResponse!
   companies: [Company!]!
   media: MediaResponse!
@@ -229,6 +282,7 @@ type Query {
   serie(id: String!): Serie!
   movie(id: String!): Movie!
   videoGame(id: String!): VideoGame!
+
 }
 
 type Mutation {
@@ -262,7 +316,16 @@ type Mutation {
   updateVillain(updateVillainInput: UpdateVillainInput!): Villain!
   updateCivil(updateCivilInput: UpdateCivilInput!): Civil!
   removeCharacter(id: ID!): Boolean!
-
+  createNacionality(createNacionalityInput: CreateNacionalityInput!): Nacionality!
+  createObject(createObjectInput: CreateObjectInput!): Objects!
+  updateObject(updateObjectInput: UpdateObjectInput!): Objects!
+  removeObject(id: ID!): Boolean!
+  createOccupation(createOccupationInput: CreateOccupationInput!): Occupation!
+  createPower(createPowerInput: CreatePowerInput!): Power!
+  updatePower(updatePowerInput: UpdatePowerInput!): Power!
+  removePower(id: ID!): Boolean!
+  updateCharacterPower(updateUsePowerInput: UpdateUsePowerInput!): UsePower!
+  removePowerFromCharacter(characterId: ID!, powerId: ID!): Boolean!
 }
 
 input UpdateUserInput {
@@ -417,6 +480,13 @@ enum TypeMaritialStatus {
 input CreateCharacterInput {
   eyeColor: String!
   hairColor: String!
+  nacionalities: [RelationsInput!]!
+  objects: [RelationsInput!]
+  occupations: [RelationsInput!]!
+}
+
+input RelationsInput {
+  id: ID!
 }
 
 input CreateHeroInput {
@@ -429,6 +499,7 @@ input CreateHeroInput {
   nameHero: String!
   logo: String!
   archEnemy: String!
+  suitColors: [RelationsInput!]!
 }
 
 input CreateCivilInput {
@@ -452,9 +523,13 @@ input UpdateHeroInput {
   nameHero: String
   logo: String
   archEnemy: String
+  suitColors: [RelationsInput!]
   id: ID!
   eyeColor: String
   hairColor: String
+  nacionalities: [RelationsInput!]
+  objects: [RelationsInput!]
+  occupations: [RelationsInput!]
 }
 
 input UpdateVillainInput {
@@ -469,6 +544,9 @@ input UpdateVillainInput {
   id: ID!
   eyeColor: ID
   hairColor: ID
+  nacionalities: [RelationsInput!]
+  objects: [RelationsInput!]
+  occupations: [RelationsInput!]
 }
 
 input UpdateCivilInput {
@@ -483,4 +561,53 @@ input UpdateCivilInput {
   id: ID!
   eyeColor: ID
   hairColor: ID
+  nacionalities: [RelationsInput!]
+  objects: [RelationsInput!]
+  occupations: [RelationsInput!]
+}
+
+input CreateNacionalityInput {
+  name: String!
+}
+
+input CreateObjectInput {
+  name: String!
+  description: String!
+  material: String!
+  objectTypeId: String!
+}
+
+input UpdateObjectInput {
+  name: String
+  description: String
+  material: String
+  objectTypeId: String
+  id: ID!
+}
+
+input CreateOccupationInput {
+  name: String!
+}
+
+input CreatePowerInput {
+  name: String!
+  description: String!
+}
+
+input UpdatePowerInput {
+  name: String
+  description: String
+  id: ID!
+}
+
+input UpdateUsePowerInput {
+  powerId: ID
+  type: TypePower
+  inherited: Boolean
+  characterId: ID!
+}
+
+enum TypePower {
+  Natural
+  Artificial
 }

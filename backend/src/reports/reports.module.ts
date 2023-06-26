@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ReportsResolver } from './reports.resolver';
-import { UsersModule } from 'src/users/users.module';
-import { MembershipsModule } from 'src/memberships/memberships.module';
 import { SuscriptionModule } from 'src/suscription/suscription.module';
 import { MediaModule } from 'src/media/media.module';
+import { PowersModule } from 'src/powers/powers.module';
 
 @Module({
   providers: [ ReportsResolver ],
   imports : [
     SuscriptionModule,
     MediaModule
+    PowersModule,
   ]
 
 })

@@ -39,7 +39,7 @@ const ReportsPage: NextPage = () => {
                 
             >
                 <Link href='' css={{'minWidth': '100%',}}>
-                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
+                    <Button disabled auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Lideres con Poderes Artificiales
                     </Button>
                 </Link>
@@ -47,7 +47,7 @@ const ReportsPage: NextPage = () => {
                 <Spacer y={4}/>
 
                 <Link href='' css={{'minWidth': '100%'}}>
-                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
+                    <Button disabled auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Objetos de Superhéroes y Supervillanos
                     </Button>
                 </Link>
@@ -93,7 +93,7 @@ const ReportsPage: NextPage = () => {
 
 
                 <Link href='' css={{'minWidth': '100%',}}>
-                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
+                    <Button disabled auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Locaciones de Combate
                     </Button>
                 </Link>
@@ -101,7 +101,7 @@ const ReportsPage: NextPage = () => {
                 <Spacer y={4}/>
 
 
-                <Link href='' css={{'minWidth': '100%',}}>
+                <Link href='reports/inheritedPowers' css={{'minWidth': '100%',}}>
                     <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Poderes Heredados "Super" en Villanos
                     </Button>
@@ -110,7 +110,7 @@ const ReportsPage: NextPage = () => {
                 <Spacer y={4}/>
 
                 <Link href='' css={{'minWidth': '100%'}}>
-                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
+                    <Button disabled auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
                         Jugando al Límite
                     </Button>
                 </Link>

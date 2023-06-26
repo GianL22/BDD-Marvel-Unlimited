@@ -9,5 +9,5 @@ export enum TypeMaritialStatus{
     Soltero = 'Soltero', 
     Casado = 'Casado', 
     Viudo = 'Viudo', 
-    Divorcio = 'Divorciado'
+    Divorciado = 'Divorciado'
 }

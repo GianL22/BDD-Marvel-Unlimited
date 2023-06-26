@@ -3,7 +3,7 @@ import { CharactersService } from './characters.service';
 import { Character } from './entities/character.entity';
 import { CreateCharacterInput, CreateCivilInput, CreateHeroInput, CreateVillainInput, UpdateCivilInput, UpdateHeroInput, UpdateVillainInput } from './dto/inputs';
 import { Civil, Hero, Villain } from './entities';
-import { CharacterResponse } from './types/character-response.type';
+import { CharactersResponse } from './types/characters-response.type';
 import { ParseUUIDPipe } from '@nestjs/common';
 
 @Resolver(() => Character)
@@ -36,8 +36,8 @@ export class CharactersResolver {
     return this.charactersService.createCivil(createCivilInput, createCharacterInput);
   }
 
-  @Query(() => CharacterResponse, { name: 'findCharacters' })
-  async findCharacters(): Promise<CharacterResponse> {
+  @Query(() => CharactersResponse, { name: 'findCharacters' })
+  async findCharacters(): Promise<CharactersResponse> {
     return this.charactersService.findCharacters();
   }
 

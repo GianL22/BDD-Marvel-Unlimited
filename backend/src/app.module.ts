@@ -16,6 +16,10 @@ import { CountriesModule } from './countries/countries.module';
 import { ColorsModule } from './colors/colors.module';
 import { CharactersModule } from './characters/characters.module';
 import { ReportsModule } from './reports/reports.module';
+import { PowersModule } from './powers/powers.module';
+import { ObjectsModule } from './objects/objects.module';
+import { NacionalityModule } from './nacionality/nacionality.module';
+import { OccupationsModule } from './occupations/occupations.module';
 import { PersonsModule } from './persons/persons.module';
 import { CompaniesModule } from './companies/companies.module';
 import { MediaModule } from './media/media.module';
@@ -64,11 +68,20 @@ import { MediaModule } from './media/media.module';
 
     ReportsModule,
 
+    PowersModule,
+
+    ObjectsModule,
+
+    NacionalityModule,
+
+    OccupationsModule,
+
     PersonsModule,
 
     CompaniesModule,
 
     MediaModule,
+
 
   ],
   controllers: [],

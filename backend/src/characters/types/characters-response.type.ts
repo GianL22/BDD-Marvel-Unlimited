@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Civil, Hero, Villain } from '../entities';
 
 @ObjectType()
-export class CharacterResponse {
+export class CharactersResponse {
 
     @Field( () => [Hero], {nullable: true} )
     hero?: Hero[];

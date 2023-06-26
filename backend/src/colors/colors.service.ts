@@ -35,4 +35,8 @@ export class ColorsService {
     return await this.colorsRepository.find() ;
   }
 
+  async findOneBy(id: string): Promise<Color> {
+    return await this.colorsRepository.findOneBy({id}) ;
+  }
+
 }
