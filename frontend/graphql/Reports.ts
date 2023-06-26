@@ -13,3 +13,15 @@ export const GetUpgragePremiumReport = gql`
         }
     }
 `;
+
+export const GetInheritedPowersReport = gql`
+    query ReportInheritedPowers {
+            reportInheritedPowers {
+                powerName
+                powerDescription
+                villain {
+                    nameVillain
+            }
+        }
+    }
+`;
