@@ -1,12 +1,8 @@
-import { useForm } from '@/hooks/useForm';
-import { Button, Image, Modal, Row, Text, Col, Grid, Input, useTheme, Loading, Checkbox, Spacer, Divider, Tooltip } from '@nextui-org/react'
+import { Button, Modal, Row, Text, Col, Grid, useTheme, Checkbox, Divider } from '@nextui-org/react'
 import { FC, useState } from 'react';
-import { ArrowRightCircle, ArrowLeftCircle, DeleteCircle  } from 'iconoir-react'
+import { DeleteCircle  } from 'iconoir-react'
 import { Notification } from '@/notification';
-import { useMutation, useQuery } from '@apollo/client';
-import { CreateProfile } from '@/graphql';
-import { Profile } from '@/models/Client';
-import { DeleteProfile, UpdateProfile } from '@/graphql/Profile';
+import { useQuery } from '@apollo/client';
 import { RadioRegister } from '../radio/RadioRegister';
 import { DropdownRegister } from '../dropdown/DropdownRegister';
 import { GetAllPowers } from '@/graphql/Powers';
@@ -146,7 +142,6 @@ export const PowerModal: FC<Props> = ( {powers, setPowers,bindings, setVisible} 
                                  <Text> {(power.inherited) ? 'Si': 'No'}   </Text>
                               </Col>
                               <Col>
-
                                  <IconButton 
                                     color='#ED1D24'
                                     onClick={() => handleDelete(power.powerId)}

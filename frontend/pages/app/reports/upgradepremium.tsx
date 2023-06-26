@@ -6,13 +6,14 @@ import { AppLayout } from '@/layouts/AppLayout'
 import { TableWrapper } from '../../../components/table/index';
 import { CellCalculation } from '@/components/table/CellCalculation';
 import { GetUpgragePremiumReport } from '@/graphql/Reports';
+import { ReportUpgradeCellReducer } from '@/components/table/cell-reducers';
 
 const columns = [
-  {label: 'Nombre', uid: 'name'},
-  {label: 'Apellido', uid: 'lastName'},
-  {label: 'Fecha Suscripción ', uid: 'dateSuscription'},
-  {label: 'Fecha Fin', uid: 'dateEnd'},
-  {label: 'Correo', uid: 'email'},
+  {label: 'NOMBRE', uid: 'name'},
+  {label: 'APELLIDO', uid: 'lastName'},
+  {label: 'F. SUSCRIPCIÓN ', uid: 'dateSuscription'},
+  {label: 'F. FIN', uid: 'dateEnd'},
+  {label: 'CORREO', uid: 'email'},
 ]
 
 interface User {
@@ -67,10 +68,14 @@ const UpgradePremiumReportPage: NextPage = () => {
           </Grid>
           
           <Grid css={{margin:'$8', minWidth:'90%', maxWidth:'600px', display: 'inline-grid'}}>
-            <TableWrapper columns={columns} rows={users!}/>
+            <TableWrapper 
+              columns={columns} 
+              rows={users!}
+              cellReducer={ ReportUpgradeCellReducer }
+            />
           </Grid>
           
-          <Grid.Container gap={10} direction='row' justify='flex-start'>
+          <Grid.Container gap={5} direction='row' justify='flex-start'>
             <Grid css={{maxW:'max-content'}}>
               <CellCalculation label='Total Upgrades' value={(users) ? users.length.toString() : '0'}/>
             </Grid>

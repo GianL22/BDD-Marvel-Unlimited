@@ -1,6 +1,6 @@
 import { useForm } from '@/hooks/useForm';
 import { Button, Image, Modal, Row, Text, Col, Grid, Input, useTheme, Loading, Checkbox, Spacer } from '@nextui-org/react'
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ArrowRightCircle, ArrowLeftCircle  } from 'iconoir-react'
 import { Notification } from '@/notification';
 import { useMutation } from '@apollo/client';
@@ -8,6 +8,7 @@ import { CreateProfile } from '@/graphql';
 import { Profile } from '@/models/Client';
 import { DeleteProfile, UpdateProfile } from '@/graphql/Profile';
 import { RadioRegister } from '../radio/RadioRegister';
+import { IconButton } from '../table/IconButton';
 
 interface Props {
    bindings: {
@@ -27,6 +28,10 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
    const {isDark} = useTheme()
    const [avatar,setAvatar] = useState((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')));
    const [avatarPath,setAvatarPath] = useState((!profile?.avatar) ? '' : profile?.avatar);
+
+   useEffect(() => {
+     setAvatar((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')))
+   }, [bindings])
 
    const handleAdd = () => {
       if(avatar < 5)
@@ -191,13 +196,9 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                   />
                   <Row  gap={2} css={{width: 'fit-content', justifyContent: 'center'}}>
                      <Col>
-                        <Button 
-                           icon={<ArrowLeftCircle fontSize={'20px'} color='#ED1D24'/>}
-                           light
-                           auto
-                           size={'sm'} 
-                           onPress={handleTakeOut}
-                        />
+                        <IconButton onClick={handleTakeOut}> 
+                           <ArrowLeftCircle fontSize={'20px'} color='#ED1D24'/>
+                        </IconButton>
                      </Col>
                      <Col>
                         <Button 
@@ -210,13 +211,9 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                         </Button>
                      </Col>
                      <Col>
-                        <Button 
-                           size={'sm'}
-                           auto
-                           light
-                           iconRight= { <ArrowRightCircle fontSize={'20px'} color='#ED1D24' /> }
-                           onPress={handleAdd}
-                        />
+                        <IconButton onClick={handleAdd}>
+                           <ArrowRightCircle fontSize={'20px'} color='#ED1D24' />
+                        </IconButton>
                      </Col>
                   </Row>
                </Grid>

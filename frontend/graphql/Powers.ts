@@ -39,3 +39,19 @@ query Powers {
   }
 }
 `
+
+export const GetPowers = gql`
+query Powers {
+  Powers {
+    id
+    name
+    description
+  }
+}
+`
+
+export const DeletePowerById = gql`
+mutation Mutation($removePowerId: ID!) {
+  removePower(id: $removePowerId)
+}
+`

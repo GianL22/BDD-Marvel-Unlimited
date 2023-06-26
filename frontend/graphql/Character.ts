@@ -47,3 +47,46 @@ mutation CreateHero($createCivilInput: CreateCivilInput!, $createCharacterInput:
   }
 }
 `
+
+export const GetAllCharacters = gql`
+query Query {
+  findCharacters {
+    hero {
+      character {
+        id
+      }
+      name
+      lastName
+      gender
+      maritialStatus
+      firstApparition
+    }
+    villain {
+      character {
+        id
+      }
+      name
+      lastName
+      gender
+      maritialStatus
+      firstApparition
+    }
+    civil {
+      character {
+        id
+      }
+      name
+      lastName
+      gender
+      maritialStatus
+      firstApparition
+    }
+  }
+}
+`;
+
+export const RemoveCharacter = gql`
+mutation Mutation($removeCharacterId: ID!) {
+  removeCharacter(id: $removeCharacterId)
+}
+`;

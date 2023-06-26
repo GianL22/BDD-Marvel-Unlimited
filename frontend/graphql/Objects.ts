@@ -49,3 +49,23 @@ mutation UpdateObject($updateObjectInput: UpdateObjectInput!) {
     }
   }
 `
+export const DeleteObjectById = gql`
+mutation Mutation($removePowerId: ID!) {
+  removePower(id: $removePowerId)
+}
+`
+
+export const GetAllObject = gql`
+query Query {
+  objects {
+    id
+    name
+    description
+    material
+    objectTypeId {
+      id
+      description
+    }
+  }
+}
+`;

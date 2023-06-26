@@ -21,3 +21,28 @@ query Nacionality {
     }
   }
 `
+
+export const GetInformationToCreateMedio = gql`
+query AudioVisualTypes {
+  AudioVisualTypes {
+    id
+    description
+  }
+  companies {
+    id
+    description
+  }
+  persons {
+    directors {
+      id
+      name
+      lastName
+    }
+    creators {
+      id
+      name
+      lastName
+    }
+  }
+}
+`

@@ -6,6 +6,7 @@ import { AppLayout } from '@/layouts/AppLayout'
 import { TableWrapper } from '../../../components/table/index';
 import { CellCalculation } from '@/components/table/CellCalculation';
 import { GetInheritedPowersReport } from '@/graphql/Reports';
+import { ReportInheritedPowersCellReducer } from '@/components/table/cell-reducers';
 
 const columns = [
   {label: 'PODER', uid: 'powerName'},
@@ -32,8 +33,6 @@ const InheritedPowersReportPage: NextPage = () => {
     const { data , error} = useQuery<ReportResponse>(GetInheritedPowersReport,{
       pollInterval: 1000
     })
-
-    console.log(data)
 
     const powers = useMemo(() => (
         data?.reportInheritedPowers.map(({villain, ...rest},i) => ({
@@ -63,10 +62,14 @@ const InheritedPowersReportPage: NextPage = () => {
           </Grid>
           
           <Grid css={{margin:'$8', minWidth:'100%', maxWidth:'600px', display: 'inline-grid'}}>
-            <TableWrapper columns={columns} rows={powers!}/>
+            <TableWrapper 
+              columns={columns} 
+              rows={powers!}
+              cellReducer={ReportInheritedPowersCellReducer}
+            />
           </Grid>
           
-          <Grid.Container gap={10} direction='row' justify='flex-start'>
+          <Grid.Container gap={2} direction='row' justify='flex-start'>
             <Grid css={{maxW:'max-content'}}>
               <CellCalculation label='Total de Poderes' value={(powers) ? powers.length.toString() : '0'}/>
             </Grid>
