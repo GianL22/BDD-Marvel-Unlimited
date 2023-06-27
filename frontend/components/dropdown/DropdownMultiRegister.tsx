@@ -35,14 +35,12 @@ export const DropdownMultiRegister : FC<DropdownRegisterProps> = ({listkeys = []
     [selected]
   );
 
-
   return (
     <Dropdown>
-      <Dropdown.Button color = {'primary'} css={{ tt: "capitalize", width : `${width}%`, m: '2px' }}>
+      <Dropdown.Button color={selected.length !== 0 ? 'success' : 'primary'} css={{ tt: "capitalize", width : `${width}%`, m: '2px' }}>
         { (selected.length === 0) ? label : selectedValue}
       </Dropdown.Button>
       <Dropdown.Menu
-        
         aria-label="Multiple selection actions"
         color="secondary"
         disallowEmptySelection

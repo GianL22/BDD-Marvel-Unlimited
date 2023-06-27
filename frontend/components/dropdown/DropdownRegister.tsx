@@ -10,20 +10,20 @@ interface DropdownRegisterProps {
     listkeys: Data[];
     selected : string;
     setValue :(value: any) => void;
-    width?: number 
+    width?: number ;
+    check?: string
 }
 
-export const DropdownRegister : FC<DropdownRegisterProps> = ({listkeys = [], selected, setValue, width = 100}) => {
+export const DropdownRegister : FC<DropdownRegisterProps> = ({listkeys = [], selected, setValue, width = 100, check = ''}) => {
 
   const onSelectKey = (value : string) => {
     const onValue = listkeys.find((list) => list.description === value)
     if ( !onValue ) return;
     setValue(onValue)
   }
-
   return (
     <Dropdown >
-      <Dropdown.Button color = {'primary'}  css={{ tt: "capitalize", width : `${width}%`, m: '2px' }}>
+      <Dropdown.Button color={selected !== check ? 'success' : 'primary'}  css={{ tt: "capitalize", width : `${width}%`, m: '2px' }}>
         {selected}
       </Dropdown.Button>
       <Dropdown.Menu
