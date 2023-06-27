@@ -21,27 +21,27 @@ const PowersDetailsPage: NextPage<Props>= ( {power} ) => {
     const [updatePower] = useMutation(UpdatePower);
 
     const onSubmit = async () => {
-        setIsLoading(true)
-        Notification(isDark).fire({
-            title: 'Cargando',
-            icon: 'info',
-        })
+      setIsLoading(true)
+      Notification(isDark).fire({
+          title: 'Cargando',
+          icon: 'info',
+      })
         try {
-            await updatePower({
-                variables: {
-                  updatePowerInput: {
-                    id: power.powerBy.id,
-                    name: name.value,
-                    description: description.value
-                  },
+          await updatePower({
+              variables: {
+                updatePowerInput: {
+                  id: power.powerBy.id,
+                  name: name.value,
+                  description: description.value
                 },
-            });
-            // setTimeout(() => replace('/dashboard/objects/create'),500)
-            Notification(isDark).fire({
-                title: 'Poder Actualizado',
-                icon: 'success',
-            })
-            setIsLoading(false)
+              },
+          });
+          Notification(isDark).fire({
+            title: 'Poder Actualizado',
+            icon: 'success',
+          })
+          setTimeout(() => replace('/dashboard/powers'),500)
+          setIsLoading(false)
         } catch (error: any) {
             Notification(isDark).fire({
                 title: error.message,
@@ -53,18 +53,18 @@ const PowersDetailsPage: NextPage<Props>= ( {power} ) => {
     }
   const {allowSubmit,parsedFields} = useForm([
       {
-          name: 'name',
-          validate: (value: string) => value.trim().length >= 3,
-          validMessage: '',
-          errorMessage: 'Minimo 3 caracteres',
-          initialValue: power.powerBy.name,
+        name: 'name',
+        validate: (value: string) => value.trim().length >= 3,
+        validMessage: '',
+        errorMessage: 'Minimo 3 caracteres',
+        initialValue: power.powerBy.name,
       },
       {
-          name: 'description',
-          validate: (value: string) => value.trim().length >= 10,
-          validMessage: '',
-          errorMessage: 'Minimo 10 caracteres',
-          initialValue: power.powerBy.description,
+        name: 'description',
+        validate: (value: string) => value.trim().length >= 10,
+        validMessage: '',
+        errorMessage: 'Minimo 10 caracteres',
+        initialValue: power.powerBy.description,
       },
   ])
   const [name,description] = parsedFields;
@@ -91,30 +91,30 @@ const PowersDetailsPage: NextPage<Props>= ( {power} ) => {
         <Spacer y={2}/>
         <Grid alignContent='space-between' alignItems='center' xs={ 12 } sm={ 12 } direction="column">
             <Row css={{width:'100%'}}>
-                <Input
-                    bordered
-                    labelPlaceholder="Nombre Objeto"
-                    css={{width:'50%'}}
-                    value={name.value}
-                    onChange={(e) => name.setValue(e.target.value)}
-                    helperText={name.message}
-                    helperColor={name.color}
-                    status={name.color}
-                    color={name.color}
-                />
+              <Input
+                bordered
+                labelPlaceholder="Nombre Objeto"
+                css={{width:'50%'}}
+                value={name.value}
+                onChange={(e) => name.setValue(e.target.value)}
+                helperText={name.message}
+                helperColor={name.color}
+                status={name.color}
+                color={name.color}
+              />
             </Row>
             <Spacer y={2.5}/>
             <Row>
-                <Textarea 
-                    labelPlaceholder="Descripción" 
-                    status= {description.color}  
-                    css={{width: '95%'}}
-                    value={description.value}
-                    onChange={(e) => description.setValue(e.target.value)}
-                    helperText={description.message}
-                    helperColor={description.color}
-                    color={description.color}
-                />
+              <Textarea 
+                labelPlaceholder="Descripción" 
+                status= {description.color}  
+                css={{width: '95%'}}
+                value={description.value}
+                onChange={(e) => description.setValue(e.target.value)}
+                helperText={description.message}
+                helperColor={description.color}
+                color={description.color}
+              />
             </Row>
         </Grid>
         <Spacer y={4.5} />

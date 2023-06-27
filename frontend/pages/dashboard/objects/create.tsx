@@ -42,12 +42,12 @@ const ObjectsCreatePage= ( ) => {
                     },
                 },
             });
-            // setTimeout(() => replace('/dashboard/objects/create'),500)
             Notification(isDark).fire({
                 title: 'Objecto creado',
                 icon: 'success',
             })
             setIsLoading(false)
+            setTimeout(() => replace('/dashboard/objects'),500)
         } catch (error: any) {
             Notification(isDark).fire({
                 title: error.message,
@@ -61,21 +61,21 @@ const ObjectsCreatePage= ( ) => {
       {
           name: 'name',
           validate: (value: string) => value.trim().length >= 3,
-          validMessage: '',
+          validMessage: 'Nombre Valido',
           errorMessage: 'Minimo 3 caracteres',
           initialValue: '',
       },
       {
           name: 'description',
           validate: (value: string) => value.trim().length >= 10,
-          validMessage: '',
+          validMessage: 'Descripción Valida',
           errorMessage: 'Minimo 10 caracteres',
           initialValue: '',
       },
       {
         name: 'material',
         validate: (value: string) => value.trim().length >= 3,
-        validMessage: '',
+        validMessage: 'Material Valido',
         errorMessage: 'Minimo 3 caracteres',
         initialValue: '',
     },
@@ -97,7 +97,7 @@ const ObjectsCreatePage= ( ) => {
         </Text>
       </Flex>
 
-      <Grid.Container gap={4} justify="center" direction="column" css={{width:'80%'}} >
+      <Grid.Container gap={4} justify="center" direction="column" css={{width:'100%'}} >
         <Spacer y={2}/>
         <Grid alignContent='space-between' alignItems='center' xs={ 12 } sm={ 12 } direction="column">
             <Row css={{width:'100%'}}>
@@ -147,20 +147,13 @@ const ObjectsCreatePage= ( ) => {
                         selected={objectType.description}
                         setValue={setObjectType}
                         width={90} 
+                        check='Tipos Objetos'
                     />
                 </Col>
             </Row>
         </Grid>
         <Spacer y={5} />
-        <Grid xs ={12} sm = {12} alignContent='space-between' alignItems='stretch' direction='row'>
-            <Button
-                // disabled={!allowSubmit || isLoading}
-                // onPress={onSubmit}
-                size='lg'
-            >
-                Añadir Tipo Objeto
-            </Button>
-            <Spacer x={29} />
+        <Grid xs ={12} sm = {12} alignContent='space-between' alignItems='stretch' direction='row-reverse'>
             <Button
                 disabled={!allowSubmit || isLoading || objectType.description === 'Tipos Objetos'}
                 onPress={onSubmit}

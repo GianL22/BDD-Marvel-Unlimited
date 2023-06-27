@@ -14,7 +14,7 @@ export class Serie{
   
     @OneToOne(
         () => Medio,
-        {nullable: false, lazy: true}
+        {nullable: false, lazy: true, onDelete: 'CASCADE'}
     )
     @JoinColumn({ name: "medioId", foreignKeyConstraintName:'medio_FK' })
     @Field(() => Medio)

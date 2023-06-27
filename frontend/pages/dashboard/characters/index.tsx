@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import type { NextPage } from 'next'
 import { Grid, Link, Loading, Text, useTheme } from '@nextui-org/react';
 import { TableWrapper } from '../../../components/table';
@@ -8,6 +8,7 @@ import { Notification } from '@/notification';
 import { Flex } from '@/components/containers';
 import { GetAllCharacters, RemoveCharacter } from '@/graphql/Character';
 import { CharactersCellReducer } from '@/components/table/cell-reducers/CharactersCellReducer';
+import { convertToShow } from '@/helpers/transformData';
 
 const columns = [
   { label: "Nombre", uid: "name" },
@@ -19,7 +20,7 @@ const columns = [
   { label: "Acciones", uid: "actions" },
 ];
 
-export interface ResponseData {
+export interface ResponseToShow {
   findCharacters: FindCharacters;
 }
 
@@ -29,7 +30,7 @@ interface FindCharacters {
   civil:   Characters[];
 }
 
-interface Characters {
+export interface Characters {
   character:       Character;
   name:            string;
   lastName:        string;
@@ -44,37 +45,14 @@ interface Character {
 
 const CharactersPage: NextPage = () => {
   const { isDark } = useTheme()
-  const { data , error} = useQuery<ResponseData>(GetAllCharacters,{
+  const { data , error, refetch} = useQuery<ResponseToShow>(GetAllCharacters,{
     pollInterval: 1000
   })
+  let characters = useMemo(() => convertToShow(data!), [data])
 
-  let characters: Characters[] = [];
-  data?.findCharacters.hero.forEach(hero => {
-    const character = {
-      ...hero,
-      id: hero.character.id,
-      type: "heroe"
-    };
-    characters.push(character);
-  });
-
-  data?.findCharacters.villain.forEach(villain => {
-    const character = {
-      ...villain,
-      id: villain.character.id,
-      type: "villano"
-    };
-    characters.push(character);
-  });
-  
-  data?.findCharacters.civil.forEach(civil => {
-    const character = {
-      ...civil,
-      id: civil.character.id,
-      type: "civil"
-    };
-    characters.push(character);
-  });
+  useEffect(() => {
+      characters = convertToShow(data!)
+  }, [data])
 
   const [deleteCharacterById] = useMutation(RemoveCharacter)
   const characterAction = async (id: string) => {
@@ -93,6 +71,7 @@ const CharactersPage: NextPage = () => {
         icon: 'success',
         timer: 3000
       })
+      await refetch()
     } catch (error: any) {
       Notification(isDark).fire({
         title: error.message,
@@ -114,7 +93,7 @@ const CharactersPage: NextPage = () => {
             <Flex wrap={'nowrap'} justify={'between'} >
               <Text h1 >Personajes</Text>
               <Link href='/dashboard/characters/create'>
-                Crear Objecto
+                Crear Personaje
               </Link>
             </Flex>
           </Grid>

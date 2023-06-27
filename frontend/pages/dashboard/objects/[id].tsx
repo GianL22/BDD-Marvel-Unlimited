@@ -32,59 +32,59 @@ const ObjectDetailsPage: NextPage<Props>= ({ object,objectsType} ) => {
     const [isLoading,setIsLoading] = useState(false);
     const [updateObject] = useMutation(UpdateObject);
     const onSubmit = async () => {
-        setIsLoading(true)
-        Notification(isDark).fire({
-            title: 'Cargando',
-            icon: 'info',
-        })
-        try {
-            await updateObject({
-                variables: {
-                    updateObjectInput: {
-                      id: object.objectById.id,
-                      name: name.value,
-                      description: description.value,
-                      material: material.value,
-                      objectTypeId: objectType.id,
-                    },
+      setIsLoading(true)
+      Notification(isDark).fire({
+          title: 'Cargando',
+          icon: 'info',
+      })
+      try {
+        await updateObject({
+            variables: {
+                updateObjectInput: {
+                  id: object.objectById.id,
+                  name: name.value,
+                  description: description.value,
+                  material: material.value,
+                  objectTypeId: objectType.id,
                 },
-            });
-            // setTimeout(() => replace('/dashboard/objects/create'),500)
-            Notification(isDark).fire({
-                title: 'Objecto actualizado',
-                icon: 'success',
-            })
-            setIsLoading(false)
-        } catch (error: any) {
-            Notification(isDark).fire({
-                title: error.message,
-                icon: 'error',
-                timer: 3000
-            })
-            setIsLoading(false)
-        }
+            },
+        });
+        Notification(isDark).fire({
+          title: 'Objecto actualizado',
+          icon: 'success',
+        })
+        setIsLoading(false)
+        setTimeout(() => replace('/dashboard/objects'),500)
+      } catch (error: any) {
+        Notification(isDark).fire({
+            title: error.message,
+            icon: 'error',
+            timer: 3000
+        })
+        setIsLoading(false)
+      }
     }
   const {allowSubmit,parsedFields} = useForm([
       {
-          name: 'name',
-          validate: (value: string) => value.trim().length >= 3,
-          validMessage: '',
-          errorMessage: 'Minimo 3 caracteres',
-          initialValue: object.objectById.name,
-      },
-      {
-          name: 'description',
-          validate: (value: string) => value.trim().length >= 10,
-          validMessage: '',
-          errorMessage: 'Minimo 10 caracteres',
-          initialValue: object.objectById.description,
-      },
-      {
-        name: 'material',
+        name: 'name',
         validate: (value: string) => value.trim().length >= 3,
         validMessage: '',
         errorMessage: 'Minimo 3 caracteres',
-        initialValue: object.objectById.material,
+        initialValue: object.objectById.name,
+      },
+      {
+        name: 'description',
+        validate: (value: string) => value.trim().length >= 10,
+        validMessage: '',
+        errorMessage: 'Minimo 10 caracteres',
+        initialValue: object.objectById.description,
+      },
+      {
+      name: 'material',
+      validate: (value: string) => value.trim().length >= 3,
+      validMessage: '',
+      errorMessage: 'Minimo 3 caracteres',
+      initialValue: object.objectById.material,
     },
   ])
   const [name,description, material] = parsedFields;
@@ -114,65 +114,64 @@ const ObjectDetailsPage: NextPage<Props>= ({ object,objectsType} ) => {
         <Spacer y={2}/>
         <Grid alignContent='space-between' alignItems='center' xs={ 12 } sm={ 12 } direction="column">
             <Row css={{width:'100%'}}>
-                <Input
-                    bordered
-                    labelPlaceholder="Nombre Objeto"
-                    css={{width:'50%'}}
-                    value={name.value}
-                    onChange={(e) => name.setValue(e.target.value)}
-                    helperText={name.message}
-                    helperColor={name.color}
-                    status={name.color}
-                    color={name.color}
-                />
+              <Input
+                bordered
+                labelPlaceholder="Nombre Objeto"
+                css={{width:'50%'}}
+                value={name.value}
+                onChange={(e) => name.setValue(e.target.value)}
+                helperText={name.message}
+                helperColor={name.color}
+                status={name.color}
+                color={name.color}
+              />
             </Row>
             <Spacer y={2.5}/>
             <Row>
-                <Textarea 
-                    labelPlaceholder="Descripción" 
-                    status= {description.color}  
-                    css={{width: '95%'}}
-                    value={description.value}
-                    onChange={(e) => description.setValue(e.target.value)}
-                    helperText={description.message}
-                    helperColor={description.color}
-                    color={description.color}
-                />
+              <Textarea 
+                labelPlaceholder="Descripción" 
+                status= {description.color}  
+                css={{width: '95%'}}
+                value={description.value}
+                onChange={(e) => description.setValue(e.target.value)}
+                helperText={description.message}
+                helperColor={description.color}
+                color={description.color}
+              />
             </Row>
             <Spacer y={2.5} />
             <Row>
-                <Col>
-                    <Input
-                        bordered
-                        labelPlaceholder="Material"
-                        css={{width:'90%'}}
-                        value={material.value}
-                        onChange={(e) => material.setValue(e.target.value)}
-                        helperText={material.message}
-                        helperColor={material.color}
-                        status={material.color}
-                        color={material.color}
-                    />
-                </Col>
-                <Col>
-                    <DropdownRegister
-                        listkeys={objectsType.objectsType!}
-                        selected={objectType.description}
-                        setValue={setObjectType}
-                        width={90} 
-                    />
-                </Col>
+              <Col>
+                <Input
+                  bordered
+                  labelPlaceholder="Material"
+                  css={{width:'90%'}}
+                  value={material.value}
+                  onChange={(e) => material.setValue(e.target.value)}
+                  helperText={material.message}
+                  helperColor={material.color}
+                  status={material.color}
+                  color={material.color}
+                />
+              </Col>
+              <Col>
+                <DropdownRegister
+                  listkeys={objectsType.objectsType!}
+                  selected={objectType.description}
+                  setValue={setObjectType}
+                  width={90} 
+                />
+              </Col>
             </Row>
         </Grid>
         <Spacer y={5} />
-        <Grid xs ={12} sm = {12} alignContent='space-between' alignItems='stretch' direction='row'>
-            <Spacer x={43} />
-            <Button
-                disabled={!allowSubmit  || isLoading  || (!infoChanged)}
-                onPress={onSubmit}
-            >
-                    {!isLoading ? 'Actualizar' : <Loading type='points'/>}
-            </Button>
+        <Grid xs ={12} sm = {12} alignContent='space-between' alignItems='stretch' direction='row-reverse'>
+          <Button
+            disabled={!allowSubmit  || isLoading  || (!infoChanged)}
+            onPress={onSubmit}
+          >
+            {!isLoading ? 'Actualizar' : <Loading type='points'/>}
+          </Button>
         </Grid>
       </Grid.Container> 
     </AppLayout>

@@ -29,3 +29,34 @@ mutation CreateVideoGame($createVideoGame: CreateVideoGameInput!) {
     }
   }  
 `
+
+export const RemoveMedio = gql`
+mutation RemoveMedio($removeMedioId: String!) {
+  removeMedio(id: $removeMedioId)
+}
+`;
+
+export const GetMedios = gql`
+query Media {
+  media {
+    series {
+      id: medioId
+      title
+      releaseDate
+      based
+    }
+    movies {
+      id: medioId
+      title
+      releaseDate
+      based
+    }
+    videoGames {
+      title
+      id: medioId
+      releaseDate
+      based
+    }
+  }
+}
+`;

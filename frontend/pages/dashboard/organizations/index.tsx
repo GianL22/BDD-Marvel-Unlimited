@@ -1,54 +1,46 @@
-import { useMemo } from 'react';
 import type { NextPage } from 'next'
 import { Grid, Link, Loading, Text, useTheme } from '@nextui-org/react';
 import { TableWrapper } from '../../../components/table';
 import { AppLayout } from '@/layouts/AppLayout';
 import { useMutation, useQuery } from '@apollo/client';
+import { DeletePowerById } from '@/graphql/Powers';
+import { Power } from '@/models/Power';
 import { Notification } from '@/notification';
 import { Flex } from '@/components/containers';
-import { DeleteObjectById, GetAllObject } from '@/graphql/Objects';
-import { ObjectByID } from '@/models/Object';
-import { ObjectsCellReducer } from '@/components/table/cell-reducers/ObjectsCellReducer';
 
 const columns = [
   { label: "Nombre", uid: "name" },
-  { label: "Material", uid: "material" },
-  { label: "Tipo", uid: "type" },
+  { label: "Eslogan", uid: "slogan" },
+  { label: "Líder", uid: "leader" },
+  { label: "Fundador", uid: "founder" },
   { label: "Acciones", uid: "actions" },
 ];
 
 interface ResponseData {
-  objects: ObjectByID[];
+    Powers: Power[];
 }
 
-const PowersPage: NextPage = () => {
+const OrganizationsPage: NextPage = () => {
   const { isDark } = useTheme()
-  const { data , error} = useQuery<ResponseData>(GetAllObject,{
-    pollInterval: 1000
-  })
-  const objects = useMemo(() => (
-    data?.objects.map((object,i) => ({
-        id: object.id,
-        material: object.material,
-        name: object.name,
-        type: object.objectTypeId.description
-    }))
-  ),[data])
+  // const { data , error} = useQuery<ResponseData>(GetPowers,{
+  //   pollInterval: 1000
+  // })
 
-  const [deleteObjectById] = useMutation(DeleteObjectById)
-  const objectAction = async (id: string) => {
+  const [removePowerById] = useMutation(DeletePowerById)
+  const powerAction = async (id: string) => {
     Notification(isDark).fire({
       title: 'Cargando',
       icon: 'info',
     })
     try {
-      await deleteObjectById({
+      await removePowerById({
         variables:{
-          removeObjectId: id,
+          removePowerId: id
         }
       })
+
       Notification(isDark).fire({
-        title: 'Objeto eliminado exitosamente',
+        title: 'Poder eliminado exitosamente',
         icon: 'success',
         timer: 3000
       })
@@ -61,34 +53,34 @@ const PowersPage: NextPage = () => {
     }
   }
 
-  if ( !data ) return <Loading />
+  // if ( !data ) return <Loading />
   return ( 
     <AppLayout
-      title='Página de Objetos'
-      description='Marvel United - Objetos'
+      title='Pagina de Poderes'
+      description='Marvel United - Powers'
     >
         <Grid.Container gap={2} direction='column' alignItems='flex-start' css={{margin:'$4', width:'100%'}}>
 
           <Grid css={{ width : '100%'}}>
             <Flex wrap={'nowrap'} justify={'between'} >
-              <Text h1 >Objetos</Text>
-              <Link href='/dashboard/objects/create'>
-                Crear Objecto
+              <Text h1 >Poderes</Text>
+              <Link href='/dashboard/powers/create'>
+                Crear Poder
               </Link>
             </Flex>
           </Grid>
           
           <Grid css={{margin:'$8', minWidth:'100%', maxWidth:'600px', display: 'inline-grid'}}>
-            <TableWrapper 
+            {/* <TableWrapper 
               columns={columns} 
-              rows={objects!}
-              cellReducer={ObjectsCellReducer}
-              onDelete={objectAction}
-            />
+              rows={data.Powers!}
+              cellReducer={PowersCellReducer}
+              onDelete={powerAction}
+            /> */}
           </Grid>        
         </Grid.Container>
     </AppLayout>
   )
 }
 
-export default PowersPage
+export default OrganizationsPage

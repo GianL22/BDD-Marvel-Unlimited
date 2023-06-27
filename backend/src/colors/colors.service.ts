@@ -32,7 +32,11 @@ export class ColorsService {
   }
 
   async findAll(): Promise<Color[]> {
-    return await this.colorsRepository.find() ;
+    return await this.colorsRepository.find({
+      order:{
+        description: 'ASC'
+      }
+    });
   }
 
   async findOneBy(id: string): Promise<Color> {

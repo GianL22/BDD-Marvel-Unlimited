@@ -21,7 +21,11 @@ export class NacionalityService {
   }
 
   async findAll(): Promise<Nacionality[]> {
-    return await this.nacionalityRepository.find();
+    return await this.nacionalityRepository.find({
+      order:{
+        name:'ASC'
+      }
+    });
   }
 
   async update(id: string, updateNacionalityInput: UpdateNacionalityInput): Promise<Nacionality> {
