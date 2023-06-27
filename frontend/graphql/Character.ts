@@ -19,6 +19,32 @@ query Query {
   }
 `
 
+export const GetCharactersNamesAndId = gql`
+query Hero {
+  findCharacters {
+    hero {
+      character {
+        id
+      }
+      nameHero
+    }
+    villain {
+      character {
+        id
+      }
+      nameVillain
+    }
+    civil {
+      name
+      lastName
+      character {
+        id
+      }
+    }
+  }
+}
+`;
+
 export const CreateHero = gql`
 mutation CreateHero($createHeroInput: CreateHeroInput!, $createCharacterInput: CreateCharacterInput!) {
   createHero(createHeroInput: $createHeroInput, createCharacterInput: $createCharacterInput) {

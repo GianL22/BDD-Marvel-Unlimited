@@ -20,3 +20,19 @@ interface Villain {
     nameVillain: string;
     character:   Character;
 }
+
+interface Civil {
+    name:      string;
+    lastName:  string;
+    character: Character;
+}
+
+interface Characters {
+    hero:    Hero[];
+    villain: Villain[];
+    civil:   Civil[];
+}
+
+export interface DataResponse{
+    findCharacters: Characters;
+}
