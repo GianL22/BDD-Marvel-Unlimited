@@ -25,3 +25,40 @@ export const GetInheritedPowersReport = gql`
         }
     }
 `;
+
+
+export const GetExtensiveSeriesReport = gql`
+    query ReportSerie {
+        reportSerie {
+            avg
+            series {
+                title
+                episodes
+                audioVisualType {
+                description
+                }
+                channel
+            }
+        }
+    }
+`
+
+export const GetProfitableLongAnimatedFilms = gql`
+        query ReportMovie {
+            reportMovie {
+                avg
+                movies {
+                    title
+                    cost
+                    revenue
+                    duration
+                    releaseDate
+                    director {
+                    lastName
+                    name
+                    }
+                }
+            }
+        }
+
+`
