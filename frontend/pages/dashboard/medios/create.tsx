@@ -10,8 +10,10 @@ import { Notification } from '@/notification';
 import { GetInformationToCreateMedio } from '@/graphql/Information';
 import { FormMedia } from '@/models/Information';
 import { CreateMovie, CreateSerie, CreateVideoGame } from '@/graphql/Medio';
+import { useRouter } from 'next/router';
 
 const MediosCreatePage = ( ) => {  
+  const {replace} = useRouter()
   const { isDark } = useTheme();
   const {data} = useQuery<FormMedia>(GetInformationToCreateMedio)
   const [createMovie] = useMutation(CreateMovie);
@@ -156,6 +158,7 @@ const onSubmit = async () => {
           icon: 'success',
       })
       setIsLoading(false)
+      setTimeout(() => replace('/dashboard/medios'),500)
   } catch (error: any) {
       Notification(isDark).fire({
           title: error.message,
@@ -195,7 +198,7 @@ const [type] = parsedVideoGame;
         <Grid alignContent='center' alignItems='center' xs={ 12 } sm={ 12 } direction="row" css={{px: '$10', py:'$8', gap:'$15'}}>
             <Input
                 label='Titulo'
-                width='100%'
+                width='90%'
                 value={title.value}
                 onChange={(e) => title.setValue(e.target.value)}
                 helperText={title.message}
@@ -205,7 +208,7 @@ const [type] = parsedVideoGame;
             />
             <Input
                 label='Comic'
-                width='100%'
+                width='90%'
                 value={based.value}
                 onChange={(e) => based.setValue(e.target.value)}
                 helperText={based.message}
@@ -216,7 +219,7 @@ const [type] = parsedVideoGame;
             <Input
                 label='Fecha de estreno'
                 type='date'
-                width='100%'
+                width='90%'
                 value={releaseDate.value}
                 onChange={(e) => releaseDate.setValue(e.target.value)}
                 helperText={releaseDate.message}
@@ -229,6 +232,7 @@ const [type] = parsedVideoGame;
                 selected={companyProducer.description}
                 setValue={setCompanyProducer}
                 width={100} 
+                check='Compañia Productora'
             />
         </Grid>
         <Grid xs={12} direction="row" css={{px: '$3', py:'$14', height: 'max-content'}}>
@@ -244,7 +248,7 @@ const [type] = parsedVideoGame;
                 color={synopsis.color}
             />
         </Grid>
-        <Grid xs={12} direction="row" css={{px: '$3', py:'$0', height: 'max-content'}}>    
+        <Grid xs={12} direction="row" css={{px: '$3', py:'$1', height: 'max-content'}}>    
             <Grid xs={12} sm={6} direction='column' css={{px: '$10', height: 'max-content', gap:'$15'}}>
                 {
                     (medio === 'Película') &&
@@ -343,18 +347,21 @@ const [type] = parsedVideoGame;
                             selected={director.description}
                             setValue={setDirector}
                             width={100} 
+                            check='Director'
                         />
                         <DropdownRegister
                             listkeys={data.AudioVisualTypes!}
                             selected={audioVisualType.description}
                             setValue={setAudioVisualType}
                             width={100} 
+                            check='Tipo AudioVisual'
                         />
                         <DropdownRegister
                             listkeys={data.companies!}
                             selected={companyDist.description}
                             setValue={setCompanyDist}
                             width={100} 
+                            check='Compañia Distribuidora'
                         />
                     </> 
                 }
@@ -366,12 +373,14 @@ const [type] = parsedVideoGame;
                                 selected={creator.description}
                                 setValue={setCreator}
                                 width={100} 
+                                check='Creador'
                             />
                             <DropdownRegister
                                 listkeys={data.AudioVisualTypes!}
                                 selected={audioVisualType.description}
                                 setValue={setAudioVisualType}
                                 width={100} 
+                                check='Tipo AudioVisual'
                             />
                         </>
                 }
@@ -383,6 +392,7 @@ const [type] = parsedVideoGame;
                                 selected={companyPublisher.description}
                                 setValue={setCompanyPublisher}
                                 width={100} 
+                                check='Compañia Publicadora'
                             />
                         </>
                 }
