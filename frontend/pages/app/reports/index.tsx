@@ -53,13 +53,17 @@ const ReportsPage: NextPage = () => {
                 </Link>
 
                 <Spacer y={4}/>
-
-                <Link href='' css={{'minWidth': '100%',}}>
-                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
-                        Películas Animadas Rentables y Largas
+                <Link css={{'minWidth': '100%',}}>
+                    <Button
+                        auto
+                        bordered
+                        onPress={ async () => await push('reports/profitableLongAnimatedFilms')}
+                        size={'xl'}
+                        css={{'minWidth': '100%', fontSize : '$2xl'}}
+                    >
+                        Peliculas Animadas Rentables y Largas
                     </Button>
                 </Link>
-
                 <Spacer y={4}/>
 
                 <Link css={{'minWidth': '100%',}}>
@@ -83,8 +87,14 @@ const ReportsPage: NextPage = () => {
                 xs={ 12 } 
                 sm={ 6 } 
             >
-                <Link href='' css={{'minWidth': '100%'}}>
-                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
+                <Link css={{'minWidth': '100%',}}>
+                    <Button
+                        auto
+                        bordered
+                        onPress={ async () => await push('reports/extensiveSeries')}
+                        size={'xl'}
+                        css={{'minWidth': '100%', fontSize : '$2xl'}}
+                    >
                         Series Extensas
                     </Button>
                 </Link>

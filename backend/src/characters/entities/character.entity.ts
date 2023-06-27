@@ -5,6 +5,7 @@ import { Nacionality } from 'src/nacionality/entities/nacionality.entity';
 import { UsePower } from 'src/powers/entities';
 import { Objects } from 'src/objects/entities';
 import { Occupation } from 'src/occupations/entities/occupation.entity';
+import { Organization } from 'src/organizations/entities/organization.entity';
 
 @Entity({name: 'Character'})
 @ObjectType()
@@ -105,4 +106,18 @@ export class Character{
   )
   @Field(()=> [UsePower], {name:'powers'})
   usePower: UsePower;
+
+  @OneToMany(
+    () => Organization,
+    (organization)=> organization.founder,
+    {nullable: true, cascade: true}
+  )
+  founded : Organization 
+
+  @OneToMany(
+    () => Organization,
+    (organization)=> organization.leader,
+    {nullable: true, cascade: true}
+  )
+  leads : Organization 
 }

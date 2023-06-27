@@ -8,7 +8,7 @@ import { PowersModule } from 'src/powers/powers.module';
   providers: [ ReportsResolver ],
   imports : [
     SuscriptionModule,
-    MediaModule
+    MediaModule,
     PowersModule,
   ]
 
