@@ -1,7 +1,8 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Character } from 'src/characters/entities';
 import { Place } from 'src/places/entities/place.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Headquarter } from './headquarter.entity';
 
 @Entity('Organization')
 @ObjectType()
@@ -56,13 +57,13 @@ export class Organization {
   @Field( () => Character)
   leader: Character
 
-
-
-// @OneToMany(
-//     () => Headquarter,
-//     (headquarter) => headquarter.nameHeadquarter
-//   )
-//   headquarter: string;
+  @OneToMany(
+    () => Headquarter,
+    (headquarter) => headquarter.organization,
+    {lazy: true, cascade: true}
+  )
+  @Field(()=> [Headquarter])
+  headquarter: string;
 
 //   @OneToMany(
 //     () => FormPart,

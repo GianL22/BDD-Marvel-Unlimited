@@ -25,7 +25,7 @@ export const convertCharacters = (initialValues: DataResponse): { id: string; de
     initialValues?.findCharacters.civil.forEach(civil => {
     const character = {
         id: civil.character.id,
-        description: civil.name + civil.lastName
+        description: civil.name + ' ' +civil.lastName
     };
     characters.push(character);
     });

@@ -45,14 +45,12 @@ export class OrganizationsService {
 
     try {
       const { founderId, leaderId, placeId, ...rest } = createOrganizationInput
-
       const orgExists = await this.organizationRepository.findOne({where: {name: rest.name}})
       if ( orgExists ) throw new Error('Ya existe una organización con ese nombre');
-
+      
       const creationPlace = await this.placesService.findOnePlace(placeId)
       const founder = await this.charactersService.findOneCharacterById(founderId)
       const leader = await this.charactersService.findOneCharacterById(leaderId)
-
       const newOrganization = this.organizationRepository.create({
         founder, 
         leader,
@@ -62,7 +60,7 @@ export class OrganizationsService {
       return await this.organizationRepository.save(newOrganization)
 
     } catch (error) {
-      throw new BadRequestException(error)
+      throw new BadRequestException(error.message)
     }
   }
 
@@ -183,7 +181,9 @@ export class OrganizationsService {
     }
   }
 
-
+  async findAllHeadquarters(): Promise<Headquarter[]>{
+    return await this.headquarterRepository.find()
+  }
 
   async findOne( id: string ) : Promise<Organization> {
       try {
@@ -195,9 +195,23 @@ export class OrganizationsService {
 
   async update(id: string, updateOrganizationInput: UpdateOrganizationInput) : Promise<Organization> {
 
+    const { placeId, founderId, leaderId} = updateOrganizationInput
+
     await this.findOne(id);
     const organization = await this.organizationRepository.preload({id, ...updateOrganizationInput})
 
+    if ( placeId ) { 
+      const place = await this.placesService.findOnePlace( placeId )
+      organization.creationPlace = place
+    }
+    if ( founderId ) { 
+      const founder = await this.charactersService.findOneCharacterById( founderId )
+      organization.founder = founder
+    }
+    if ( leaderId ) { 
+      const leader = await this.charactersService.findOneCharacterById( leaderId )
+      organization.leader = leader
+    }
     if ( organization ) return this.organizationRepository.save( organization )
     throw new NotFoundException(`organization not found`)
 
@@ -206,11 +220,19 @@ export class OrganizationsService {
 
   async updateHeadquarter( updateHeadquarterInput: UpdateHeadquarterInput) : Promise<Headquarter> {
 
-    const { id } = updateHeadquarterInput
+    const { id, ubicationId, buildingTypeId } = updateHeadquarterInput
 
     await this.findOneHeadquarter( id );
-    const headquarter = await this.headquarterRepository.preload({...updateHeadquarterInput})
 
+    const headquarter = await this.headquarterRepository.preload({...updateHeadquarterInput})
+    if ( ubicationId ) { 
+      const ubication = await this.placesService.findOnePlace( ubicationId )
+      headquarter.ubication = ubication
+    }
+    if ( buildingTypeId ) { 
+      const buildingType = await this.buildingTypenRepository.findOneBy( {id :  buildingTypeId} )
+      headquarter.buildingType = buildingType
+    }
     if ( headquarter ) return this.headquarterRepository.save( headquarter )
     throw new NotFoundException(`organization not found`)
 
@@ -223,6 +245,16 @@ export class OrganizationsService {
       return true;
     } catch (error) {
       throw new NotFoundException(`La organizacion: ${id} tiene otras relaciones`)
+    }    
+  }
+
+  async removeHeadquarter( id: string, organizationId: string ) : Promise<Boolean>{
+    try {
+      const headquarter = await this.headquarterRepository.findOneByOrFail( { id: id, organizationId: organizationId} )
+      await this.headquarterRepository.remove( headquarter )
+      return true;
+    } catch (error) {
+      throw new NotFoundException(`La Sede: ${id} no se puede eliminar`)
     }    
   }
 

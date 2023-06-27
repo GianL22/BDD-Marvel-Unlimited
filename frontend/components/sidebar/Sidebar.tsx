@@ -66,17 +66,22 @@ export const SidebarWrapper = () => {
                <Sidebar.Footer>
                   <ThemeSwitcher/>
                   {/*  Provisioal */}
-                  <Link href='/app/profiles'> 
-                     <Tooltip content={'Profile'} rounded color="primary">
+                  {
+                     (router.pathname.includes('app'))
+                        ?
+                           <Link href='/app/profiles'> 
+                              <Tooltip content={'Profile'} rounded color="primary">
 
-                        <Avatar
-                           size="xl"
-                           src={activeProfile?.avatar}
-                           color="primary"
-                           bordered
-                           />
-                     </Tooltip>
-                  </Link>                                    
+                                 <Avatar
+                                    size="xl"
+                                    src={activeProfile?.avatar}
+                                    color="primary"
+                                    bordered
+                                    />
+                              </Tooltip>
+                           </Link>
+                        : <></>                                 
+                  }
                   {/* <LogoutButton/> */}
                </Sidebar.Footer>
             </Flex>

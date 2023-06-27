@@ -140,25 +140,26 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         cache: new InMemoryCache(),
     });
 
-    const {data: power} =  await client.query({
-        query: GetPowerById,
-        variables: {
-            powerById: id,
-        },
-    });
-    
-    if (  !power) {
+    try {
+      const {data: power} =  await client.query({
+          query: GetPowerById,
+          variables: {
+              powerById: id,
+          },
+      });
+
+      return {
+        props:{
+          power
+        }
+      }
+      
+    } catch (error) {      
       return{
         redirect: {
           destination: '/404',
           permanent: false
         }
-      }
-    }
-
-    return {
-      props: {
-        power,
       }
     }
   }

@@ -9,23 +9,30 @@ import { Notification } from '@/notification';
 import { useForm } from '@/hooks/useForm';
 import { DataResponse } from '@/models/Character';
 import { GetCharactersNamesAndId } from '@/graphql/Character';
-import { transformData } from '@/helpers/transformData';
+import { convertCharacters } from '@/helpers/transformData';
+import { GetAllPlaces } from '@/graphql/Places';
+import { GenericResponse } from '@/models/Information';
+import { CreateOrganization } from '@/graphql/Organizations';
+
+interface PlaceResponse{
+    places: GenericResponse[];
+}
 
 const OrganizationsCreatePage= ( ) => {  
     const {data, error} =  useQuery<DataResponse>(GetCharactersNamesAndId);
+    const {data: placesData} = useQuery<PlaceResponse>(GetAllPlaces);
     const [leader, setLeader] = useState({id: '', description: 'Líder'})
     const [founder, setFounder] = useState({id: '', description: 'Fundador'})
     const [placeCreation, setPlaceCreation] = useState({id: '', description: 'Lugar creación'})
     const { isDark } = useTheme();
     const { replace } = useRouter();
     const [isLoading,setIsLoading] = useState(false);
-    let characters = useMemo(() => transformData(data!), [data])
+    const [createOrganization] = useMutation(CreateOrganization)
+    let characters = useMemo(() => convertCharacters(data!), [data])
 
     useEffect(() => {
-        characters = transformData(data!)
+        characters = convertCharacters(data!)
     }, [data])
-    
-    console.log(characters)
     
     const onSubmit = async () => {
         setIsLoading(true)
@@ -34,19 +41,25 @@ const OrganizationsCreatePage= ( ) => {
             icon: 'info',
         })
         try {
-            // await createObject({
-            //     variables: {
-            //         createObjectInput: {
-            //             name: name.value,
-            //         },
-            //     },
-            // });
+            const {data} = await createOrganization({
+                variables: {
+                    createOrganizationInput: {
+                        name: name.value,
+                        slogan: slogan.value,
+                        firstApparition: firstApparition.value,
+                        objetive: objective.value,
+                        founderId: founder.id,
+                        leaderId: leader.id,
+                        placeId: placeCreation.id
+                    },
+                },
+            });
             Notification(isDark).fire({
-                title: 'Objecto creado',
+                title: `Organización: ${data.createOrganization.name} creada`,
                 icon: 'success',
             })
             setIsLoading(false)
-            setTimeout(() => replace('/dashboard/objects'),500)
+            setTimeout(() => replace('/dashboard/organizations'),500)
         } catch (error: any) {
             Notification(isDark).fire({
                 title: error.message,
@@ -78,9 +91,16 @@ const OrganizationsCreatePage= ( ) => {
         errorMessage: 'Minimo 10 caracteres',
         initialValue: '',
     },
+    {
+        name: 'firstApparition',
+        validate: (value: string) => value.trim().length >= 3,
+        validMessage: 'Comic valido',
+        errorMessage: 'Minimo 3 caracteres',
+        initialValue: '',
+    },
   ])
-  const [name,slogan, objective] = parsedFields;
-  if(!data ) return <Text>No Hay info pana</Text>
+  const [name,slogan, objective,firstApparition ] = parsedFields;
+  if(!data || !placesData ) return <Text>No Hay info pana</Text>
   return (
     <AppLayout 
       title='Creación de Organizaciones'
@@ -122,6 +142,17 @@ const OrganizationsCreatePage= ( ) => {
                     status={slogan.color}
                     color={slogan.color}
                 />
+                <Input
+                    bordered
+                    labelPlaceholder="Primera Aparición"
+                    css={{width:'100%'}}
+                    value={firstApparition.value}
+                    onChange={(e) => firstApparition.setValue(e.target.value)}
+                    helperText={firstApparition.message}
+                    helperColor={firstApparition.color}
+                    status={firstApparition.color}
+                    color={firstApparition.color}
+                />
             </Row>
             <Row css={{py:'$5', margin:'$18'}}>
                 <Textarea 
@@ -159,7 +190,7 @@ const OrganizationsCreatePage= ( ) => {
                 </Col>
                 <Col>
                     <DropdownRegister
-                        listkeys={characters!}
+                        listkeys={placesData.places!}
                         selected={placeCreation.description}
                         setValue={setPlaceCreation}
                         width={100} 

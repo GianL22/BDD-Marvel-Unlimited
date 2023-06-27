@@ -1,14 +1,16 @@
 import { Button, Grid, Input, Loading, Row, Spacer, Text, useTheme } from '@nextui-org/react';
 import { Flex } from '../../../components/containers';
 import { AppLayout } from '@/layouts/AppLayout';
-import { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMemo, useState } from 'react';
+import { ApolloClient, InMemoryCache, useMutation, useQuery } from '@apollo/client';
 import { DropdownRegister } from '@/components/dropdown/DropdownRegister';
 import { useRouter } from 'next/router';
 import { Notification } from '@/notification';
 import { useForm } from '@/hooks/useForm';
-import { CreateHeadquarter, GetData } from '@/graphql/Headquarters';
+import { GetData, GetHeadquarterById, UpdateHeadquarters } from '@/graphql/Headquarters';
 import { GenericResponse } from '@/models/Information';
+import { GetServerSideProps, NextPage } from 'next';
+import { Headquarter } from '@/models/Headquarters';
 
 export interface DataResponse {
     organizations: GenericResponse[];
@@ -16,15 +18,18 @@ export interface DataResponse {
     places:        GenericResponse[];
 }
 
-const HeadquartersCreatePage= ( ) => {  
+interface Props{
+    headquarter: Headquarter;
+}
+
+const HeadquarterDetailsPage: NextPage<Props>= ( {headquarter} ) => {  
     const {data, error} =  useQuery<DataResponse>(GetData);
-    const [organization, setOrganization] = useState({id: '', description: 'Organizaciones'})
-    const [ubication, setUbication] = useState({id: '', description: 'Ubicación'})
-    const [edificationType, setEdificationType] = useState({id: '', description: 'Tipo Edificación'})
+    const [ubication, setUbication] = useState(headquarter.headquarter.ubication)
+    const [edificationType, setEdificationType] = useState(headquarter.headquarter.buildingType)
     const { isDark } = useTheme();
     const { replace } = useRouter();
     const [isLoading,setIsLoading] = useState(false);
-    const [createHeadquarter] = useMutation(CreateHeadquarter)
+    const [updateHeadquarter] = useMutation(UpdateHeadquarters)
 
     const onSubmit = async () => {
         setIsLoading(true)
@@ -33,18 +38,19 @@ const HeadquartersCreatePage= ( ) => {
             icon: 'info',
         })
         try {
-            const {data} = await createHeadquarter({
+            const {data} = await updateHeadquarter({
                 variables: {
-                    createHeadquarterInput: {
+                  updateHeadquarterInput: {
+                        id: headquarter.headquarter.id,
+                        organizationId: headquarter.headquarter.organization.id,
                         name: nameHeadquarter.value,
-                        organizationId: organization.id,
                         ubicationId: ubication.id,
-                        buildingTypeId: edificationType.id,
+                        buildingTypeId: edificationType.id
                     },
                 },
             });
             Notification(isDark).fire({
-                title: `Sede: ${data.createHeadquarter.name} creada`,
+                title: `Sede: ${data.updateHeadquarter.name} actualizada`,
                 icon: 'success',
             })
             setIsLoading(false)
@@ -62,16 +68,20 @@ const HeadquartersCreatePage= ( ) => {
       {
           name: 'nameHeadquarter',
           validate: (value: string) => value.trim().length >= 3,
-          validMessage: 'Nombre Valido',
+          validMessage: 'Nombre de Sede Valido',
           errorMessage: 'Minimo 3 caracteres',
-          initialValue: '',
+          initialValue: headquarter.headquarter.name,
       },
   ])
   const [nameHeadquarter] = parsedFields;
+  const infoChanged = useMemo(() => {
+    return nameHeadquarter.value !== headquarter.headquarter.name ||
+    ubication.id !== headquarter.headquarter.ubication.id || edificationType.id !== headquarter.headquarter.buildingType.id
+    }, [nameHeadquarter.value,ubication.id,edificationType.id,headquarter])
   if(!data ) return <Text>No Hay info pana</Text>
   return (
     <AppLayout 
-      title='Creación de Sedes'
+      title='Detalle de Sede'
       description='Pagina administrativa de Marvel United'
     >
       <Flex
@@ -99,12 +109,15 @@ const HeadquartersCreatePage= ( ) => {
                     status={nameHeadquarter.color}
                     color={nameHeadquarter.color}
                 />
-                <DropdownRegister
-                    listkeys={data.organizations!}
-                    selected={organization.description}
-                    setValue={setOrganization}
-                    width={80} 
-                    check='Organizaciones'
+                <Input
+                    bordered
+                    labelPlaceholder="Nombre Organización"
+                    readOnly
+                    css={{width:'81%'}}
+                    value={ headquarter.headquarter.organization.description }
+                    helperColor={'success'}
+                    status={'success'}
+                    color={'success'}
                 />
             </Row>
         </Grid>
@@ -128,15 +141,45 @@ const HeadquartersCreatePage= ( ) => {
         </Grid>
         <Grid xs ={12} alignContent='space-between' alignItems='stretch' direction='row-reverse' css={{py:'$20'}}>
             <Button
-                disabled={!allowSubmit || isLoading || organization.id === '' || ubication.id === '' || edificationType.id === '' }
+                disabled={!allowSubmit || isLoading || (!infoChanged)  }
                 onPress={onSubmit}
                 size='lg'
             >
-                {!isLoading ? 'Crear Sede' : <Loading type='points'/>}
+                {!isLoading ? 'Actualizar Sede' : <Loading type='points'/>}
             </Button>
         </Grid>
       </Grid.Container> 
     </AppLayout>
   )
 }
-export default HeadquartersCreatePage
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const { id = '' } = ctx.params as {id: string}; 
+    const client = new ApolloClient({
+        uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
+        cache: new InMemoryCache(),
+    });
+
+    const {data: headquarter} =  await client.query({
+        query: GetHeadquarterById,
+        variables: {
+            headquarterId: id,
+        },
+    });
+    
+    if (  !headquarter) {
+      return{
+        redirect: {
+          destination: '/404',
+          permanent: false
+        }
+      }
+    }
+
+    return {
+      props: {
+        headquarter,
+      }
+    }
+  }
+export default HeadquarterDetailsPage

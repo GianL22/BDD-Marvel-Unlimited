@@ -35,4 +35,9 @@ export class UpdateHeroInput extends PartialType(CreateHeroInput) {
   @IsOptional()
   occupations?: RelationsInput[];
 
+  @Field(() => [RelationsInput], {nullable: true})
+  @IsArray()
+  @IsOptional()
+  creators?: RelationsInput[];
+
 }

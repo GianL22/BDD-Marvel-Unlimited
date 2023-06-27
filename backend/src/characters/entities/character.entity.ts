@@ -6,6 +6,7 @@ import { UsePower } from 'src/powers/entities';
 import { Objects } from 'src/objects/entities';
 import { Occupation } from 'src/occupations/entities/occupation.entity';
 import { Organization } from 'src/organizations/entities/organization.entity';
+import { Creator } from 'src/persons/entities';
 
 @Entity({name: 'Character'})
 @ObjectType()
@@ -98,6 +99,26 @@ export class Character{
   })
   @Field(()=> [Occupation])
   occupations: Occupation[]
+
+  @ManyToMany(
+    () => Creator, 
+    {lazy: true, onDelete: 'CASCADE'}
+  )
+  @JoinTable({
+    name: "CharacterCreator",
+    joinColumn: {
+      name: "characterId",
+      referencedColumnName: "id",
+      foreignKeyConstraintName:'character_FK'
+    },
+    inverseJoinColumn: {
+      name: "creatorId",
+      referencedColumnName: "id",
+      foreignKeyConstraintName:'creator_FK'
+    },
+  })
+  @Field(()=> [Creator])
+  creators: Creator[]
 
   @OneToMany(
     () => UsePower,

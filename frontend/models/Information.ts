@@ -10,7 +10,7 @@ interface Color {
   description: string;
 }
 
-interface GenericResponse {
+export interface GenericResponse {
   id:   string;
   description: string;
 }
@@ -19,6 +19,7 @@ export interface FormMedia {
   AudioVisualTypes: AudioVisualType[];
   companies:        AudioVisualType[];
   persons:          Persons;
+  platforms:   GenericResponse[];
 }
 
 interface AudioVisualType {
