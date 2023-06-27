@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
 import { OrganizationsService } from './organizations.service';
 import { Organization } from './entities/organization.entity';
 import { CreateOrganizationInput } from './dto/input/create-organization.input';
@@ -10,12 +10,17 @@ import { UpdateHeadquarterInput } from './dto/input/update-headquarter.input';
 import { JobPosition } from './entities/job-position.entity';
 import { FormPart } from './entities/form-part.entity';
 import { CreateFormPartInput } from './dto/input/create-form-part.input';
+import { CharactersService } from 'src/characters/characters.service';
+import { Character } from 'src/characters/entities';
 
 
 
 @Resolver(() => Organization)
 export class OrganizationsResolver {
-  constructor(private readonly organizationsService: OrganizationsService) {}
+  constructor(
+    private readonly organizationsService: OrganizationsService,
+    private readonly charactersService : CharactersService,  
+  ) {}
 
   @Mutation(() => Organization, {name: 'createOrganization'})
   createOrganization(@Args('createOrganizationInput') createOrganizationInput: CreateOrganizationInput)  : Promise<Organization> {
@@ -52,7 +57,7 @@ export class OrganizationsResolver {
     return this.organizationsService.findAllJobPositions()
   }
 
-  @Query(() => [Headquarter], {name : 'headquarters'})
+  @Query(() => [Headquarter], {name : 'headquartersByOrg'})
   async findAllHeadquarters( @Args( 'organizationId') organizationId : string) : Promise<Headquarter[]>{
     return this.organizationsService.findAllHeadquartersByOrganization(organizationId)
   }
@@ -96,6 +101,14 @@ export class OrganizationsResolver {
   removeOrganization(@Args('id', { type: () => String }) id: string) {
     return this.organizationsService.remove( id );
   }
+
+  @Mutation(() => Boolean)
+  removeHeadquarter(
+    @Args('headquarterId', { type: () => String }) headquarterId: string,
+    @Args('organizationId', { type: () => String }) organizationId: string,
+  ){
+    return this.organizationsService.removeHeadquarter(headquarterId,organizationId);
+  }
   //no usar
   @Mutation(() => Boolean)
   removeFormPart(
@@ -105,5 +118,26 @@ export class OrganizationsResolver {
     
     ) {
     return this.organizationsService.removeFormPart( organizationId, jobPositionId, characterId );
+  }
+
+  @Query(() => [Headquarter], { name: 'headquarters' })
+  async findAllHeadquarter(): Promise<Headquarter[]> {
+    return this.organizationsService.findAllHeadquarters();
+  }
+
+  @ResolveField( ()=> String, {name:'leaderName'} )
+  async getNameLeader(
+    @Parent() organization,
+  ): Promise<string>{
+    const leader = await organization.leader;
+    return await this.charactersService.getNameCharacter(leader.id)
+  }
+
+  @ResolveField( ()=> String, {name:'founderName'} )
+  async getNameFounder(
+    @Parent() organization,
+  ): Promise<string>{
+    const founder = await organization.founder;
+    return await this.charactersService.getNameCharacter(founder.id)
   }
 }

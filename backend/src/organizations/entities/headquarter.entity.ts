@@ -10,7 +10,6 @@ import { BuildingType } from './building-type.entity';
 export class Headquarter{
   
     @PrimaryColumn({ type : 'uuid'})
-    @Field(() => ID)
     organizationId: string;   
     
     @PrimaryGeneratedColumn('uuid')
@@ -42,9 +41,9 @@ export class Headquarter{
     @ManyToOne(
         () => Organization,
         (organization)=> organization.id,
-        {nullable: false, lazy : true}
+        {nullable: false, lazy : true, onDelete:'CASCADE'}
     )
     @JoinColumn({name:'organizationId', foreignKeyConstraintName:'organization_FK'})
-    @Field(()=> Organization)
+    @Field(()=> Organization, {name: 'organization'})
     organization: string
 }
