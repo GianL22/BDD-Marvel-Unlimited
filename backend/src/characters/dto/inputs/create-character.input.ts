@@ -31,4 +31,9 @@ export class CreateCharacterInput {
   @Field(() => [RelationsInput])
   @IsArray()
   occupations: RelationsInput[];
+
+  
+  @Field(() => [RelationsInput])
+  @IsArray()
+  creators: RelationsInput[];
 }

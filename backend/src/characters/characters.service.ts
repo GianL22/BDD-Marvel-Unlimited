@@ -9,6 +9,7 @@ import { Objects } from 'src/objects/entities';
 import { RelationsInput } from './dto/inputs/create-character.input';
 import { Color } from 'src/colors/entities/color.entity';
 import { Occupation } from 'src/occupations/entities/occupation.entity';
+import { Creator } from 'src/persons/entities';
 
 @Injectable()
 export class CharactersService {
@@ -37,11 +38,18 @@ export class CharactersService {
 
     @InjectRepository(Occupation)
     private readonly occupationsRepository: Repository<Occupation>,
+
+    @InjectRepository(Creator)
+    private readonly creatorsRepository: Repository<Creator>,
   ){}
 
   //* Creación de Personaje
 
-  private changeDataType(nacionalities:RelationsInput[] = [] , objects: RelationsInput[] = [], occupations: RelationsInput[] = []){
+  private changeDataType(nacionalities:RelationsInput[] = [],
+      objects: RelationsInput[] = [],
+      occupations: RelationsInput[] = [],
+      creators : RelationsInput[] = []
+    ){
     const saveNacionalities: Nacionality[] = nacionalities.map((nacionality) => {
       return this.nacionalitiesRepository.create( {id: nacionality.id} )
     });
@@ -51,24 +59,30 @@ export class CharactersService {
     const saveOccupations: Occupation[] = occupations.map((occupation) => {
       return this.occupationsRepository.create( {id: occupation.id} )
     });
+    const saveCreators: Creator[] = creators.map((occupation) => {
+      return this.creatorsRepository.create( {id: occupation.id} )
+    });
     return {
       saveNacionalities,
       saveObjects,
-      saveOccupations
+      saveOccupations,
+      saveCreators
     }
   }
 
   async createCharacter(createCharacterInput: CreateCharacterInput): Promise<Character> {
     try {
-      const { eyeColor, hairColor, nacionalities, objects, occupations} = createCharacterInput
+      const { eyeColor, hairColor, nacionalities, objects, occupations, creators} = createCharacterInput
       const character = this.charactersRepository.create({
         hairColor: hairColor, 
         eyeColor:  eyeColor,
       })
-      const {saveNacionalities, saveObjects, saveOccupations} = this.changeDataType(nacionalities,objects, occupations)
+      const {saveNacionalities, saveObjects, saveOccupations, saveCreators} = this.changeDataType(nacionalities,objects, occupations)
       character.nacionalities = [...saveNacionalities];
       character.objects = [...saveObjects];
       character.occupations = [...saveOccupations];
+      character.creators = [...saveCreators];
+
       return await this.charactersRepository.save( character );
     } catch (error) {
       throw new BadRequestException(`Ha ocurrido un error al crear el personaje!`)
@@ -138,8 +152,8 @@ export class CharactersService {
   //* Update de personajes
   async updateHero(id: string, updateHeroInput: UpdateHeroInput): Promise<Hero> {
     try {
-      const { eyeColor, hairColor, nacionalities, objects, suitColors, occupations,...updateHero } = updateHeroInput;
-      await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations);
+      const { eyeColor, hairColor, nacionalities, objects, suitColors, occupations, creators,...updateHero } = updateHeroInput;
+      await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations, creators);
       const hero = await this.heroRepository.preload({ ...updateHero, characterId: id  })
       if(suitColors.length !== 0){
         hero.suitColors = [...suitColors.map((colors) => {
@@ -155,8 +169,8 @@ export class CharactersService {
 
   async updateVillain(id: string, updateVillainInput: UpdateVillainInput): Promise<Villain> {
     try {
-      const { eyeColor, hairColor, nacionalities, objects, occupations, ...updateVillain } = updateVillainInput;
-      await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations);
+      const { eyeColor, hairColor, nacionalities, objects, occupations, creators,...updateVillain } = updateVillainInput;
+      await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations, creators);
       const villain = await this.villainRepository.preload({ ...updateVillain, characterId: id  })
       return await this.villainRepository.save( villain );
 
@@ -167,8 +181,8 @@ export class CharactersService {
 
   async updateCivil(id: string, updateCivilInput: UpdateCivilInput): Promise<Civil> {
     try {
-      const { eyeColor, hairColor, nacionalities, objects, occupations , ...updateCivil } = updateCivilInput;
-      await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations);
+      const { eyeColor, hairColor, nacionalities, objects, occupations , creators, ...updateCivil } = updateCivilInput;
+      await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations, creators);
       const civil = await this.civilRepository.preload({ ...updateCivil, characterId: id  })
       return await this.civilRepository.save( civil );
 
@@ -184,9 +198,10 @@ export class CharactersService {
     nacionalities: RelationsInput[],
     objects: RelationsInput[],
     occupations: RelationsInput[],
+    creators : RelationsInput[]
   ): Promise<Character>{    
     try {
-      const {saveNacionalities , saveObjects, saveOccupations } = this.changeDataType(nacionalities,objects, occupations)
+      const {saveNacionalities , saveObjects, saveOccupations, saveCreators } = this.changeDataType(nacionalities,objects, occupations,creators)
       const character = await this.charactersRepository.preload({
         id: id, 
         hairColor: eyeColor, 
@@ -195,6 +210,7 @@ export class CharactersService {
       if(saveNacionalities.length !== 0) character.nacionalities = [...saveNacionalities]
       if(saveObjects.length !== 0) character.objects = [...saveObjects]
       if(saveOccupations.length !== 0) character.occupations = [...saveOccupations]
+      if(saveCreators.length !== 0) character.creators = [...saveCreators]
 
       return await this.charactersRepository.save( character );
     } catch (error) {
@@ -230,7 +246,7 @@ export class CharactersService {
     }
   }
 
-  async findCharacterById(id: string): Promise<CharactersResponse>{
+  async findCharacterById(id: string): Promise<{hero?: Hero, villain?: Villain, civil?:Civil}>{
     const repositories = [this.heroRepository, this.villainRepository, this.civilRepository];
     const repositoriesPromise = [];
     for (const repository of repositories) { 
@@ -261,5 +277,12 @@ export class CharactersService {
       return await this.villainRepository.findOneBy({characterId: villainId});
     }));
     return result
+  }
+
+  async getNameCharacter(id: string): Promise<string>{
+    const result = await this.findCharacterById(id)
+    if(result.hero) return result.hero.nameHero;
+    if(result.villain)  return result.villain.nameVillain;
+    if(result.civil) return result.civil.name + ' ' + result.civil.lastName
   }
 }

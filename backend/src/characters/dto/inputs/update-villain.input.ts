@@ -34,4 +34,9 @@ export class UpdateVillainInput extends PartialType(CreateVillainInput) {
   @IsArray()
   @IsOptional()
   occupations?: RelationsInput[];
+
+  @Field(() => [RelationsInput], {nullable: true})
+  @IsArray()
+  @IsOptional()
+  creators?: RelationsInput[];
 }

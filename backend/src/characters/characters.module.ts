@@ -7,6 +7,7 @@ import { NacionalityModule } from 'src/nacionality/nacionality.module';
 import { ObjectsModule } from 'src/objects/objects.module';
 import { ColorsModule } from 'src/colors/colors.module';
 import { OccupationsModule } from 'src/occupations/occupations.module';
+import { PersonsModule } from 'src/persons/persons.module';
 
 @Module({
   providers: [CharactersResolver, CharactersService],
@@ -21,6 +22,7 @@ import { OccupationsModule } from 'src/occupations/occupations.module';
     ObjectsModule,
     ColorsModule,
     OccupationsModule,
+    PersonsModule
   ],
   exports : [
     TypeOrmModule,

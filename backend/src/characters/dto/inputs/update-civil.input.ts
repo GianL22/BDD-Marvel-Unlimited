@@ -34,4 +34,9 @@ export class UpdateCivilInput extends PartialType(CreateCivilInput) {
   @IsArray()
   @IsOptional()
   occupations?: RelationsInput[];
+
+  @Field(() => [RelationsInput], {nullable: true})
+  @IsArray()
+  @IsOptional()
+  creators?: RelationsInput[];
 }
