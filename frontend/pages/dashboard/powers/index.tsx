@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import type { NextPage } from 'next'
 import { Grid, Link, Loading, Text, useTheme } from '@nextui-org/react';
 import { TableWrapper } from '../../../components/table';
@@ -56,8 +55,8 @@ const PowersPage: NextPage = () => {
   if ( !data ) return <Loading />
   return ( 
     <AppLayout
-      title='CRUD'
-      description='Marvel'
+      title='Pagina de Poderes'
+      description='Marvel United - Powers'
     >
         <Grid.Container gap={2} direction='column' alignItems='flex-start' css={{margin:'$4', width:'100%'}}>
 

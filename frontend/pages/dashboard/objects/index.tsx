@@ -64,8 +64,8 @@ const PowersPage: NextPage = () => {
   if ( !data ) return <Loading />
   return ( 
     <AppLayout
-      title='Objects'
-      description='Marvel'
+      title='Página de Objetos'
+      description='Marvel United - Objetos'
     >
         <Grid.Container gap={2} direction='column' alignItems='flex-start' css={{margin:'$4', width:'100%'}}>
 

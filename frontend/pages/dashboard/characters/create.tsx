@@ -261,7 +261,8 @@ const [nameVillain, objective] = parsedVillain;
             listkeys={data?.colors}
             selected={eyeColor.description}
             setValue={setEyeColor}
-            width={90} 
+            width={90}
+            check='Color Ojos' 
           />
           <Spacer y={3} />
           <DropdownRegister
@@ -269,6 +270,7 @@ const [nameVillain, objective] = parsedVillain;
             selected={hairColor.description}
             setValue={setHairColor}  
             width={90} 
+            check='Color Cabello'
           />
           <Spacer y={2} />
           <RadioRegister 
@@ -349,6 +351,7 @@ const [nameVillain, objective] = parsedVillain;
                   selected={villain.description}
                   setValue={setVillain}
                   width={60} 
+                  check='Villanos'
                 />
                 <Spacer x={2}/>
                 <DropdownMultiRegister 
@@ -396,6 +399,7 @@ const [nameVillain, objective] = parsedVillain;
                 selected={hero.description}
                 setValue={setHero}
                 width={50} 
+                check='Heroes'
               />
               <Spacer x={4}/>
               <DropdownRegister
@@ -403,6 +407,7 @@ const [nameVillain, objective] = parsedVillain;
                 selected={villain.description}
                 setValue={setVillain}
                 width={50} 
+                check='Villanos'
               />
               <Spacer x={4}/>
             </>
