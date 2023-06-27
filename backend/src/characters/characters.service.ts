@@ -219,7 +219,7 @@ export class CharactersService {
     const repositoriesPromise = [];
     
     for (const repository of repositories) { 
-      repositoriesPromise.push( repository.find() )
+      repositoriesPromise.push( repository.find({order: {name: 'ASC'}}) )
     }
     const [ hero, villain, civil ] = await Promise.all(repositoriesPromise)
 

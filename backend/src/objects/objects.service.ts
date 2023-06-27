@@ -25,7 +25,11 @@ export class ObjectsService {
   }
 
   async findAllObjects(): Promise<Objects[]> {
-    return await this.objectsRepository.find();
+    return await this.objectsRepository.find({
+      order:{
+        name: 'ASC'
+      }
+    });
   }
 
   async findOneById(id: string): Promise<Objects>{
@@ -53,7 +57,11 @@ export class ObjectsService {
 
   //* Funciones para los ObjectsType
   async findAllObjectsType(): Promise<ObjectsType[]> {
-    return await this.objectsTypeRepository.find();
+    return await this.objectsTypeRepository.find({
+      order:{
+        description: 'ASC',
+      }
+    });
   }
 
   async createObjectsType(createObjectsTypeInput: CreateObjectsTypeInput): Promise<ObjectsType>{

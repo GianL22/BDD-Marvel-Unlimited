@@ -39,7 +39,11 @@ export class PowersService {
   }
 
   async findAll(): Promise<Power[]> {
-    return await this.powersRepository.find();
+    return await this.powersRepository.find({
+      order:{
+        name: 'ASC'
+      }
+    });
   }
 
   async findOneById(id: string): Promise<Power>{

@@ -21,7 +21,11 @@ export class OccupationsService {
   }
 
   async findAll(): Promise<Occupation[]> {
-    return await this.occupationsRepository.find();
+    return await this.occupationsRepository.find({
+      order:{
+        name:'ASC'
+      }
+    });
   }
 
   async update(id: string, updateOccupationInput: UpdateOccupationInput): Promise<Occupation> {

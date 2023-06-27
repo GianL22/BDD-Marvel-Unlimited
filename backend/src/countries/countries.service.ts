@@ -16,7 +16,11 @@ export class CountriesService {
   
   
   async findAllCountries():Promise<Country[]> {
-    return await this.countriesRepository.find()
+    return await this.countriesRepository.find({
+      order:{
+        description: 'ASC'
+      }
+    })
   }
 
   async findAllCitiesByCountry(countryName : string): Promise<City[]> {
@@ -25,6 +29,9 @@ export class CountriesService {
         country : {
           description : countryName
         }
+      },
+      order:{
+        description: 'ASC'
       }
     })
   }

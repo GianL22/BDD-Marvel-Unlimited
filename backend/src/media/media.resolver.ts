@@ -77,7 +77,7 @@ export class MediaResolver {
   //   return this.mediaService.updateSerie( updateSerieInput );
   // }
 
-  @Mutation(() => Medio, {name : 'removeMedio'})
+  @Mutation(() => Boolean, {name : 'removeMedio'})
   removeMedio(@Args('id') id: string) {
     return this.mediaService.removeMedio(id);
   }
