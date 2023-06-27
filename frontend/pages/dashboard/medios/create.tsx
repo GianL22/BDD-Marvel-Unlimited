@@ -11,11 +11,13 @@ import { GetInformationToCreateMedio } from '@/graphql/Information';
 import { FormMedia } from '@/models/Information';
 import { CreateMovie, CreateSerie, CreateVideoGame } from '@/graphql/Medio';
 import { useRouter } from 'next/router';
+import { DropdownMultiRegister } from '@/components/dropdown/DropdownMultiRegister';
 
 const MediosCreatePage = ( ) => {  
   const {replace} = useRouter()
   const { isDark } = useTheme();
   const {data} = useQuery<FormMedia>(GetInformationToCreateMedio)
+  console.log(data)
   const [createMovie] = useMutation(CreateMovie);
   const [createSerie] = useMutation(CreateSerie);
   const [createVideoGame] = useMutation(CreateVideoGame);
@@ -31,6 +33,7 @@ const MediosCreatePage = ( ) => {
   const [companyDist, setCompanyDist] = useState({id: '', description: `Compañia Distribuidora`})
   const [companyPublisher, setCompanyPublisher] = useState({id: '', description: `Compañia Publicadora`})
   const [companyProducer, setCompanyProducer] = useState({id: '', description: `Compañia Productora`})
+  const [plataforms, setPlataforms] = useState<{id: string}[]>([])
   const directors = data?.persons.directors.map(director => {
     return {
       id: director.id,
@@ -254,43 +257,43 @@ const [type] = parsedVideoGame;
                     (medio === 'Película') &&
                         <>
                             <Input 
-                                labelLeft='Min.'
-                                label='Duración'
-                                type="number"
-                                min="0"
-                                step="1"
-                                value={duration}
-                                onChange={(e) => setDuration(Number(e.target.value))}
-                                helperText={ duration <= 0 ? 'La duración debe ser mayor a cero' : 'La duración es valida' }
-                                helperColor={duration > 0  ? 'success' : 'error'}
-                                status={duration > 0  ? 'success' : 'error'}
-                                color= {duration > 0   ? 'success' : 'error'}
+                              labelLeft='Min.'
+                              label='Duración'
+                              type="number"
+                              min="0"
+                              step="1"
+                              value={duration}
+                              onChange={(e) => setDuration(Number(e.target.value))}
+                              helperText={ duration <= 0 ? 'La duración debe ser mayor a cero' : 'La duración es valida' }
+                              helperColor={duration > 0  ? 'success' : 'error'}
+                              status={duration > 0  ? 'success' : 'error'}
+                              color= {duration > 0   ? 'success' : 'error'}
                             /> 
                             <Input 
-                                labelLeft='$'
-                                label='Costo'
-                                type="number"
-                                min="0"
-                                step="0.1"
-                                value={cost}
-                                onChange={(e) => setCost(Number(e.target.value))}
-                                helperText={ cost <= 0 ? 'El costo debe ser mayor a cero' : 'EL costo es valido' }
-                                helperColor={cost > 0  ? 'success' : 'error'}
-                                status={cost > 0  ? 'success' : 'error'}
-                                color= {cost > 0   ? 'success' : 'error'}
+                              labelLeft='$'
+                              label='Costo'
+                              type="number"
+                              min="0"
+                              step="0.1"
+                              value={cost}
+                              onChange={(e) => setCost(Number(e.target.value))}
+                              helperText={ cost <= 0 ? 'El costo debe ser mayor a cero' : 'EL costo es valido' }
+                              helperColor={cost > 0  ? 'success' : 'error'}
+                              status={cost > 0  ? 'success' : 'error'}
+                              color= {cost > 0   ? 'success' : 'error'}
                             /> 
                             <Input 
-                                labelLeft='$'
-                                label='Ganancias'
-                                type="number"
-                                min="0"
-                                step="0.1"
-                                value={revenue}
-                                onChange={(e) => setRevenue(Number(e.target.value))}
-                                helperText={ revenue <= 0 ? 'Las ganancias deben ser mayor a cero' : 'La ganancia es valida' }
-                                helperColor={revenue > 0  ? 'success' : 'error'}
-                                status={revenue > 0  ? 'success' : 'error'}
-                                color= {revenue > 0   ? 'success' : 'error'}
+                              labelLeft='$'
+                              label='Ganancias'
+                              type="number"
+                              min="0"
+                              step="0.1"
+                              value={revenue}
+                              onChange={(e) => setRevenue(Number(e.target.value))}
+                              helperText={ revenue <= 0 ? 'Las ganancias deben ser mayor a cero' : 'La ganancia es valida' }
+                              helperColor={revenue > 0  ? 'success' : 'error'}
+                              status={revenue > 0  ? 'success' : 'error'}
+                              color= {revenue > 0   ? 'success' : 'error'}
                             /> 
                         </>
                 }
@@ -298,27 +301,27 @@ const [type] = parsedVideoGame;
                     (medio === 'Serie') &&
                         <>
                             <Input
-                                label='Canal'
-                                width='100%'
-                                value={channel.value}
-                                onChange={(e) => channel.setValue(e.target.value)}
-                                helperText={channel.message}
-                                helperColor={channel.color}
-                                status={channel.color}
-                                color={channel.color}
+                              label='Canal'
+                              width='100%'
+                              value={channel.value}
+                              onChange={(e) => channel.setValue(e.target.value)}
+                              helperText={channel.message}
+                              helperColor={channel.color}
+                              status={channel.color}
+                              color={channel.color}
                             />
                             <Input 
-                                labelLeft='$'
-                                label='Episodios'
-                                type="number"
-                                min="0"
-                                step="1"
-                                value={episodes}
-                                onChange={(e) => setEpisodes(Number(e.target.value))}
-                                helperText={ episodes <= 0 ? 'Los episodios deben ser mayor a cero' : 'Los episodios son validos' }
-                                helperColor={episodes > 0  ? 'success' : 'error'}
-                                status={episodes > 0  ? 'success' : 'error'}
-                                color= {episodes > 0   ? 'success' : 'error'}
+                              labelLeft='$'
+                              label='Episodios'
+                              type="number"
+                              min="0"
+                              step="1"
+                              value={episodes}
+                              onChange={(e) => setEpisodes(Number(e.target.value))}
+                              helperText={ episodes <= 0 ? 'Los episodios deben ser mayor a cero' : 'Los episodios son validos' }
+                              helperColor={episodes > 0  ? 'success' : 'error'}
+                              status={episodes > 0  ? 'success' : 'error'}
+                              color= {episodes > 0   ? 'success' : 'error'}
                             /> 
                         </>
                 }
@@ -326,14 +329,20 @@ const [type] = parsedVideoGame;
                     (medio === 'Video-juego') &&
                         <>
                             <Input
-                                label='Tipo de Juego'
-                                width='100%'
-                                value={type.value}
-                                onChange={(e) => type.setValue(e.target.value)}
-                                helperText={type.message}
-                                helperColor={type.color}
-                                status={type.color}
-                                color={type.color}
+                              label='Tipo de Juego'
+                              width='100%'
+                              value={type.value}
+                              onChange={(e) => type.setValue(e.target.value)}
+                              helperText={type.message}
+                              helperColor={type.color}
+                              status={type.color}
+                              color={type.color}
+                            />
+                            <DropdownMultiRegister 
+                              listkeys={data?.platforms}
+                              label='Plataformas'
+                              setValue={ setPlataforms }
+                              width={90}
                             />
                         </>
                 }
@@ -386,15 +395,15 @@ const [type] = parsedVideoGame;
                 }
                 {
                     (medio === 'Video-juego') &&
-                        <>
-                            <DropdownRegister
-                                listkeys={data.companies!}
-                                selected={companyPublisher.description}
-                                setValue={setCompanyPublisher}
-                                width={100} 
-                                check='Compañia Publicadora'
-                            />
-                        </>
+                      <>
+                          <DropdownRegister
+                            listkeys={data.companies!}
+                            selected={companyPublisher.description}
+                            setValue={setCompanyPublisher}
+                            width={100} 
+                            check='Compañia Publicadora'
+                          />
+                      </>
                 }
             </Grid>     
         </Grid>

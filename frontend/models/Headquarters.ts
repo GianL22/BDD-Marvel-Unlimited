@@ -1,6 +1,6 @@
 import { GenericResponse } from "./Information";
 
-interface HeadquarterResponse {
+export interface HeadquarterResponse {
     headquarters: Headquarters[];
 }
 
