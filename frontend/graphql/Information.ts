@@ -44,5 +44,9 @@ query AudioVisualTypes {
       lastName
     }
   }
+  platforms {
+    id
+    description: name
+  }
 }
 `
