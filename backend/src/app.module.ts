@@ -24,6 +24,9 @@ import { PersonsModule } from './persons/persons.module';
 import { CompaniesModule } from './companies/companies.module';
 import { MediaModule } from './media/media.module';
 import { FilesModule } from './files/files.module';
+import { OrganizationsModule } from './organizations/organizations.module';
+import { PlacesModule } from './places/places.module';
+
 
 
 @Module({
@@ -84,6 +87,10 @@ import { FilesModule } from './files/files.module';
     MediaModule,
 
     FilesModule,
+    
+    OrganizationsModule,
+
+    PlacesModule,
 
 
   ],

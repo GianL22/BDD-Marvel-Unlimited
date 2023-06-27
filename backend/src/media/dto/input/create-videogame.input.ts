@@ -1,6 +1,7 @@
 import { Field, ID, InputType } from "@nestjs/graphql";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
 import { CreateMediaInput } from "./create-media.input";
+import { RelationsInput } from "src/characters/dto/inputs/create-character.input";
 
 
 
@@ -16,5 +17,11 @@ export class CreateVideoGameInput extends CreateMediaInput {
     @IsNotEmpty()
     @IsString()
     companyPublisherId : string
+
+
+    @Field(() => [RelationsInput])
+    @IsArray()
+    platforms: RelationsInput[];
+    
 
 }

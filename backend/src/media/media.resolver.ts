@@ -10,6 +10,7 @@ import { CreateMovieInput } from './dto/input/create-movie.input';
 import { MediaResponse } from './types/media-response.type';
 import { CreateVideoGameInput } from './dto/input/create-videogame.input';
 import { UpdateSerieInput } from './dto/input/update-serie.input';
+import { Platform } from './entities/platform.entity';
 
 @Resolver(() => Medio)
 export class MediaResolver {
@@ -72,10 +73,15 @@ export class MediaResolver {
     return this.mediaService.findVideoGameById(id);
   }
 
-  // @Mutation(() => Serie, {name : 'updateSerie'})
-  // async updateSerie( @Args('updateSerieInput') updateSerieInput : UpdateSerieInput):Promise<Serie> {
-  //   return this.mediaService.updateSerie( updateSerieInput );
-  // }
+  @Mutation(() => Platform, {name : 'createPlatform'})
+  async createPlatform( @Args('namePlatform') namePlatform : string ) : Promise<Platform>{
+    return this.mediaService.createPlatform( namePlatform )
+  }
+
+  @Query(() => [Platform], {name : 'platforms'})
+  async findAllPlatforms() : Promise<Platform[]>{
+    return this.mediaService.findAllPlatforms();
+  }
 
   @Mutation(() => Boolean, {name : 'removeMedio'})
   removeMedio(@Args('id') id: string) {

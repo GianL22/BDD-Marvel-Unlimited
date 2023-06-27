@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, MethodNotAllowedException } from '@nestjs/common';
+import { Injectable, BadRequestException, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Character, Civil, Hero, Villain } from './entities';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -246,6 +246,15 @@ export class CharactersService {
     }
     return characterResponse;
   }
+
+  async findOneCharacterById( id : string ) : Promise<Character>{
+    try {
+      return await this.charactersRepository.findOneByOrFail({id})
+    } catch (error) {
+      throw new NotFoundException('Character no encontrado')
+    }
+  }
+
 
   async findVillain(villains: string[]): Promise<Villain[]>{
     const result = await Promise.all(villains.map(async (villainId) => {

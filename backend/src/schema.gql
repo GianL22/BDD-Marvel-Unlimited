@@ -72,95 +72,9 @@ type AuthResponse {
   user: User!
 }
 
-
 type Nacionality {
   id: ID!
   name: String!
-}
-
-=======
-type Medio {
-  id: ID!
-  companyProduction: Company!
-}
-
-type VideoGame {
-  medioId: ID!
-  medio: Medio!
-  title: String!
-  releaseDate: String!
-  synopsis: String!
-  based: String!
-  type: String!
-  companyPublisher: Company!
-}
-
-type Company {
-  id: ID!
-  description: String!
-}
-
-type Actor {
-  id: ID!
-  name: String!
-  lastName: String!
-}
-
-type AudioVisualType {
-  id: ID!
-  description: String!
-}
-
-type Serie {
-  medioId: ID!
-  medio: Medio!
-  title: String!
-  releaseDate: String!
-  synopsis: String!
-  based: String!
-  channel: String!
-  episodes: String!
-  creator: Creator!
-  audioVisualType: AudioVisualType!
-}
-
-type Creator {
-  id: ID!
-  name: String!
-  lastName: String!
-}
-
-type Movie {
-  medioId: ID!
-  medio: Medio!
-  title: String!
-  releaseDate: String!
-  synopsis: String!
-  duration: Int!
-  based: String!
-  cost: Float!
-  revenue: Float!
-  director: Director!
-  companyDist: Company!
-  audioVisualType: AudioVisualType!
-}
-
-type Director {
-  id: ID!
-  name: String!
-  lastName: String!
-}
-
-type PersonsResponse {
-  actors: [Actor!]
-  directors: [Director!]
-  creators: [Creator!]
-}
-
-type MediaResponse {
-  series: [Serie!]
-  movies: [Movie!]
-  videoGames: [VideoGame!]
 }
 
 type Villain {
@@ -235,6 +149,36 @@ type Occupation {
   name: String!
 }
 
+type BuildingType {
+  id: ID!
+  description: String!
+}
+
+type Headquarter {
+  organizationId: ID!
+  id: ID!
+  name: String!
+  ubication: Place!
+  buildingType: BuildingType!
+  organization: Organization!
+}
+
+type Place {
+  id: ID!
+  name: String!
+}
+
+type Organization {
+  id: ID!
+  name: String!
+  slogan: String!
+  objetive: String!
+  firstApparition: String!
+  creationPlace: Place!
+  founder: Character!
+  leader: Character!
+}
+
 type Character {
   id: ID!
   eyeColor: Color!
@@ -256,6 +200,120 @@ type CharactersResponse {
   civil: [Civil!]
 }
 
+type Medio {
+  id: ID!
+  companyProduction: Company!
+}
+
+type Platform {
+  id: ID!
+  name: String!
+}
+
+type VideoGame {
+  medioId: ID!
+  medio: Medio!
+  title: String!
+  releaseDate: String!
+  synopsis: String!
+  based: String!
+  type: String!
+  companyPublisher: Company!
+  platforms: [Platform!]!
+}
+
+type Company {
+  id: ID!
+  description: String!
+}
+
+type Actor {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type AudioVisualType {
+  id: ID!
+  description: String!
+}
+
+type Serie {
+  medioId: ID!
+  medio: Medio!
+  title: String!
+  releaseDate: String!
+  synopsis: String!
+  based: String!
+  channel: String!
+  episodes: String!
+  creator: Creator!
+  audioVisualType: AudioVisualType!
+}
+
+type Creator {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type Director {
+  id: ID!
+  name: String!
+  lastName: String!
+}
+
+type Movie {
+  medioId: ID!
+  medio: Medio!
+  title: String!
+  releaseDate: String!
+  synopsis: String!
+  duration: Int!
+  based: String!
+  cost: Float!
+  revenue: Float!
+  director: Director!
+  companyDist: Company!
+  audioVisualType: AudioVisualType!
+}
+
+type SerieReportResponse {
+  avg: Float!
+  series: [Serie!]!
+}
+
+type MovieReportResponse {
+  avg: Float!
+  movies: [Movie!]!
+}
+
+type MediaResponse {
+  series: [Serie!]
+  movies: [Movie!]
+  videoGames: [VideoGame!]
+}
+
+type PersonsResponse {
+  actors: [Actor!]
+  directors: [Director!]
+  creators: [Creator!]
+}
+
+type JobPosition {
+  id: ID!
+  name: String!
+}
+
+type FormPart {
+  characterId: ID!
+  organizationId: ID!
+  jobPositionId: ID!
+  character: Character!
+  organization: Organization!
+  jobPosition: JobPosition!
+}
+
 type Query {
   users: [User!]!
   userById(id: ID!): User!
@@ -270,19 +328,32 @@ type Query {
   findCharacters: CharactersResponse!
   nacionality: [Nacionality!]!
   objects: [Objects!]!
+  objectById(id: ID!): Objects!
   objectsType: [ObjectsType!]!
   occupations: [Occupation!]!
   reportSuscription: [Suscription!]!
+  reportSerie: SerieReportResponse!
+  reportMovie: MovieReportResponse!
   reportInheritedPowers: [Power!]!
-  Powers: [Power!]!
-  persons: PersonsResponse!
-  companies: [Company!]!
   media: MediaResponse!
   AudioVisualTypes: [AudioVisualType!]!
   serie(id: String!): Serie!
   movie(id: String!): Movie!
   videoGame(id: String!): VideoGame!
-
+  platforms: [Platform!]!
+  companies: [Company!]!
+  persons: PersonsResponse!
+  Powers: [Power!]!
+  powerBy(id: ID!): Power!
+  buildingTypes: [BuildingType!]!
+  jobPositions: [JobPosition!]!
+  headquarters(organizationId: String!): [Headquarter!]!
+  formPartsByOrganization(organizationId: String!): [FormPart!]!
+  organizations: [Organization!]!
+  organization(id: String!): Organization!
+  headquarter(id: String!): Headquarter!
+  jobPosition(id: String!): JobPosition!
+  places: [Place!]!
 }
 
 type Mutation {
@@ -298,16 +369,6 @@ type Mutation {
   signup(signupInput: SignupInput!, creditCardInput: CreateCreditCardInput!, suscriptionInput: CreateSuscriptionInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
   createCreditCard(createCreditCardInput: CreateCreditCardInput!): CreditCard!
-
-  createDirector(createPersonInput: CreatePersonInput!): Director!
-  createCreator(createPersonInput: CreatePersonInput!): Creator!
-  createActor(createPersonInput: CreatePersonInput!): Actor!
-  createCompany(createCompanyInput: CreateCompanyInput!): Company!
-  createSerie(createSerieInput: CreateSerieInput!): Serie!
-  createMovie(createMovieInput: CreateMovieInput!): Movie!
-  createVideoGame(createVideoGame: CreateVideoGameInput!): VideoGame!
-  createAudioVisualType(createAudioVisualTypeInput: CreateAudioVisualTypeInput!): AudioVisualType!
-  removeMedia(id: String!): Medio!
   createColor(createColorInput: CreateColorInput!): Color!
   createVillain(createVillainInput: CreateVillainInput!, createCharacterInput: CreateCharacterInput!): Villain!
   createHero(createHeroInput: CreateHeroInput!, createCharacterInput: CreateCharacterInput!): Hero!
@@ -321,11 +382,31 @@ type Mutation {
   updateObject(updateObjectInput: UpdateObjectInput!): Objects!
   removeObject(id: ID!): Boolean!
   createOccupation(createOccupationInput: CreateOccupationInput!): Occupation!
+  createSerie(createSerieInput: CreateSerieInput!): Serie!
+  createMovie(createMovieInput: CreateMovieInput!): Movie!
+  createVideoGame(createVideoGame: CreateVideoGameInput!): VideoGame!
+  createAudioVisualType(createAudioVisualTypeInput: CreateAudioVisualTypeInput!): AudioVisualType!
+  createPlatform(namePlatform: String!): Platform!
+  removeMedio(id: String!): Medio!
+  createCompany(createCompanyInput: CreateCompanyInput!): Company!
+  createDirector(createPersonInput: CreatePersonInput!): Director!
+  createCreator(createPersonInput: CreatePersonInput!): Creator!
+  createActor(createPersonInput: CreatePersonInput!): Actor!
   createPower(createPowerInput: CreatePowerInput!): Power!
   updatePower(updatePowerInput: UpdatePowerInput!): Power!
   removePower(id: ID!): Boolean!
   updateCharacterPower(updateUsePowerInput: UpdateUsePowerInput!): UsePower!
   removePowerFromCharacter(characterId: ID!, powerId: ID!): Boolean!
+  createOrganization(createOrganizationInput: CreateOrganizationInput!): Organization!
+  createHeadquarter(createHeadquarterInput: CreateHeadquarterInput!): Headquarter!
+  createBuildingType(nameBuildingType: String!): BuildingType!
+  createJobPosition(nameJobPosition: String!): JobPosition!
+  createFormPart(createFormPartInput: CreateFormPartInput!): [FormPart!]!
+  updateOrganization(updateOrganizationInput: UpdateOrganizationInput!): Organization!
+  updateHeadquarter(updateHeadquarterInput: UpdateHeadquarterInput!): Headquarter!
+  removeOrganization(id: String!): Boolean!
+  removeFormPart(organizationId: String!, jobPositionId: String!, characterId: String!): Boolean!
+  createPlace(name: String!): Place!
 }
 
 input UpdateUserInput {
@@ -399,54 +480,6 @@ input LoginInput {
   password: String!
 }
 
-input CreatePersonInput {
-  name: String!
-  lastName: String!
-}
-
-input CreateCompanyInput {
-  description: String!
-}
-
-input CreateSerieInput {
-  title: String!
-  companyId: ID!
-  synopsis: String!
-  based: String!
-  releaseDate: String!
-  channel: String!
-  episodes: Int!
-  creatorId: ID!
-  audioVisualTypeId: ID!
-}
-
-input CreateMovieInput {
-  title: String!
-  companyId: ID!
-  synopsis: String!
-  based: String!
-  releaseDate: String!
-  duration: Int!
-  cost: Float!
-  revenue: Float!
-  directorId: ID!
-  audioVisualTypeId: ID!
-  companyDistId: ID!
-}
-
-input CreateVideoGameInput {
-  title: String!
-  companyId: ID!
-  synopsis: String!
-  based: String!
-  releaseDate: String!
-  type: String!
-  companyPublisherId: ID!
-}
-
-input CreateAudioVisualTypeInput {
-  description: String!
-=======
 input CreateColorInput {
   """Se guarda el nombre del color"""
   description: String!
@@ -474,7 +507,7 @@ enum TypeMaritialStatus {
   Soltero
   Casado
   Viudo
-  Divorcio
+  Divorciado
 }
 
 input CreateCharacterInput {
@@ -589,6 +622,56 @@ input CreateOccupationInput {
   name: String!
 }
 
+input CreateSerieInput {
+  title: String!
+  companyId: ID!
+  synopsis: String!
+  based: String!
+  releaseDate: String!
+  channel: String!
+  episodes: Int!
+  creatorId: ID!
+  audioVisualTypeId: ID!
+}
+
+input CreateMovieInput {
+  title: String!
+  companyId: ID!
+  synopsis: String!
+  based: String!
+  releaseDate: String!
+  duration: Int!
+  cost: Float!
+  revenue: Float!
+  directorId: ID!
+  audioVisualTypeId: ID!
+  companyDistId: ID!
+}
+
+input CreateVideoGameInput {
+  title: String!
+  companyId: ID!
+  synopsis: String!
+  based: String!
+  releaseDate: String!
+  type: String!
+  companyPublisherId: ID!
+  platforms: [RelationsInput!]!
+}
+
+input CreateAudioVisualTypeInput {
+  description: String!
+}
+
+input CreateCompanyInput {
+  description: String!
+}
+
+input CreatePersonInput {
+  name: String!
+  lastName: String!
+}
+
 input CreatePowerInput {
   name: String!
   description: String!
@@ -610,4 +693,50 @@ input UpdateUsePowerInput {
 enum TypePower {
   Natural
   Artificial
+}
+
+input CreateOrganizationInput {
+  name: String!
+  slogan: String!
+  objetive: String!
+  firstApparition: String!
+  leaderId: String!
+  founderId: String!
+  placeId: String!
+}
+
+input CreateHeadquarterInput {
+  name: String!
+  organizationId: ID!
+  ubicationId: ID!
+  buildingTypeId: ID!
+}
+
+input CreateFormPartInput {
+  organizationId: ID!
+  charactersAndJobs: [FormPartInput!]!
+}
+
+input FormPartInput {
+  characterId: ID!
+  jobPositionId: ID!
+}
+
+input UpdateOrganizationInput {
+  name: String
+  slogan: String
+  objetive: String
+  firstApparition: String
+  leaderId: String
+  founderId: String
+  placeId: String
+  id: ID!
+}
+
+input UpdateHeadquarterInput {
+  name: String
+  organizationId: ID!
+  ubicationId: ID
+  buildingTypeId: ID
+  id: ID!
 }
