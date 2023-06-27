@@ -23,6 +23,8 @@ import { OccupationsModule } from './occupations/occupations.module';
 import { PersonsModule } from './persons/persons.module';
 import { CompaniesModule } from './companies/companies.module';
 import { MediaModule } from './media/media.module';
+import { OrganizationsModule } from './organizations/organizations.module';
+import { PlacesModule } from './places/places.module';
 
 
 @Module({
@@ -81,6 +83,10 @@ import { MediaModule } from './media/media.module';
     CompaniesModule,
 
     MediaModule,
+
+    OrganizationsModule,
+
+    PlacesModule,
 
 
   ],

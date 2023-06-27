@@ -15,6 +15,8 @@ import { CreateVideoGameInput } from './dto/input/create-videogame.input';
 import { UpdateSerieInput } from './dto/input/update-serie.input';
 import { UpdateMovieInput } from './dto/input/update-movie.input';
 import { UpdateVideoGameInput } from './dto/input/update-videogame';
+import { Platform } from './entities/platform.entity';
+import { MovieReportResponse, SerieReportResponse } from './types/reports-response.type';
 
 @Injectable()
 export class MediaService {
@@ -37,6 +39,9 @@ export class MediaService {
 
     @InjectRepository(AudioVisualType)
     private readonly audiovisualTypeRepository: Repository<AudioVisualType>,
+
+    @InjectRepository(Platform)
+    private readonly platformRepository: Repository<Platform>,
     
     private readonly companyService: CompaniesService,
 
@@ -126,14 +131,15 @@ export class MediaService {
   async createVideoGame( createVideoGameInput: CreateVideoGameInput ) : Promise<VideoGame> {
 
     try {
-
-
+    
       const { companyId, companyPublisherId,...rest} = createVideoGameInput
 
       await this.companyService.findOneById(companyId)
-      
       const companyPublisher = await this.companyService.findOneById(companyPublisherId)
 
+      const platforms : Platform[] = createVideoGameInput.platforms.map( (platform) => {
+        return this.platformRepository.create({ id : platform.id })
+      })
 
       const newMedio = await this.createMedio(createVideoGameInput)
       const movie = this.videoGameRepository.create({
@@ -141,6 +147,7 @@ export class MediaService {
         medioId : newMedio.id,
         releaseDate : new Date(createVideoGameInput.releaseDate),
         companyPublisher,
+        platforms,
       })
 
       return await this.videoGameRepository.save(movie)
@@ -166,6 +173,30 @@ export class MediaService {
     }
   }
 
+  async createPlatform( namePlatform : string): Promise<Platform>{
+    try {  
+
+      const platformExists = await this.platformRepository.findOneBy( {
+        name: namePlatform
+      } )
+      if ( platformExists ) throw new Error(`El tipo ${namePlatform} ya existe`)
+      const newPlatform = this.platformRepository.create( { name : namePlatform } )
+      return await this.platformRepository.save( newPlatform )
+
+    } catch (error) {
+      throw new BadRequestException(error.message)
+    }
+  }
+
+  
+
+  async findAllPlatforms(): Promise<Platform[]>{
+    return await this.platformRepository.find({
+        order : {
+            name : 'ASC'
+        }
+    })
+  }
 
   
   async updateMedio ( updateSerieInput : UpdateSerieInput) : Promise<Serie>{
@@ -230,17 +261,29 @@ export class MediaService {
   }
 
   async findSerieById( id : string ):Promise<Serie> {
-    return this.serieRepository.findOneByOrFail( { medioId : id } )
+    try {
+      return this.serieRepository.findOneByOrFail( { medioId : id } )
+    } catch (error) {
+      throw new NotFoundException('Serie no encontrada')
+    }
   } 
 
   
   async findMovieById( id : string ):Promise<Movie> {
-    return this.movieRepository.findOneByOrFail( { medioId : id } )
+    try {
+      return this.movieRepository.findOneByOrFail( { medioId : id } )
+    } catch (error) {
+      throw new NotFoundException('Movie no encontrada')
+    }
   } 
 
   
   async findVideoGameById( id : string ):Promise<VideoGame> {
-    return this.videoGameRepository.findOneByOrFail( { medioId : id } )
+    try {
+      return this.videoGameRepository.findOneByOrFail( { medioId : id } )
+    } catch (error) {
+      throw new NotFoundException('Videogame no encontrada')
+    }
   } 
 
 
@@ -270,7 +313,7 @@ export class MediaService {
     }    
   }
 
-  async reportSerie() : Promise<Serie[]>{
+  async reportSerie() : Promise<SerieReportResponse>{
 
 
     const querybuilder = this.serieRepository.createQueryBuilder('serie')
@@ -286,17 +329,20 @@ export class MediaService {
     )
     .getMany();
 
-    return series
+
+    const avg = await this.serieRepository.average('episodes')
+
+    return {avg, series}
   
   }
 
 
-  async reportMovie() : Promise<Movie[]>{
+  async reportMovie() : Promise<MovieReportResponse>{
 
     const querybuilder = this.movieRepository.createQueryBuilder('movie')
     
     const { id } = await this.audiovisualTypeRepository.findOneByOrFail({
-      description : 'animacion' //por cambiar
+      description : 'Animada' //por cambiar
     })
 
 
@@ -312,7 +358,10 @@ export class MediaService {
       )
     .getMany();
 
-    return movies
+    const avg = await this.movieRepository.average('revenue')
+
+    return {avg, movies}
+    
   
   }
 
