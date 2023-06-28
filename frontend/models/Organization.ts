@@ -15,6 +15,7 @@ interface Organization {
     leaderName:      string;
     founderName:     string;
     headquarter:     Headquarter[];
+    formparts:       Formpart[];
 }
 
 interface CreationPlace {
@@ -24,6 +25,7 @@ interface CreationPlace {
 
 interface Character {
     id: string;
+    nameCharacter: string;
 }
 
 interface Headquarter {
@@ -39,4 +41,13 @@ interface BuildingType {
 
 interface Ubication {
     name: string;
+}
+
+interface JobPosition {
+    name: string;
+}
+
+interface Formpart {
+    character:   Character;
+    jobPosition: JobPosition;
 }

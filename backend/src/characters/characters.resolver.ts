@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Query, ID } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, ID, ResolveField, Parent } from '@nestjs/graphql';
 import { CharactersService } from './characters.service';
 import { Character } from './entities/character.entity';
 import { CreateCharacterInput, CreateCivilInput, CreateHeroInput, CreateVillainInput, UpdateCivilInput, UpdateHeroInput, UpdateVillainInput } from './dto/inputs';
@@ -41,6 +41,12 @@ export class CharactersResolver {
     return this.charactersService.findCharacters();
   }
 
+  @Query(() => [Character], { name: 'AllCharacters' })
+  async findAll(): Promise<Character[]> {
+    return this.charactersService.findAllCharacters()
+
+  }
+
   @Mutation(() => Hero, {name: 'updateHero'})
   async updateHero(
     @Args('updateHeroInput') updateHeroInput: UpdateHeroInput, 
@@ -63,9 +69,18 @@ export class CharactersResolver {
   }
 
   @Mutation(() => Boolean, {name: 'removeCharacter'})
-  removeCharacter(
+  async removeCharacter(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
   ): Promise<boolean> {
     return this.charactersService.removeCharacter(id);
   }
+
+
+  @ResolveField(() => String, {name: 'nameCharacter'})
+  async getName(
+    @Parent() character: Character,
+  ): Promise<string> {
+    return this.charactersService.getNameCharacter( character.id );
+  }
+
 }

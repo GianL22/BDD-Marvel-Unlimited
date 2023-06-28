@@ -13,7 +13,13 @@ import { FormPart } from './entities/form-part.entity';
 @Module({
   providers: [OrganizationsResolver, OrganizationsService],
   imports : [
-    TypeOrmModule.forFeature([ Organization, BuildingType, Headquarter, JobPosition, FormPart ]),
+    TypeOrmModule.forFeature([
+      Organization,
+      BuildingType,
+      Headquarter,
+      JobPosition,
+      FormPart,
+    ]),
     CharactersModule,
     PlacesModule
   ]

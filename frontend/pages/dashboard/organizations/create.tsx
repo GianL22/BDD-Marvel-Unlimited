@@ -12,15 +12,42 @@ import { GetCharactersNamesAndId } from '@/graphql/Character';
 import { convertCharacters } from '@/helpers/transformData';
 import { GetAllPlaces } from '@/graphql/Places';
 import { GenericResponse } from '@/models/Information';
-import { CreateOrganization } from '@/graphql/Organizations';
+import { CreateFormPart, CreateOrganization, GetJobPositions } from '@/graphql/Organizations';
+import { TableWrapper } from '@/components/table';
+import { SimpleCellReducer } from '@/components/table/cell-reducers/SimpleCellReducer';
 
 interface PlaceResponse{
     places: GenericResponse[];
 }
 
+interface CharacterJobOcupation {
+    character : GenericResponse,
+    jobOcupation : GenericResponse
+}
+
+interface DataJobPosition {
+    jobPositions: JobPosition[];
+}
+
+interface JobPosition {
+    id:   string;
+    description: string;
+}
+
+const columns = [
+    { label: "Nombre", uid: "description" },
+    { label: "Cargo", uid: "jobOcupation" },
+    { label: "Acciones", uid: "actions" },
+  ];
+
 const OrganizationsCreatePage= ( ) => {  
     const {data, error} =  useQuery<DataResponse>(GetCharactersNamesAndId);
     const {data: placesData} = useQuery<PlaceResponse>(GetAllPlaces);
+    const {data: dataJobPositions} = useQuery<DataJobPosition>(GetJobPositions);
+    const [charactersInOrg, setCharactersInOrg] = useState<CharacterJobOcupation[]>([]);
+    const [createFormPart] = useMutation(CreateFormPart)
+    const [toAddCharacter, setToAddCharacter] = useState({id: '', description: 'Agregar Personaje'})
+    const [toAddJobOcupation, setToAddJobOcupation] = useState({id: '', description: 'Agregar Cargo'})
     const [leader, setLeader] = useState({id: '', description: 'Líder'})
     const [founder, setFounder] = useState({id: '', description: 'Fundador'})
     const [placeCreation, setPlaceCreation] = useState({id: '', description: 'Lugar creación'})
@@ -29,11 +56,55 @@ const OrganizationsCreatePage= ( ) => {
     const [isLoading,setIsLoading] = useState(false);
     const [createOrganization] = useMutation(CreateOrganization)
     let characters = useMemo(() => convertCharacters(data!), [data])
+    const jobPositions = useMemo(() => dataJobPositions?.jobPositions, [dataJobPositions])
+    const charactersInOrgShow = useMemo(() => {
+        return charactersInOrg.map(row => {
+            return {
+                id : row.character.id + row.jobOcupation.id,
+                description : row.character.description,
+                jobOcupation : row.jobOcupation.description,
+            }
+        })
+    }, [charactersInOrg])
 
+    console.log(charactersInOrgShow)
     useEffect(() => {
         characters = convertCharacters(data!)
     }, [data])
     
+    const onRemoveCharacter = async (id : string) => {
+
+        const newCharactersInOrg = charactersInOrg.filter(row => row.character.id + row.jobOcupation.id !== id)
+        setCharactersInOrg(newCharactersInOrg)
+
+    } 
+
+    const onAddCharacter = () => {
+
+        const row = charactersInOrg!.find((row) =>
+                (row.character.description === toAddCharacter.description)
+                && ( row.jobOcupation.description === toAddJobOcupation.description)
+            )
+        if(row) {
+            Notification(isDark).fire({
+                title: `Ese personaje ya tiene ese cargo`,
+                icon: 'error',
+                timer : 3000
+            })
+            return ;
+        }
+        const newRow  =  {
+            id : toAddCharacter.id,
+            character : toAddCharacter,
+            jobOcupation : toAddJobOcupation,
+        }
+        setCharactersInOrg([...charactersInOrg, newRow])
+
+        setToAddCharacter({id: '', description: 'Agregar Personaje'})
+        setToAddJobOcupation({id: '', description: 'Agregar Cargo'})
+
+    }
+
     const onSubmit = async () => {
         setIsLoading(true)
         Notification(isDark).fire({
@@ -54,6 +125,20 @@ const OrganizationsCreatePage= ( ) => {
                     },
                 },
             });
+            const charactersAndJobs = charactersInOrg.map(row => {
+                return {
+                    characterId : row.character.id,
+                    jobPositionId : row.jobOcupation.id
+                }
+            })
+            await createFormPart({
+                variables: {
+                    createFormPartInput: {
+                        organizationId : data.createOrganization.id,
+                        charactersAndJobs,
+                    }
+                }
+            })
             Notification(isDark).fire({
                 title: `Organización: ${data.createOrganization.name} creada`,
                 icon: 'success',
@@ -61,6 +146,7 @@ const OrganizationsCreatePage= ( ) => {
             setIsLoading(false)
             setTimeout(() => replace('/dashboard/organizations'),500)
         } catch (error: any) {
+            console.log(error)
             Notification(isDark).fire({
                 title: error.message,
                 icon: 'error',
@@ -167,7 +253,6 @@ const OrganizationsCreatePage= ( ) => {
                 />
             </Row>
         </Grid>
-        <Spacer y={7} />
         <Grid xs={12} alignContent='space-between' alignItems='center' direction='column-reverse' css={{py:'$10'}}>
             <Row gap={1}>
                 <Col>
@@ -197,6 +282,47 @@ const OrganizationsCreatePage= ( ) => {
                         check='Lugar creación'
                     />
                 </Col>
+            </Row>
+
+            <Flex css={ { width : '100%'}} justify={'center'}>
+
+                <TableWrapper 
+                columns={columns} 
+                rows={charactersInOrgShow!}
+                cellReducer={SimpleCellReducer}
+                onDelete={onRemoveCharacter}
+                />
+                <Flex direction={'column'} justify={'center'} align={'center'}>
+                    <DropdownRegister
+                        listkeys={characters!}
+                        selected={toAddCharacter.description}
+                        setValue={setToAddCharacter}
+                        width={100} 
+                        check='Agregar Personaje'
+                    />
+                    <Spacer y={2} />
+                    <DropdownRegister
+                        listkeys={jobPositions!}
+                        selected={toAddJobOcupation.description}
+                        setValue={setToAddJobOcupation}
+                        width={100} 
+                        check='Agregar Cargo'
+                    />
+                    <Spacer y={2} />
+
+
+                    <Button
+                        onPress={onAddCharacter}
+                        size='lg'
+                    >
+                        Agregar Personaje
+                    </Button>
+                </Flex>
+            </Flex>
+            <Row>
+                <Text h3>
+                    Personajes en la Organización
+                </Text>                
             </Row>
         </Grid>
         <Grid xs ={12} alignContent='space-between' alignItems='stretch' direction='row-reverse' css={{py:'$0'}}>
