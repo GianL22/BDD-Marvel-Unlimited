@@ -31,6 +31,15 @@ query Organizations {
 }
 `
 
+export const GetAllOrganizationsNameAndId = gql`
+query Organizations {
+  organizations {
+    id
+    description : name
+  }
+}
+`
+
 export const RemoveOrganizationById = gql`
 mutation Mutation($removeOrganizationId: String!) {
   removeOrganization(id: $removeOrganizationId)

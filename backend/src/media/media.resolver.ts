@@ -44,7 +44,7 @@ export class MediaResolver {
 
   @Mutation(() => [Participates], {name : 'createParticipates'})
   async createParticipates(
-    @Args('createParticipates') createParticipatesInput : CreateParticipatesInput
+    @Args('createParticipatesInput') createParticipatesInput : CreateParticipatesInput
   ): Promise<Participates[]> {
     return this.mediaService.createParticipates( createParticipatesInput );
   }
@@ -59,6 +59,11 @@ export class MediaResolver {
   @Query(() => MediaResponse, { name: 'media' })
   async findAll() : Promise<MediaResponse> {
     return await this.mediaService.findAll();
+  }
+  
+  @Query(() => [Medio], { name: 'mediosTitleAndIds' })
+  async findAllMediosTitleAndIds() : Promise<Medio[]> {
+    return await this.mediaService.findAllMediosTitleAndIds();
   }
 
   @Mutation(() => AudioVisualType, { name: 'createAudioVisualType' })

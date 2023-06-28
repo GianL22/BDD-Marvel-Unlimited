@@ -220,7 +220,7 @@ const OrganizationsDetailPage: NextPage<Props>= ( {organization} ) => {
             <Card.Body>
               {
                 (organization.organization.formparts.length === 0)
-                  ? <Text h2> Aun no se ha asociado ninguna sede</Text>
+                  ? <Text h2> Aun no se ha asociado ningun personaje</Text>
                   : 
                   organization.organization.formparts.map((formpart, i)=>(
                     <Row>

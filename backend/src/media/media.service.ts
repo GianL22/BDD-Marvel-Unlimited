@@ -359,6 +359,10 @@ export class MediaService {
     })
   }
 
+  async findAllMediosTitleAndIds() : Promise<Medio[]>{
+    return await this.medioRepository.find() 
+  }
+
   async findAllParticipatesByMedio( medioId : string ): Promise<Participates[]>{
 
     const participates = await this.participatesRepository.findBy( { medioId })

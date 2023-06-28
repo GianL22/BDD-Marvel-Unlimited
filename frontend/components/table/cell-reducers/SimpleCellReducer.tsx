@@ -16,18 +16,9 @@ export const SimpleCellReducer = (row: Row, columnKey: string, onDelete:(id: str
         onActions={ onDelete }
         id = {row.id}
       />
-
-    case "description":
-      return <Text>
-          {row.description}
-          </Text>
-    case "jobOcupation":
-      return <Text>
-          {row.jobOcupation}
-          </Text>
     default:
       return  <Text>
-              N/A
+                {row[columnKey as keyof Row]}
             </Text>
   }
 }
