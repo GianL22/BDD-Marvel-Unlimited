@@ -10,6 +10,15 @@ mutation CreateOrganization($createOrganizationInput: CreateOrganizationInput!) 
   }
 `
 
+export const CreateFormPart = gql`
+  mutation CreateFormPart($createFormPartInput: CreateFormPartInput!) {
+    createFormPart(createFormPartInput: $createFormPartInput) {
+      jobPositionId
+      organizationId
+    }
+  }
+`
+
 export const GetAllOrganizations = gql`
 query Organizations {
   organizations {
@@ -58,6 +67,14 @@ query Organization($organizationId: String!) {
         description
       }
     }
+    formparts {
+      character {
+        nameCharacter
+      }
+      jobPosition {
+        name
+      }
+    }
   }
 }
 `;
@@ -69,4 +86,15 @@ mutation Mutation($updateOrganizationInput: UpdateOrganizationInput!) {
     id
   }
 }
+`
+
+
+
+export const GetJobPositions = gql`
+  query JobPositions {
+    jobPositions {
+      id
+      description : name
+    }
+  }
 `

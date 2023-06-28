@@ -212,6 +212,35 @@ const OrganizationsDetailPage: NextPage<Props>= ( {organization} ) => {
           </Card>
         </Grid>
         <Grid xs={12} alignContent='space-between' alignItems='center' direction='column'>
+          <Card>
+            <Card.Header css={{margin:'$0', py:'$0'}}>
+              <Text h3>Personajes</Text>
+            </Card.Header>
+            <Divider />
+            <Card.Body>
+              {
+                (organization.organization.formparts.length === 0)
+                  ? <Text h2> Aun no se ha asociado ninguna sede</Text>
+                  : 
+                  organization.organization.formparts.map((formpart, i)=>(
+                    <Row>
+                      <Col>
+                          <Text> {i+1}  </Text>
+                      </Col>
+                      <Col>
+                          <Text> {formpart.character.nameCharacter}  </Text>
+                      </Col>
+                      <Col>
+                          <Text>  {formpart.jobPosition.name} </Text>
+                      </Col>
+
+                    </Row>
+                  ))
+              }
+            </Card.Body>
+          </Card>
+        </Grid>
+        <Grid xs={12} alignContent='space-between' alignItems='center' direction='column'>
             <Row gap={1}>
                 <Col>
                     <DropdownRegister

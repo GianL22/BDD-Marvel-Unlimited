@@ -3,6 +3,7 @@ import { Character } from 'src/characters/entities';
 import { Place } from 'src/places/entities/place.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Headquarter } from './headquarter.entity';
+import { FormPart } from './form-part.entity';
 
 @Entity('Organization')
 @ObjectType()
@@ -64,6 +65,14 @@ export class Organization {
   )
   @Field(()=> [Headquarter])
   headquarter: string;
+
+  @OneToMany(
+    () => FormPart,
+    (formPart) => formPart.organization,
+    {lazy: true, cascade: true}
+  )
+  @Field(()=> [FormPart])
+  formparts: string;
 
 //   @OneToMany(
 //     () => FormPart,

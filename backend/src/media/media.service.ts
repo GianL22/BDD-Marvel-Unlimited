@@ -17,6 +17,11 @@ import { UpdateMovieInput } from './dto/input/update-movie.input';
 import { UpdateVideoGameInput } from './dto/input/update-videogame';
 import { Platform } from './entities/platform.entity';
 import { MovieReportResponse, SerieReportResponse } from './types/reports-response.type';
+import { Participates } from './entities/participates.entity';
+import { CreateParticipatesInput } from './dto/input/create-participates.input';
+import { CreateAppearsInput } from './dto/input/create-appears.input';
+import { Appears } from './entities/appears.entity';
+import { Actor } from '../persons/entities/actor.entity';
 
 @Injectable()
 export class MediaService {
@@ -42,6 +47,12 @@ export class MediaService {
 
     @InjectRepository(Platform)
     private readonly platformRepository: Repository<Platform>,
+
+    @InjectRepository(Participates)
+    private readonly participatesRepository: Repository<Participates>,
+
+    @InjectRepository(Appears)
+    private readonly appearsRepository: Repository<Appears>,
     
     private readonly companyService: CompaniesService,
 
@@ -188,16 +199,39 @@ export class MediaService {
     }
   }
 
-  
 
-  async findAllPlatforms(): Promise<Platform[]>{
-    return await this.platformRepository.find({
-        order : {
-            name : 'ASC'
-        }
-    })
+  async createParticipates({organizationsParticipates, medioId}: CreateParticipatesInput): Promise<Participates[]> {
+    
+    try {   
+      
+      await this.medioRepository.findOneByOrFail({id: medioId})
+      
+      const participates= organizationsParticipates.map( (orgParticipation)=> {
+        return this.participatesRepository.create({ ...orgParticipation, medioId })
+      })
+
+      return await this.participatesRepository.save( participates );
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
   }
 
+  async createAppears({appears, medioId}: CreateAppearsInput): Promise<Appears[]> {
+    
+    try {   
+      
+      await this.medioRepository.findOneByOrFail({id: medioId})
+      
+      const newAppears = appears.map( (characterParticipation)=> {
+        return this.appearsRepository.create({ ...characterParticipation, medioId })
+      })
+
+      return await this.appearsRepository.save( newAppears );
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+  
   
   async updateMedio ( updateSerieInput : UpdateSerieInput) : Promise<Serie>{
 
@@ -285,7 +319,22 @@ export class MediaService {
       throw new NotFoundException('Videogame no encontrada')
     }
   } 
+  
+  async findOneMediaById( medioId : string):Promise<MediaResponse> {
+    
+    const repositories = [ this.movieRepository, this.serieRepository, this.videoGameRepository ]
+    const promiseRepositories = []
+    console.log(medioId)
+    for ( const repository of repositories ){
+      promiseRepositories.push( repository.findOneBy( { medioId })) 
+    }
 
+    const [ movie, serie, videoGame ] = await Promise.all( promiseRepositories )
+    console.log([movie, serie, videoGame])
+    if ( movie ) return { movies : [ movie ] }
+    if ( serie ) return { series : [ serie ] }
+    if ( videoGame ) return { videoGames : [ videoGame ] }
+  }
 
   async findAll():Promise<MediaResponse> {
     
@@ -302,6 +351,27 @@ export class MediaService {
     return { movies, series, videoGames }
   }
 
+  async findAllPlatforms(): Promise<Platform[]>{
+    return await this.platformRepository.find({
+        order : {
+            name : 'ASC'
+        }
+    })
+  }
+
+  async findAllParticipatesByMedio( medioId : string ): Promise<Participates[]>{
+
+    const participates = await this.participatesRepository.findBy( { medioId })
+    return participates
+
+  }
+
+  async findAllApppearsByMedio( medioId : string ): Promise<Appears[]>{
+
+    const appears = await this.appearsRepository.findBy( { medioId })
+    return appears
+
+  }
   
   async removeMedio( id: string ) {
     try {
@@ -310,6 +380,27 @@ export class MediaService {
       return true;
     } catch (error) {
       throw new NotFoundException(`El personaje: ${id} tiene otras relaciones`)
+    }    
+  }
+
+  async removeParticipates( medioId : string, organizationId : string ) {
+    try {
+      const participates = await this.participatesRepository.findOneByOrFail( { medioId, organizationId } )
+      await this.participatesRepository.remove( participates )
+      return true;
+    } catch (error) {
+      throw new NotFoundException(`La relación no se encontró`)
+    }    
+  }
+
+
+  async removeAppears( medioId : string,  characterId : string, actorId : string ) {
+    try {
+      const appears = await this.appearsRepository.findOneByOrFail( { medioId, actorId, characterId } )
+      await this.appearsRepository.remove( appears )
+      return true;
+    } catch (error) {
+      throw new NotFoundException(`La relación no se encontró`)
     }    
   }
 
@@ -365,6 +456,14 @@ export class MediaService {
   
   }
 
+
+  async getTitle( medioId : string ):Promise<string>{
+    const { movies = [], series = [], videoGames = [] } = await  this.findOneMediaById( medioId )
+    if ( movies.length > 0 ) return movies[0].title
+    if ( series.length > 0 ) return series[0].title
+    if ( videoGames.length > 0 ) return videoGames[0].title
+
+  }
 
 
   // findOne(id: number) {
