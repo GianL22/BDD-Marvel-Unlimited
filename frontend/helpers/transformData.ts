@@ -1,4 +1,5 @@
-import { DataResponse } from "@/models/Character";
+import { DataResponse, Hero, Villain } from "@/models/Character";
+import { Person } from "@/models/Information";
 import { Medio } from "@/models/Medio";
 import { Characters, ResponseToShow } from "@/pages/dashboard/characters";
 import { MedioResponse } from "@/pages/dashboard/medios";
@@ -100,4 +101,27 @@ export const convertMedioToShow = (initialValues: MedioResponse): Medio[] => {
   });
 
   return medios;
+}
+
+export const convertForCharacters = (creators: Person[], hero: Hero[], villain: Villain[]) => {
+  const heroes = hero.map(({ nameHero, character }) => ({
+    id: character.id,
+    description: nameHero,
+  }));
+  const villains = villain.map(({ nameVillain, character }) => ({
+    id: character.id,
+    description: nameVillain,
+  }));
+  const creatorsData = creators.map(creator => {
+    return {
+      id: creator.id,
+      description: creator.name + ' ' + creator.lastName
+    };
+  });
+  
+  return{
+    heroes,
+    villains,
+    creatorsData
+  }
 }

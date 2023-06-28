@@ -5,6 +5,9 @@ export interface Client{
     isActive: boolean;
     name: string;
     lastName: string;
+    email:     string;
+    birthdate: string;
+    city:      City;
     profiles:Profile[],
 }
 
@@ -18,4 +21,14 @@ export interface Profile{
     timeWatched: number;
     emailProfile: string;
     avatar: string;
+}
+
+interface City {
+    id:          string;
+    description: string;
+    country:     Country;
+}
+
+interface Country {
+    description: string;
 }

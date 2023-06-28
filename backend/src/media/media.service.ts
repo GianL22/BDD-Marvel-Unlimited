@@ -267,11 +267,11 @@ export class MediaService {
 
   async updateVideoGame ( updateVideoGameInput : UpdateVideoGameInput ) : Promise<VideoGame>{
 
-    const { medioId } = updateVideoGameInput
+    const { medioId, platforms } = updateVideoGameInput
     await this.findVideoGameById( medioId )
 
     const updatedVideoGame = await this.videoGameRepository.preload( updateVideoGameInput )
-    if ( updatedVideoGame ) return this.videoGameRepository.save( updateVideoGameInput )
+    if ( updatedVideoGame ) return this.videoGameRepository.save( updatedVideoGame )
     throw new NotFoundException(`serie con el id ${ medioId } no se encontro`)
 
   }

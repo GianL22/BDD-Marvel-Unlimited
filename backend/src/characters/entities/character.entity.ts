@@ -123,7 +123,7 @@ export class Character{
   @OneToMany(
     () => UsePower,
     (usePower) => usePower.character,
-    {lazy: true, onDelete: 'CASCADE'}
+    {lazy: true, cascade: true}
   )
   @Field(()=> [UsePower], {name:'powers'})
   usePower: UsePower;

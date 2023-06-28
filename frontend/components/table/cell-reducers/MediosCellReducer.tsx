@@ -37,7 +37,7 @@ export const MediosCellReducer = (row: Row, columnKey: string, onDelete:(id: str
     );
     case "actions": 
       return <TableActions
-        url={`/dashboard/medios/${row.id}`}
+        url={`/dashboard/medios/${row.type}&${row.id}`}
         onActions={ onDelete }
         id = {row.id}
       />

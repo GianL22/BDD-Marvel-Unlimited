@@ -88,3 +88,94 @@ query Media {
   }
 }
 `;
+
+export const GetMovieById = gql`
+query Movie($movieId: String!) {
+  movie(id: $movieId) {
+    medio {
+      id
+      companyProduction {
+        description
+        id
+      }
+    }
+    title
+    releaseDate
+    synopsis
+    duration
+    cost
+    based
+    revenue
+    director {
+      id
+      name
+      lastName
+    }
+    companyDist {
+      id
+      description
+    }
+    audioVisualType {
+      id
+      description
+    }
+  }
+}
+`
+
+export const GetSerieById = gql`
+query Serie($serieId: String!) {
+  serie(id: $serieId) {
+    medio {
+      id
+      companyProduction {
+        id
+        description
+      }
+      
+    }
+    title
+    releaseDate
+    synopsis
+    based
+    channel
+    episodes
+    creator {
+      id
+      name
+      lastName
+    }
+    audioVisualType {
+      id
+      description
+    }
+  }
+}
+`
+
+export const GetVideoGameById = gql`
+query Movie($videoGameId: String!) {
+  videoGame(id: $videoGameId) {
+    medio {
+      id
+      companyProduction {
+        id
+        description
+      }
+    }
+    title
+    releaseDate
+    synopsis
+    based
+    type
+    companyPublisher {
+      id
+      description
+    }
+    platforms {
+      id
+      description: name
+    }
+  }
+}
+`

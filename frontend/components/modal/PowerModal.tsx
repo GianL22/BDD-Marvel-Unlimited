@@ -131,7 +131,7 @@ export const PowerModal: FC<Props> = ( {powers, setPowers,bindings, setVisible} 
                         ? <Text h3> Aun no se ha guardado ningun poder</Text>
                         : 
                         powers.map((power)=>(
-                           <Row>
+                           <Row key={power.powerId}>
                               <Col>
                                  <Text> {power.powerName}  </Text>
                               </Col>
@@ -175,6 +175,7 @@ export const PowerModal: FC<Props> = ( {powers, setPowers,bindings, setVisible} 
                      selected={power.description}
                      setValue={setPower}
                      width={40} 
+                     check='Poderes'
                   />
                   <RadioRegister 
                      label='Tipo de Poder'

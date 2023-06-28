@@ -1,19 +1,25 @@
-import { Grid, Input, Spacer, Text, useTheme, Button, Loading, Textarea } from '@nextui-org/react';
+import { Grid, Input, Spacer, Text, useTheme, Button, Loading, Textarea, Row, Col, Card, Divider } from '@nextui-org/react';
 import { Flex } from '../../../components/containers';
 import { AppLayout } from '@/layouts/AppLayout';
 import { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { ApolloClient, InMemoryCache, useMutation, useQuery } from '@apollo/client';
 import { DropdownRegister } from '@/components/dropdown/DropdownRegister';
-import { RadioRegister } from '@/components/radio/RadioRegister';
 import { useForm } from '@/hooks/useForm';
 import { Notification } from '@/notification';
 import { GetInformationToCreateMedio } from '@/graphql/Information';
 import { FormMedia } from '@/models/Information';
-import { CreateMovie, CreateSerie, CreateVideoGame } from '@/graphql/Medio';
+import { CreateMovie, CreateSerie, CreateVideoGame, GetMovieById, GetSerieById, GetVideoGameById } from '@/graphql/Medio';
 import { useRouter } from 'next/router';
-import { DropdownMultiRegister } from '@/components/dropdown/DropdownMultiRegister';
+import { GetServerSideProps, NextPage } from 'next';
+import { MovieAll, SerieAll, VideoGameAll } from '@/models/Medio';
 
-const MediosCreatePage = ( ) => {  
+interface Props{
+    movie?: MovieAll,
+    serie?: SerieAll,
+    videoGame?: VideoGameAll, 
+}
+
+const MediosDetailPage: NextPage<Props> = ( {movie, serie,videoGame} ) => {  
   const {replace} = useRouter()
   const { isDark } = useTheme();
   const {data} = useQuery<FormMedia>(GetInformationToCreateMedio)
@@ -21,17 +27,17 @@ const MediosCreatePage = ( ) => {
   const [createSerie] = useMutation(CreateSerie);
   const [createVideoGame] = useMutation(CreateVideoGame);
   const [isLoading,setIsLoading] = useState(false);
-  const [medio,setMedio] = useState('Película');
-  const [duration, setDuration] = useState<number>(0)
-  const [cost, setCost] = useState<number>(0)
-  const [revenue, setRevenue] = useState<number>(0)
-  const [episodes, setEpisodes] = useState<number>(0)
-  const [director, setDirector] = useState({id: '', description: 'Director'})
-  const [audioVisualType, setAudioVisualType] = useState({id: '', description: 'Tipo AudioVisual'})
-  const [creator, setCreator] = useState({id: '', description: `Creador`})
-  const [companyDist, setCompanyDist] = useState({id: '', description: `Compañia Distribuidora`})
-  const [companyPublisher, setCompanyPublisher] = useState({id: '', description: `Compañia Publicadora`})
-  const [companyProducer, setCompanyProducer] = useState({id: '', description: `Compañia Productora`})
+  const medio: string = (`${(movie) ? 'Película' : (serie) ? 'Serie' : 'Video-juego'}`);
+  const [duration, setDuration] = useState<number>((movie) ? movie.duration : 0)
+  const [cost, setCost] = useState<number>((movie) ? movie.cost : 0)
+  const [revenue, setRevenue] = useState<number>((movie) ? movie.revenue : 0)
+  const [episodes, setEpisodes] = useState<number>((serie) ? Number(serie.episodes) : 0)
+  const [director, setDirector] = useState({id: movie?.director.id, description: `${movie?.director.name} ${movie?.director.lastName}`})
+  const [audioVisualType, setAudioVisualType] = useState((movie) ? movie.audioVisualType : (serie) ? serie.audioVisualType : {id:'', description:''})
+  const [creator, setCreator] = useState({id: serie?.creator.id, description: `${serie?.creator.name} ${serie?.creator.lastName}`})
+  const [companyDist, setCompanyDist] = useState({id: movie?.companyDist.id, description: movie?.companyDist.description})
+  const [companyPublisher, setCompanyPublisher] = useState({id: videoGame?.companyPublisher.id, description: videoGame?.companyPublisher.description})
+  const [companyProducer, setCompanyProducer] = useState((movie) ? movie.medio.companyProduction : (serie) ? serie.medio.companyProduction : videoGame?.medio.companyProduction!)
   const [plataforms, setPlataforms] = useState<{id: string}[]>([])
   const directors = data?.persons.directors.map(director => {
     return {
@@ -46,22 +52,22 @@ const MediosCreatePage = ( ) => {
     };
   });
 
-  const {allowSubmit: allowSerieSubmit, parsedFields: parsedSerie} = useForm([
+  const { parsedFields: parsedSerie} = useForm([
     {
       name: 'channel',
       validate: (value: string) => value.trim().length >= 3,
       validMessage: 'Canal Valido',
       errorMessage: 'Minimo 3 caracteres',
-      initialValue: '',
+      initialValue: (serie) ? serie.channel : '',
     },
   ])
-  const {allowSubmit: allowVideoGameSubmit, parsedFields: parsedVideoGame} = useForm([
+  const { parsedFields: parsedVideoGame } = useForm([
     {
       name: 'type',
       validate: (value: string) => value.trim().length >= 3,
       validMessage: 'El tipo de Video Juego es Valido',
       errorMessage: 'Minimo 3 caracteres',
-      initialValue: '',
+      initialValue: (videoGame) ? videoGame.type : '',
     },
   ])
   const {allowSubmit,parsedFields} = useForm([
@@ -70,28 +76,28 @@ const MediosCreatePage = ( ) => {
         validate: (value: string) => value.trim().length >= 3,
         validMessage: 'Título Valido',
         errorMessage: 'Minimo 3 caracteres',
-        initialValue: '',
+        initialValue: (movie) ? movie.title : (serie) ? serie.title : videoGame?.title!,
     },
     {
         name: 'synopsis',
         validate: (value: string) => value.trim().length >= 10,
         validMessage: 'Sinopsis Valida',
         errorMessage: 'Minimo 10 caracteres',
-        initialValue: '',
+        initialValue: (movie) ? movie.synopsis : (serie) ? serie.synopsis : videoGame?.synopsis!,
     },
     {
         name: 'based',
         validate: (value: string) => value.trim().length >= 3,
         validMessage: 'Comic Valido',
         errorMessage: 'Minimo 3 caracteres',
-        initialValue: '',
+        initialValue: (movie) ? movie.based : (serie) ? serie.based : videoGame?.based!,
     },
     {
         name: 'releaseDate',
         validate: (value: string) => value.trim().length >= 3,
         validMessage: 'Fecha de Lanzamiento válida',
         errorMessage: 'Fecha de Lanzamiento inválido',
-        initialValue: '',
+        initialValue: (movie) ? movie.releaseDate : (serie) ? serie.releaseDate : videoGame?.releaseDate!,
     },
 ])
 const onSubmit = async () => {
@@ -106,7 +112,7 @@ const onSubmit = async () => {
         synopsis: synopsis.value,
         based: based.value,
         releaseDate: releaseDate.value,
-        companyId: companyProducer.id,
+        companyId: companyProducer.id!,
       }
       if(medio === 'Película'){
         await createMovie({
@@ -186,15 +192,8 @@ const [type] = parsedVideoGame;
         align='center'
       >
         <Text h1>
-          Crear un Medio: 
+          Detalles del Medio: 
         </Text>
-        <RadioRegister 
-          label='Medios'
-          listValue={['Película', 'Serie', 'Video-juego']}
-          onSelectKey={setMedio}
-          valueRadio={medio}
-          size='xl'
-        />
       </Flex>
       <Grid.Container gap={2} justify="center" >
         <Grid alignContent='center' alignItems='center' xs={ 12 } sm={ 12 } direction="row" css={{px: '$10', py:'$8', gap:'$15'}}>
@@ -231,7 +230,7 @@ const [type] = parsedVideoGame;
             />
             <DropdownRegister
                 listkeys={data.companies!}
-                selected={companyProducer.description}
+                selected={companyProducer.description!}
                 setValue={setCompanyProducer}
                 width={100} 
                 check='Compañia Productora'
@@ -337,12 +336,23 @@ const [type] = parsedVideoGame;
                               status={type.color}
                               color={type.color}
                             />
-                            <DropdownMultiRegister 
-                              listkeys={data?.platforms}
-                              label='Plataformas'
-                              setValue={ setPlataforms }
-                              width={90}
-                            />
+                            <Card css={{py:'$5'}}>
+                                <Card.Header css={{margin:'$0', py:'$0'}}>
+                                    <Text h3>Plataformas</Text>
+                                </Card.Header>
+                                <Divider />
+                                <Card.Body> 
+                            {
+                                videoGame?.platforms.map((plataform, i)=>(
+                                    <Row>
+                                        <Col>
+                                            <Text> {plataform.description}  </Text>
+                                        </Col>
+                                    </Row>
+                                ))
+                            }
+                                </Card.Body>
+                            </Card>
                         </>
                 }
             </Grid>
@@ -366,7 +376,7 @@ const [type] = parsedVideoGame;
                         />
                         <DropdownRegister
                             listkeys={data.companies!}
-                            selected={companyDist.description}
+                            selected={companyDist.description!}
                             setValue={setCompanyDist}
                             width={100} 
                             check='Compañia Distribuidora'
@@ -397,7 +407,7 @@ const [type] = parsedVideoGame;
                       <>
                           <DropdownRegister
                             listkeys={data.companies!}
-                            selected={companyPublisher.description}
+                            selected={companyPublisher.description!}
                             setValue={setCompanyPublisher}
                             width={100} 
                             check='Compañia Publicadora'
@@ -408,20 +418,85 @@ const [type] = parsedVideoGame;
         </Grid>
         <Grid xs ={12} alignContent='flex-end' alignItems='flex-start' direction='row-reverse'>
           <Button
-              disabled={
-                !allowSubmit || isLoading || (companyProducer.description === 'Compañia Productora') ||
-                ((medio==='Película') && ( !(director.description !== 'Director') || !(audioVisualType.description !== 'Tipo AudioVisual') || !(companyDist.description !== 'Compañia Distribuidora'))) ||
-                ((medio==='Serie') && (!allowSerieSubmit || !(creator.description !== 'Creador') || !(audioVisualType.description !== 'Tipo AudioVisual'))) ||
-                ((medio==='Video-juego') && (!allowVideoGameSubmit || !(companyPublisher.description !== 'Compañia Publicadora') || !(plataforms.length !== 0)))
-              }
+              disabled={ !allowSubmit || isLoading}
               onPress={onSubmit}
               size='lg'
           >
-              {!isLoading ? 'Crear Medio' : <Loading type='points'/>}
+              {!isLoading ? 'Actualizar Medio' : <Loading type='points'/>}
           </Button>
         </Grid>
       </Grid.Container> 
     </AppLayout>
   )
 }
-export default MediosCreatePage
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const { id = '' } = ctx.params as {id: string}; 
+    const client = new ApolloClient({
+        uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
+        cache: new InMemoryCache(),
+    });
+
+    try {
+        if ( id.split('&')[0] === 'Película' ){
+            const {data: movie} =  await client.query({
+                query: GetMovieById,
+                variables: {
+                    movieId: id.split('&')[1],
+                },
+            });
+            return{
+                props:{
+                    movie: movie.movie,
+                    serie: null,
+                    videoGame: null
+                }
+            }
+        }
+        if ( id.split('&')[0] === 'Serie' ){
+            const {data: serie} =  await client.query({
+                query: GetSerieById,
+                variables: {
+                    serieId: id.split('&')[1],
+                },
+            });
+            return{
+                props:{
+                    movie: null,
+                    serie: serie.serie,
+                    videoGame: null
+                }
+            }
+        }
+        if ( id.split('&')[0] === 'Video-Juego' ){
+            const {data: videoGame} =  await client.query({
+                query: GetVideoGameById,
+                variables: {
+                    videoGameId: id.split('&')[1],
+                },
+            });
+            return{
+                props:{
+                    movie: null,
+                    serie: null,
+                    videoGame: videoGame.videoGame
+                }
+            }
+        }
+    } catch (error) {
+        return{
+            redirect: {
+                destination: '/404',
+                permanent: false
+            }
+        }
+    }
+    return{
+        redirect: {
+            destination: '/404',
+            permanent: false
+        }
+    }
+  }
+
+export default MediosDetailPage

@@ -19,6 +19,13 @@ query Nacionality {
       id
       description:name
     }
+    persons {
+      creators {
+        id
+        name
+        lastName
+      }
+    }
   }
 `
 

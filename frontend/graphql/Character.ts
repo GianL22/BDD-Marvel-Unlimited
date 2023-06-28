@@ -51,6 +51,9 @@ mutation CreateHero($createHeroInput: CreateHeroInput!, $createCharacterInput: C
     nameHero
     name
     lastName
+    character {
+      id
+    }
   }
 }
 `
@@ -61,6 +64,9 @@ mutation CreateHero($createVillainInput: CreateVillainInput!, $createCharacterIn
     name
     lastName
     nameVillain
+    character {
+      id
+    }
   }
 }
 `
@@ -70,6 +76,18 @@ mutation CreateHero($createCivilInput: CreateCivilInput!, $createCharacterInput:
   createCivil(createCivilInput: $createCivilInput, createCharacterInput: $createCharacterInput) {
     name
     lastName
+    character {
+      id
+    }
+  }
+}
+`
+
+export const RelatePowers = gql`
+mutation CreateHero($createUsePowerInput: CreateUsePowerInput!) {
+  relatePowers(createUsePowerInput: $createUsePowerInput) {
+    type
+    inherited
   }
 }
 `
@@ -116,3 +134,79 @@ mutation Mutation($removeCharacterId: ID!) {
   removeCharacter(id: $removeCharacterId)
 }
 `;
+
+export const GetHeroById = gql`
+query Hero($heroId: ID!) {
+  hero(id: $heroId) {
+    name
+    lastName
+    gender
+    phrase
+    maritialStatus
+    firstApparition
+    nameHero
+    logo
+    archEnemy {
+      nameVillain
+    }
+    character {
+      eyeColor {
+        description
+      }
+      hairColor {
+        description
+      }
+    }
+  }
+}
+`
+
+export const GetVillainById = gql`
+query Villain($villainId: ID!) {
+  villain(id: $villainId) {
+    name
+    lastName
+    gender
+    phrase
+    maritialStatus
+    firstApparition
+    nameVillain
+    objective
+    character {
+      eyeColor {
+        description
+      }
+      hairColor {
+        description
+      }
+    }
+  }
+}
+`
+
+export const GetCivilById = gql`
+query Civil($civilId: ID!) {
+  civil(id: $civilId) {
+    name
+    lastName
+    gender
+    phrase
+    maritialStatus
+    firstApparition
+    hero {
+      nameHero
+    }
+    villain {
+      nameVillain
+    }
+    character {
+      eyeColor {
+        description
+      }
+      hairColor {
+        description
+      }
+    }
+  }
+}
+`

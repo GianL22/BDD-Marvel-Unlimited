@@ -25,7 +25,6 @@ interface Props {
 }
 
 const ObjectDetailsPage: NextPage<Props>= ({ object,objectsType} ) => {  
-  console.log(object)
     const [objectType, setObjectType] = useState(object.objectById.objectTypeId)
     const { isDark } = useTheme();
     const { replace } = useRouter();

@@ -1,7 +1,8 @@
 import { InputType, Field, ID, registerEnumType } from '@nestjs/graphql';
 import { TypeGender, TypeMaritialStatus } from '../../enums/type-characters.enum';
 import { Villain } from 'src/characters/entities';
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { RelationsInput } from './create-character.input';
 
 @InputType()
 export class CreateVillainInput {
@@ -37,6 +38,10 @@ export class CreateVillainInput {
   @Field( ()=> String )
   @IsString()
   objective: string;
+
+  @Field(() => [RelationsInput])
+  @IsArray()
+  fightWith: RelationsInput[];
 }
 
 registerEnumType( TypeGender, { name : 'TypeGender' })
