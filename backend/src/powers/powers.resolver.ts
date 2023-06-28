@@ -59,6 +59,13 @@ export class PowersResolver {
     return this.powersService.updateRelation(updateUsePowerInput.powerId, updateUsePowerInput.characterId, updateUsePowerInput );
   }
 
+  @Mutation(() => [UsePower],{ name:'relatePowers' })
+  async createUsePower(
+    @Args('createUsePowerInput') createUsePowerInput: CreateUsePowerInput,
+  ): Promise<UsePower[]> {
+    return this.powersService.createRelation(createUsePowerInput);
+  }
+
   @Mutation(() => Boolean, {name: 'removePowerFromCharacter'})
   async removePowerFromCharacter(
     @Args('characterId', { type: () => ID }, ParseUUIDPipe) characterId: string,

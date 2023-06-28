@@ -68,4 +68,25 @@ export class CharactersResolver {
   ): Promise<boolean> {
     return this.charactersService.removeCharacter(id);
   }
+
+  @Query(() => Hero, { name: 'hero' })
+  async findHero(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+  ): Promise<Hero> {
+    return this.charactersService.findOneHerorById(id);
+  }
+
+  @Query(() => Villain, { name: 'villain' })
+  async findVillain(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+  ): Promise<Villain> {
+    return this.charactersService.findOneVillainById(id);
+  }
+
+  @Query(() => Civil, { name: 'civil' })
+  async findCivil(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+  ): Promise<Civil> {
+    return this.charactersService.findOneCivilById(id);
+  }
 }

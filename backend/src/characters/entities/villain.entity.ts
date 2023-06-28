@@ -2,6 +2,7 @@ import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Check, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Character } from './character.entity';
 import { Civil } from './civil.entity';
+import { Hero } from './hero.entity';
 
 @Entity({name: 'Villain'})
 @ObjectType()
@@ -61,7 +62,7 @@ export class Villain{
     civil: Civil;
 
     @ManyToMany(
-        () => Villain, 
+        () => Hero, 
         {lazy: true, onDelete: 'CASCADE'}
       )
     @JoinTable({
@@ -77,8 +78,8 @@ export class Villain{
         foreignKeyConstraintName:'hero_FK'
       },
     })
-    @Field(()=> [Villain])
-    suitColors: Villain[]
+    @Field(()=> [Hero])
+    fightWith: Hero[]
 
     // @OneToMany(
     //     () => FightWith,

@@ -34,7 +34,7 @@ export class UsePower {
   @ManyToOne(
     () => Character,
     (character) => character.usePower,
-    {lazy: true}
+    {lazy: true, onDelete: 'CASCADE'}
   )
   @JoinColumn({name:'characterId'})
   character: string;

@@ -49,6 +49,9 @@ export class AuthService {
         const {email, password} = loginInput;
         const user = await this.usersService.findOneByEmail( email );
 
+        if(!user.isActive)
+            throw new BadRequestException('El usario esta inhabilitado');
+
         if( !bcrypt.compareSync(password, user.password))
             throw new BadRequestException('Email/password do not match');
 
