@@ -9,12 +9,17 @@ import { Profile } from '@/components/profile/Profile';
 import { useContext, useEffect, useState } from 'react';
 import { Profile as ProfileModel } from '@/models/Client';
 import { ProfileContext } from '@/context/profile';
+import { useRouter } from 'next/router';
+import { AuthContext } from '@/context/auth';
 
 interface RequestType {
     profileByUser: ProfileModel[],
 }
 
 const ProfilesPage: NextPage = () => {
+
+    const {replace} = useRouter()
+    const {user} = useContext(AuthContext)
     
     const { data } = useQuery<RequestType>(GetProfilesByUser,{
         pollInterval: 1000
@@ -29,16 +34,31 @@ const ProfilesPage: NextPage = () => {
   return (
     <>
         <NavbarWrapper type = {false} />
-        <Button 
-            icon={(edit) ? <Cancel fontSize={'20px'}/> : <EditPencil fontSize={'20px'}/>}
-            color="error" flat
-            css={{position: 'fixed', right: '10px', marginTop: '20px', p:'$8'}}
-            onClick={ () => setEdit(!edit) }
-        >
-            <Text h4>
-                Editar
-            </Text>
-        </Button>
+        <Grid.Container>
+            <Grid>
+                <Button 
+                    icon={(edit) ? <Cancel fontSize={'20px'}/> : <EditPencil fontSize={'20px'}/>}
+                    color="error" flat
+                    css={{position: 'fixed', right: '10px', marginTop: '20px', p:'$8'}}
+                    onClick={ () => setEdit(!edit) }
+                >
+                    <Text h4>
+                        Editar
+                    </Text>
+                </Button>
+            </Grid>
+            <Grid>
+                <Button 
+                    color="error" flat
+                    css={{position: 'initial', right: '10px', marginTop: '20px', p:'$8'}}
+                    onPress={ () => setTimeout(() => replace(`/app/user/${user?.id}`), 700)}
+                >
+                    <Text h4>
+                        Modificar Usuario
+                    </Text>
+                </Button>
+            </Grid>
+        </Grid.Container>
         <Grid.Container gap={4} justify='center' alignItems='center' css={{minWidth:'auto', minHeight:'80vh'}}>
             {
                 data?.profileByUser.map( (profile, i)  => (

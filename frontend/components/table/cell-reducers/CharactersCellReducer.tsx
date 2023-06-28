@@ -51,7 +51,13 @@ export const CharactersCellReducer = (row: Row, columnKey: string, onDelete:(id:
     );
     case "actions": 
       return <TableActions
-        url={`/dashboard/characters/${row.id}`}
+        url={
+          (row.type === 'Heroe')
+            ?`/dashboard/characters/hero/${row.id}`
+            : (row.type === 'Villano') 
+              ? `/dashboard/characters/villain/${row.id}`
+              : `/dashboard/characters/civil/${row.id}`
+        }
         onActions={ onDelete }
         id = {row.id}
       />

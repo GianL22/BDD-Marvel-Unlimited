@@ -242,6 +242,7 @@ const RegisterPage = () => {
                               listkeys={cities}
                               selected={citySelected.description}
                               setValue={setCitySelected}  
+                              check='Ciudad'
                             />
                           :
                           <></>
@@ -251,7 +252,8 @@ const RegisterPage = () => {
                         <DropdownRegister
                           listkeys={countries!}
                           selected={countrySelected.description}
-                          setValue={onSelectCountry} 
+                          setValue={onSelectCountry}
+                          check='País' 
                         />
                       </Grid>
                     </Grid.Container>

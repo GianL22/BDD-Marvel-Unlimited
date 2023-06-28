@@ -3,6 +3,11 @@ export interface InformationResponse {
   nacionality: GenericResponse[];
   occupations: GenericResponse[];
   objects:     GenericResponse[];
+  persons:    Creator;
+}
+
+export interface Creator {
+  creators: Person[];
 }
 
 interface Color {
@@ -32,7 +37,7 @@ interface Persons {
   creators:  Person[];
 }
 
-interface Person{
+export interface Person{
   id:       string;
   name:     string;
   lastName: string;

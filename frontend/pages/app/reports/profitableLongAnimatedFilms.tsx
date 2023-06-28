@@ -47,7 +47,7 @@ const ProfitableLongAnimatedFilmsPage: NextPage = () => {
     const { data , error} = useQuery<Data>(GetProfitableLongAnimatedFilms,{
       pollInterval: 1000
     })
-    const avg = useMemo(() => data?.reportMovie.avg, [data])
+    const avg: number = useMemo(() => data?.reportMovie.avg, [data])! | 0
     const movies = useMemo(() => (
         data?.reportMovie.movies.map((movie,i) => ({
             id: i,
@@ -74,7 +74,7 @@ const ProfitableLongAnimatedFilmsPage: NextPage = () => {
           <Grid>
             <Text span size='$2xl'>
               Descubre nuestras películas con más de 2 horas y media de duración, ganancias por encima del promedio y
-              tipo animado, ordenadas cronológicamente por costro de producción.
+              tipo animado, ordenadas cronológicamente por costo de producción.
             </Text>
           </Grid>
           

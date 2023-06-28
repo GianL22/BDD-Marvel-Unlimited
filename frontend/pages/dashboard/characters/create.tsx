@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { DropdownRegister } from '@/components/dropdown/DropdownRegister';
 import { RadioRegister } from '@/components/radio/RadioRegister';
-import { CreateCivil, CreateHero, CreateVillain, GetHeroesAndVillains } from '@/graphql/Character';
+import { CreateCivil, CreateHero, CreateVillain, GetHeroesAndVillains, RelatePowers } from '@/graphql/Character';
 import { CharactersResponse } from '@/models/Character';
 import { DropdownMultiRegister } from '@/components/dropdown/DropdownMultiRegister';
 import { InformationResponse } from '@/models/Information';
@@ -13,16 +13,19 @@ import { GetInformationToCreateCharacter } from '@/graphql/Information';
 import { useForm } from '@/hooks/useForm';
 import { Notification } from '@/notification';
 import { PowerModal } from '@/components/modal/PowerModal';
+import { useRouter } from 'next/router';
 
 const CharacterCreatePage = ( ) => {  
+  const {replace} = useRouter()
+  const { data } = useQuery<InformationResponse>(GetInformationToCreateCharacter);
+  const { data: characters} =  useQuery<CharactersResponse>(GetHeroesAndVillains);
   const { isDark } = useTheme();
   const [isLoading,setIsLoading] = useState(false);
   const [createHero] = useMutation(CreateHero);
   const [createVillain] = useMutation(CreateVillain);
   const [createCivil] = useMutation(CreateCivil);
+  const [relatePowers] = useMutation(RelatePowers);
   const { bindings, setVisible } = useModal();
-  const { data } = useQuery<InformationResponse>(GetInformationToCreateCharacter);
-  const {data: characters} =  useQuery<CharactersResponse>(GetHeroesAndVillains);
   const [character,setCharacter] = useState('Hero');
   const [eyeColor, setEyeColor] = useState({id: '', description: 'Color Ojos'})
   const [hairColor, setHairColor] = useState({id: '', description: 'Color Cabello'})
@@ -31,7 +34,9 @@ const CharacterCreatePage = ( ) => {
   const [nacionalities, setNacionalities] = useState<{id: string}[]>([])
   const [occuptations, setOccuptations] = useState<{id: string}[]>([])
   const [objects, setObjects] = useState<{id: string}[]>([])
+  const [creators, setCreators] = useState<{id: string}[]>([])
   const [suitColors, setSuitColors] = useState<{id: string}[]>([])
+  const [fightWith, setFightWith] = useState<{id: string}[]>([])
   const [powers, setPowers] = useState<{powerName: string, powerId: string, type: string, inherited: boolean}[]>([])
   const [gender,setGender] = useState('M');
   const [maritialStatus,setMaritialStatus] = useState('Soltero');
@@ -43,6 +48,12 @@ const CharacterCreatePage = ( ) => {
     id: character.id,
     description: nameVillain,
   }));
+  const creatorsData = data?.persons.creators.map(creator => {
+    return {
+      id: creator.id,
+      description: creator.name + ' ' + creator.lastName
+    };
+  });
   const {allowSubmit: allowHeroSubmit, parsedFields: parsedHero} = useForm([
     {
       name: 'nameHero',
@@ -118,6 +129,7 @@ const onSubmit = async () => {
         nacionalities: nacionalities,
         occupations: occuptations,
         objects: (objects.length === 0) ? [] : objects,
+        creators: creators,
       }
       const createCharacterCommon = {
         name: name.value,
@@ -127,8 +139,9 @@ const onSubmit = async () => {
         maritialStatus: maritialStatus,
         firstApparition: firstApparition.value
       }
+      let characterId: any
       if(character === 'Hero'){
-        await createHero({
+        const {data} = await createHero({
             variables: {
                 createHeroInput: {
                     ...createCharacterCommon,
@@ -140,21 +153,24 @@ const onSubmit = async () => {
                 createCharacterInput:{...createCharacterInput,}
             },
         });
+        characterId = data.createHero.character.id
       }
       if(character === 'Villain'){
-        await createVillain({
+        const {data} = characterId = await createVillain({
           variables: {
             createVillainInput:{
               ...createCharacterCommon,
               nameVillain: nameVillain.value,
               objective: objective.value,
+              fightWith: fightWith,
             },
             createCharacterInput:{...createCharacterInput,}
           }
         })
+        characterId = data.createVillain.character.id!
       }
       if(character === 'Civil'){
-        await createCivil({
+        const {data} = await createCivil({
           variables: {
             createCivilInput:{
               ...createCharacterCommon,
@@ -164,7 +180,20 @@ const onSubmit = async () => {
             createCharacterInput:{...createCharacterInput,}
           }
         })
+        characterId = data?.createCivil.character.id!;
       }
+      if(powers.length !==0 && characterId){
+        const powersWithoutName = powers.map(({ powerName, ...rest }) => rest);
+        await relatePowers({
+          variables:{
+            createUsePowerInput:{
+              characterId: (characterId),
+              powers: powersWithoutName,
+            }
+          }
+        })
+      }
+      setTimeout(() => replace('/dashboard/characters'),500)
       Notification(isDark).fire({
           title: 'Personaje creado',
           icon: 'success',
@@ -207,11 +236,11 @@ const [nameVillain, objective] = parsedVillain;
         />
       </Flex>
       <Grid.Container gap={2} justify="center" >
-        <Grid alignContent='space-between' alignItems='flex-start' xs={ 12 } sm={ 4 } direction="column">
+        <Grid alignContent='space-between' alignItems='center' xs={ 12 } sm={ 4 } direction="column">
           <Spacer y={1} />
           <Input
             labelPlaceholder='Nombre'
-            width='80%'
+            width='90%'
             value={name.value}
             onChange={(e) => name.setValue(e.target.value)}
             helperText={name.message}
@@ -222,7 +251,7 @@ const [nameVillain, objective] = parsedVillain;
           <Spacer y={3} />
           <Input
             labelPlaceholder='Apellido'
-            width='80%'
+            width='90%'
             value={lastName.value}
             onChange={(e) => lastName.setValue(e.target.value)}
             helperText={lastName.message}
@@ -233,7 +262,7 @@ const [nameVillain, objective] = parsedVillain;
           <Spacer y={3} />
           <Input
             labelPlaceholder='Frase'
-            width='80%'
+            width='90%'
             value={phrase.value}
             onChange={(e) => phrase.setValue(e.target.value)}
             helperText={phrase.message}
@@ -244,7 +273,7 @@ const [nameVillain, objective] = parsedVillain;
           <Spacer y={3} />
           <Input
             labelPlaceholder='Primera Aparición'
-            width='80%'
+            width='90%'
             value={firstApparition.value}
             onChange={(e) => firstApparition.setValue(e.target.value)}
             helperText={firstApparition.message}
@@ -253,10 +282,17 @@ const [nameVillain, objective] = parsedVillain;
             color={firstApparition.color}
           />
           <Spacer y={3} />
+          <Button
+            css={{width: '90%', alignContent: 'center', alignItems:'center'}}
+            onPress={ () => setVisible(true) }
+            ghost
+          >
+            Lista Poderes
+          </Button>
         </Grid>
 
-        <Grid xs={12} sm={ 4 } direction="column" alignItems='flex-start' alignContent='space-between'>
-          <Spacer y={1} />
+        <Grid xs={12} sm={ 4 } direction="column" alignItems='center' alignContent='space-between'>
+          <Spacer y={0.6} />
           <DropdownRegister
             listkeys={data?.colors}
             selected={eyeColor.description}
@@ -272,24 +308,7 @@ const [nameVillain, objective] = parsedVillain;
             width={90} 
             check='Color Cabello'
           />
-          <Spacer y={2} />
-          <RadioRegister 
-            label='Genero'
-            listValue={['M','F','Desc','Otro' ]}
-            onSelectKey={setGender}
-            valueRadio={gender}
-          />
-          <Spacer y={2} />
-          <RadioRegister 
-            label='Estado Marital'
-            listValue={['Soltero', 'Casado', 'Viudo', 'Divorciado']}
-            onSelectKey={setMaritialStatus}
-            valueRadio={maritialStatus}
-          />
-        </Grid>
-
-        <Grid xs={12} sm={ 4 } direction="column" alignContent='flex-end' alignItems='center'>
-          <Spacer y={1} />
+          <Spacer y={3} />
           <DropdownMultiRegister 
             listkeys={data?.nacionality}
             label='Nacionalidades'
@@ -304,6 +323,10 @@ const [nameVillain, objective] = parsedVillain;
             width={90}
           />
           <Spacer y ={3}/>
+        </Grid>
+
+        <Grid xs={12} sm={ 4 } direction="column" alignContent='flex-end' alignItems='center'>
+          <Spacer y={0.6} />
           <DropdownMultiRegister 
             listkeys={data?.objects}
             label='Objetos'
@@ -311,12 +334,30 @@ const [nameVillain, objective] = parsedVillain;
             width={90}
           />
           <Spacer y ={3}/>
-          <Button
-            css={{width: '90%', alignContent: 'center', alignItems:'center'}}
-            onPress={ () => setVisible(true) }
-          >
-            Lista Poderes
-          </Button>
+          <DropdownMultiRegister 
+            listkeys={creatorsData}
+            label='Creadores'
+            setValue={ setCreators }
+            width={90}
+          />
+          <Spacer y ={2}/>
+          <Grid>
+            <RadioRegister 
+              label='Genero'
+              listValue={['M','F','Desc','Otro' ]}
+              onSelectKey={setGender}
+              valueRadio={gender}
+            />
+          </Grid>
+          <Spacer y={2} />
+          <Grid>
+            <RadioRegister 
+              label='Estado Marital'
+              listValue={['Soltero', 'Casado', 'Viudo', 'Divorciado']}
+              onSelectKey={setMaritialStatus}
+              valueRadio={maritialStatus}
+            />
+          </Grid>
         </Grid>
 
         <Grid xs ={12} sm = {12} alignContent='space-between' alignItems='center' direction='row'>
@@ -387,6 +428,13 @@ const [nameVillain, objective] = parsedVillain;
                   status={objective.color}
                   color={objective.color}
                 />
+                <Spacer x={2}/>
+                <DropdownMultiRegister 
+                  listkeys={heroes!}
+                  label='Pelea con'
+                  setValue={ setFightWith }
+                  width={60}
+                />
                 <Spacer x={4}/>
               </>
           } 
@@ -417,9 +465,9 @@ const [nameVillain, objective] = parsedVillain;
           <Button
               disabled={
                 !allowSubmit || isLoading || (hairColor.description === 'Color Cabello') ||
-                (eyeColor.description === 'Color Ojos') || (nacionalities.length === 0) || (occuptations.length === 0) ||
+                (eyeColor.description === 'Color Ojos') || (nacionalities.length === 0) || (occuptations.length === 0) || (creators.length === 0) ||
                 ((character==='Hero') && (!allowHeroSubmit || !(villain.description !== 'Archienemigo') || (suitColors.length === 0))) ||
-                ( (character==='Villain') && !allowVillainSubmit )
+                ( (character==='Villain') && (!allowVillainSubmit || (fightWith.length === 0)) )
               }
               onPress={onSubmit}
               size='lg'

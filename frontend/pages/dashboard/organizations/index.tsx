@@ -34,7 +34,6 @@ const OrganizationsPage: NextPage = () => {
     pollInterval: 1000
   })
   
-  console.log(data)
   const [removeOrganizationById] = useMutation(RemoveOrganizationById)
   const organizationAction = async (id: string) => {
     Notification(isDark).fire({

@@ -10,6 +10,15 @@ export const RevalidateToken = gql`
             isActive
             name
             lastName
+            email
+            birthdate
+            city {
+                id
+                description
+                country {
+                  description
+                }
+              }
             profiles {
                 id
                 nickname
@@ -35,6 +44,15 @@ export const Login = gql`
             isActive
             name
             lastName
+            email
+            birthdate
+            city {
+                id
+                description
+                country {
+                  description
+                }
+              }
             profiles {
                 id
                 nickname
@@ -60,6 +78,15 @@ export const SignUp = gql`
                 isActive
                 name
                 lastName
+                email
+                birthdate
+                city {
+                    id
+                    description
+                    country {
+                    description
+                    }
+                }
                 profiles {
                     id
                     nickname
@@ -82,4 +109,38 @@ export const ExistEmail = gql`
         id
         }
     }
+`
+
+export const GetUser = gql`
+    query UserById($userByIdId: ID!) {
+        userById(id: $userByIdId) {
+        id
+        username
+        name
+        lastName
+        email
+        birthdate
+        isActive
+        creditCard {
+            cardNumber
+            last4Digits
+        }
+        city {
+            id
+            description
+            country {
+            description
+            }
+        }
+        }
+    }
+
+`;
+
+export const UpdateUser = gql`
+mutation Mutation($updateUserInput: UpdateUserInput!) {
+    updateUser(updateUserInput: $updateUserInput) {
+      username
+    }
+  }
 `
