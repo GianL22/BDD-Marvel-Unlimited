@@ -155,7 +155,6 @@ type BuildingType {
 }
 
 type Headquarter {
-  organizationId: ID!
   id: ID!
   name: String!
   ubication: Place!
@@ -168,6 +167,20 @@ type Place {
   name: String!
 }
 
+type JobPosition {
+  id: ID!
+  name: String!
+}
+
+type FormPart {
+  characterId: ID!
+  organizationId: ID!
+  jobPositionId: ID!
+  character: Character!
+  organization: Organization!
+  jobPosition: JobPosition!
+}
+
 type Organization {
   id: ID!
   name: String!
@@ -177,32 +190,36 @@ type Organization {
   creationPlace: Place!
   founder: Character!
   leader: Character!
+  headquarter: [Headquarter!]!
+  formparts: [FormPart!]!
+  leaderName: String!
+  founderName: String!
 }
 
-type Character {
+type Actor {
   id: ID!
-  eyeColor: Color!
-  hairColor: Color!
-  nacionalities: [Nacionality!]!
-  objects: [Objects!]!
-  occupations: [Occupation!]!
-  powers: [UsePower!]!
+  name: String!
+  lastName: String!
 }
 
-type Color {
+type AudioVisualType {
   id: ID!
   description: String!
 }
 
-type CharactersResponse {
-  hero: [Hero!]
-  villain: [Villain!]
-  civil: [Civil!]
-}
-
-type Medio {
-  id: ID!
-  companyProduction: Company!
+type Movie {
+  medioId: ID!
+  medio: Medio!
+  title: String!
+  releaseDate: String!
+  synopsis: String!
+  duration: Int!
+  based: String!
+  cost: Float!
+  revenue: Float!
+  director: Director!
+  companyDist: Company!
+  audioVisualType: AudioVisualType!
 }
 
 type Platform {
@@ -227,15 +244,27 @@ type Company {
   description: String!
 }
 
-type Actor {
-  id: ID!
-  name: String!
-  lastName: String!
+type Appears {
+  rolCharacter: String!
+  rolActor: String!
+  medio: Medio!
+  actor: Actor!
+  character: Character!
 }
 
-type AudioVisualType {
+type Participates {
+  status: String!
+  rolOrganization: String!
+  medio: Medio!
+  organization: Organization!
+}
+
+type Medio {
   id: ID!
-  description: String!
+  companyProduction: Company!
+  appears: [Appears!]!
+  participates: [Participates!]!
+  title: String!
 }
 
 type Serie {
@@ -263,19 +292,33 @@ type Director {
   lastName: String!
 }
 
-type Movie {
-  medioId: ID!
-  medio: Medio!
-  title: String!
-  releaseDate: String!
-  synopsis: String!
-  duration: Int!
-  based: String!
-  cost: Float!
-  revenue: Float!
-  director: Director!
-  companyDist: Company!
-  audioVisualType: AudioVisualType!
+type Character {
+  id: ID!
+  eyeColor: Color!
+  hairColor: Color!
+  nacionalities: [Nacionality!]!
+  objects: [Objects!]!
+  occupations: [Occupation!]!
+  creators: [Creator!]!
+  powers: [UsePower!]!
+  nameCharacter: String!
+}
+
+type Color {
+  id: ID!
+  description: String!
+}
+
+type CharactersResponse {
+  hero: [Hero!]
+  villain: [Villain!]
+  civil: [Civil!]
+}
+
+type PersonsResponse {
+  actors: [Actor!]
+  directors: [Director!]
+  creators: [Creator!]
 }
 
 type SerieReportResponse {
@@ -294,26 +337,6 @@ type MediaResponse {
   videoGames: [VideoGame!]
 }
 
-type PersonsResponse {
-  actors: [Actor!]
-  directors: [Director!]
-  creators: [Creator!]
-}
-
-type JobPosition {
-  id: ID!
-  name: String!
-}
-
-type FormPart {
-  characterId: ID!
-  organizationId: ID!
-  jobPositionId: ID!
-  character: Character!
-  organization: Organization!
-  jobPosition: JobPosition!
-}
-
 type Query {
   users: [User!]!
   userById(id: ID!): User!
@@ -326,11 +349,13 @@ type Query {
   revalite: AuthResponse!
   colors: [Color!]!
   findCharacters: CharactersResponse!
+  AllCharacters: [Character!]!
   nacionality: [Nacionality!]!
   objects: [Objects!]!
   objectById(id: ID!): Objects!
   objectsType: [ObjectsType!]!
   occupations: [Occupation!]!
+  persons: PersonsResponse!
   reportSuscription: [Suscription!]!
   reportSerie: SerieReportResponse!
   reportMovie: MovieReportResponse!
@@ -342,17 +367,17 @@ type Query {
   videoGame(id: String!): VideoGame!
   platforms: [Platform!]!
   companies: [Company!]!
-  persons: PersonsResponse!
   Powers: [Power!]!
   powerBy(id: ID!): Power!
   buildingTypes: [BuildingType!]!
   jobPositions: [JobPosition!]!
-  headquarters(organizationId: String!): [Headquarter!]!
+  headquartersByOrg(organizationId: String!): [Headquarter!]!
   formPartsByOrganization(organizationId: String!): [FormPart!]!
   organizations: [Organization!]!
   organization(id: String!): Organization!
   headquarter(id: String!): Headquarter!
   jobPosition(id: String!): JobPosition!
+  headquarters: [Headquarter!]!
   places: [Place!]!
 }
 
@@ -382,16 +407,20 @@ type Mutation {
   updateObject(updateObjectInput: UpdateObjectInput!): Objects!
   removeObject(id: ID!): Boolean!
   createOccupation(createOccupationInput: CreateOccupationInput!): Occupation!
-  createSerie(createSerieInput: CreateSerieInput!): Serie!
-  createMovie(createMovieInput: CreateMovieInput!): Movie!
-  createVideoGame(createVideoGame: CreateVideoGameInput!): VideoGame!
-  createAudioVisualType(createAudioVisualTypeInput: CreateAudioVisualTypeInput!): AudioVisualType!
-  createPlatform(namePlatform: String!): Platform!
-  removeMedio(id: String!): Medio!
-  createCompany(createCompanyInput: CreateCompanyInput!): Company!
   createDirector(createPersonInput: CreatePersonInput!): Director!
   createCreator(createPersonInput: CreatePersonInput!): Creator!
   createActor(createPersonInput: CreatePersonInput!): Actor!
+  createSerie(createSerieInput: CreateSerieInput!): Serie!
+  createMovie(createMovieInput: CreateMovieInput!): Movie!
+  createVideoGame(createVideoGame: CreateVideoGameInput!): VideoGame!
+  createParticipates(createParticipates: CreateParticipatesInput!): [Participates!]!
+  createAppears(createAppears: CreateAppearsInput!): [Appears!]!
+  createAudioVisualType(createAudioVisualTypeInput: CreateAudioVisualTypeInput!): AudioVisualType!
+  createPlatform(namePlatform: String!): Platform!
+  removeMedio(id: String!): Boolean!
+  removeParticipates(medioId: String!, organizationId: String!): Boolean!
+  removeAppears(medioId: String!, characterId: String!, actorId: String!): Boolean!
+  createCompany(createCompanyInput: CreateCompanyInput!): Company!
   createPower(createPowerInput: CreatePowerInput!): Power!
   updatePower(updatePowerInput: UpdatePowerInput!): Power!
   removePower(id: ID!): Boolean!
@@ -405,6 +434,7 @@ type Mutation {
   updateOrganization(updateOrganizationInput: UpdateOrganizationInput!): Organization!
   updateHeadquarter(updateHeadquarterInput: UpdateHeadquarterInput!): Headquarter!
   removeOrganization(id: String!): Boolean!
+  removeHeadquarter(headquarterId: String!, organizationId: String!): Boolean!
   removeFormPart(organizationId: String!, jobPositionId: String!, characterId: String!): Boolean!
   createPlace(name: String!): Place!
 }
@@ -516,6 +546,7 @@ input CreateCharacterInput {
   nacionalities: [RelationsInput!]!
   objects: [RelationsInput!]
   occupations: [RelationsInput!]!
+  creators: [RelationsInput!]!
 }
 
 input RelationsInput {
@@ -563,6 +594,7 @@ input UpdateHeroInput {
   nacionalities: [RelationsInput!]
   objects: [RelationsInput!]
   occupations: [RelationsInput!]
+  creators: [RelationsInput!]
 }
 
 input UpdateVillainInput {
@@ -580,6 +612,7 @@ input UpdateVillainInput {
   nacionalities: [RelationsInput!]
   objects: [RelationsInput!]
   occupations: [RelationsInput!]
+  creators: [RelationsInput!]
 }
 
 input UpdateCivilInput {
@@ -597,6 +630,7 @@ input UpdateCivilInput {
   nacionalities: [RelationsInput!]
   objects: [RelationsInput!]
   occupations: [RelationsInput!]
+  creators: [RelationsInput!]
 }
 
 input CreateNacionalityInput {
@@ -620,6 +654,11 @@ input UpdateObjectInput {
 
 input CreateOccupationInput {
   name: String!
+}
+
+input CreatePersonInput {
+  name: String!
+  lastName: String!
 }
 
 input CreateSerieInput {
@@ -659,17 +698,52 @@ input CreateVideoGameInput {
   platforms: [RelationsInput!]!
 }
 
+input CreateParticipatesInput {
+  organizationsParticipates: [ParticipatesInput!]
+  medioId: ID!
+}
+
+input ParticipatesInput {
+  organizationId: ID!
+  status: String!
+  rolOrganization: RolOrganization!
+}
+
+enum RolOrganization {
+  Protagonista
+  Enemiga
+  Secundaria
+}
+
+input CreateAppearsInput {
+  medioId: ID!
+  appears: [AppearsInput!]!
+}
+
+input AppearsInput {
+  characterId: ID!
+  actorId: ID!
+  rolCharacter: RolCharacter!
+  rolActor: RolActor!
+}
+
+enum RolCharacter {
+  Protagonista
+  Antagonista
+  Secundario
+}
+
+enum RolActor {
+  Voz
+  Interpretado
+}
+
 input CreateAudioVisualTypeInput {
   description: String!
 }
 
 input CreateCompanyInput {
   description: String!
-}
-
-input CreatePersonInput {
-  name: String!
-  lastName: String!
 }
 
 input CreatePowerInput {

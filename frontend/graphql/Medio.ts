@@ -11,6 +11,25 @@ mutation Mutation($createSerieInput: CreateSerieInput!) {
   }
 `;
 
+export const CreateParticipates = gql`
+mutation CreateParticipates($createParticipatesInput: CreateParticipatesInput!) {
+  createParticipates(createParticipatesInput: $createParticipatesInput) {
+    status
+    rolOrganization
+  }
+}
+`
+
+export const CreateAppears = gql`
+mutation CreateParticipates($createParticipatesInput: CreateParticipatesInput!) {
+  createParticipates(createParticipatesInput: $createParticipatesInput) {
+    status
+    rolOrganization
+  }
+}
+
+`
+
 export const CreateMovie = gql`
 mutation Mutation($createMovieInput: CreateMovieInput!) {
     createMovie(createMovieInput: $createMovieInput) {
@@ -28,6 +47,15 @@ mutation CreateVideoGame($createVideoGame: CreateVideoGameInput!) {
       synopsis
     }
   }  
+`
+
+export const GetAllMediosTitlesIds = gql`
+query MediosTitleAndIds {
+  mediosTitleAndIds {
+    id
+    description : title
+  }
+}
 `
 
 export const RemoveMedio = gql`

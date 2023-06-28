@@ -251,6 +251,11 @@ export class CharactersService {
     }
   }
 
+  async findAllCharacters() : Promise<Character[]>{
+    return await this.charactersRepository.find()
+  }
+
+
   async findCharacterById(id: string): Promise<{hero?: Hero, villain?: Villain, civil?:Civil}>{
     const repositories = [this.heroRepository, this.villainRepository, this.civilRepository];
     const repositoriesPromise = [];
