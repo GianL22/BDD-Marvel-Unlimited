@@ -11,25 +11,33 @@ import { GenericResponse } from '@/models/Information';
 import { GetAllOrganizationsNameAndId } from '@/graphql/Organizations';
 import { TableWrapper } from '@/components/table';
 import { SimpleCellReducer } from '@/components/table/cell-reducers/SimpleCellReducer';
-import { CreateParticipates, GetAllMediosTitlesIds } from '@/graphql/Medio';
+import { CreateAppears, CreateParticipates, GetAllMediosTitlesIds } from '@/graphql/Medio';
 import { RadioRegister } from '@/components/radio/RadioRegister';
 import { GetCharactersNamesAndId } from '@/graphql/Character';
+import { GetAllActors } from '@/graphql/Persons';
 
 interface MediaResponse{
     mediosTitleAndIds: GenericResponse[];
 }
 
-interface OrganizationMedio {
-    organization : GenericResponse,
-    rolOrganization: string,
-    status: string
+interface CharacterMedio {
+    character : GenericResponse,
+    actor : GenericResponse,
+    rolActor: string,
+    rolCharacter: string
 }
+
+
 
 interface DataJobPosition {
     jobPositions: JobPosition[];
 }
 
 interface DataOrganization {
+    organizations : GenericResponse[]
+}
+
+interface DataActors {
     organizations : GenericResponse[]
 }
 
@@ -49,15 +57,18 @@ const columns = [
     { label: "Acciones", uid: "actions" },
   ];
 
-const rols = ['Enemiga', 'Protagonista', 'Secundaria']
+const actorRols = ['Interpretado', 'Voz']
+const characterRols = ['Antagonista', 'Protagonista', 'Secundario']
+
 
 const AppearsCreatePage= ( ) => {  
     
     const {data: mediosData} = useQuery<MediaResponse>(GetAllMediosTitlesIds);
     const {data: organizationsData} = useQuery<DataOrganization>(GetAllOrganizationsNameAndId);
+    const {data: actorsData} = useQuery<DataActors>(GetAllActors);
     const {data: charactersData, error} =  useQuery<DataCharacters>(GetCharactersNamesAndId);
-    const [createParticipates] = useMutation(CreateParticipates)
-    const [orgsInMedio, setOrgsInMedio] = useState<OrganizationMedio[]>([]);
+    const [createAppears] = useMutation(CreateAppears)
+    const [charactersInMedio, setCharactersInMedio] = useState<CharacterMedio[]>([]);
     const [medio, setMedio] = useState({id: '', description: 'Seleccionar Medio'})
     const [rol, setRol] = useState('Protagonista')
     const [toAddOrgnization, setToAddOrgnization] = useState({id: '', description: 'Agregar Organización'})
@@ -66,11 +77,12 @@ const AppearsCreatePage= ( ) => {
     const [isLoading,setIsLoading] = useState(false);
     const medios = useMemo(() => mediosData?.mediosTitleAndIds, [mediosData])
     const organizations = useMemo(() => organizationsData?.organizations, [organizationsData])
-    const orgsInMedioShow = useMemo(() => {
-        return orgsInMedio.map(row => {
+    const charactersInMedioShow = useMemo(() => {
+        return charactersInMedio.map(row => {
             return {
-                id : row.organization.id,
-                description : row.organization.description,
+                id : row.character.id + row.actor.id,
+                characterName : row.character.description,
+                actorName : row.actor.description,
                 rol : row.rolOrganization,
                 status : row.status, 
             }
@@ -86,74 +98,74 @@ const AppearsCreatePage= ( ) => {
     
     const onRemoveOrganization = async (id : string) => {
 
-        const newOrgsInMedio = orgsInMedio.filter(row => row.organization.id !== id)
-        setOrgsInMedio(newOrgsInMedio)
+        // const newOrgsInMedio = orgsInMedio.filter(row => row.organization.id !== id)
+        // setOrgsInMedio(newOrgsInMedio)
 
     } 
 
     const onAddOrganization = () => {
 
-        const row = orgsInMedio!.find((row) =>
-                (row.organization.id === toAddOrgnization.id)
-            )
-        if(row) {
-            Notification(isDark).fire({
-                title: `Esa organización ya esta en el medio`,
-                icon: 'error',
-                timer : 3000
-            })
-            return ;
-        }
+        // const row = orgsInMedio!.find((row) =>
+        //         (row.organization.id === toAddOrgnization.id)
+        //     )
+        // if(row) {
+        //     Notification(isDark).fire({
+        //         title: `Esa organización ya esta en el medio`,
+        //         icon: 'error',
+        //         timer : 3000
+        //     })
+        //     return ;
+        // }
 
-        const newRow  =  {
-            id : toAddOrgnization.id,
-            organization : toAddOrgnization,
-            rolOrganization: rol,
-            status: status.value
-        }
-        setOrgsInMedio([...orgsInMedio, newRow])
+        // const newRow  =  {
+        //     id : toAddOrgnization.id,
+        //     organization : toAddOrgnization,
+        //     rolOrganization: rol,
+        //     status: status.value
+        // }
+        // setOrgsInMedio([...orgsInMedio, newRow])
 
-        setToAddOrgnization({id: '', description: 'Agregar Organización'})
-        status.setValue('')
+        // setToAddOrgnization({id: '', description: 'Agregar Organización'})
+        // status.setValue('')
     }
 
     const onSubmit = async () => {
-        setIsLoading(true)
-        Notification(isDark).fire({
-            title: 'Cargando',
-            icon: 'info',
-        })
-        try {
-            const organizationsParticipates = orgsInMedio.map(({status, rolOrganization, organization}) => {
-                return {
-                    status,
-                    rolOrganization,
-                    organizationId : organization.id,
-                }
-            })
-            const {data} = await createParticipates({
-                variables: {
-                    createParticipatesInput: {
-                        medioId : medio.id,
-                        organizationsParticipates
-                    },
-                },
-            });
-            Notification(isDark).fire({
-                title: `Organizaciones añadidas`,
-                icon: 'success',
-            })
-            setIsLoading(false)
-            setTimeout(() => replace('/dashboard/medios'),500)
-        } catch (error: any) {
-            console.log(error)
-            Notification(isDark).fire({
-                title: error.message,
-                icon: 'error',
-                timer: 3000
-            })
-            setIsLoading(false)
-        }
+        // setIsLoading(true)
+        // Notification(isDark).fire({
+        //     title: 'Cargando',
+        //     icon: 'info',
+        // })
+        // try {
+        //     const organizationsParticipates = orgsInMedio.map(({status, rolOrganization, organization}) => {
+        //         return {
+        //             status,
+        //             rolOrganization,
+        //             organizationId : organization.id,
+        //         }
+        //     })
+        //     const {data} = await createParticipates({
+        //         variables: {
+        //             createParticipatesInput: {
+        //                 medioId : medio.id,
+        //                 organizationsParticipates
+        //             },
+        //         },
+        //     });
+        //     Notification(isDark).fire({
+        //         title: `Organizaciones añadidas`,
+        //         icon: 'success',
+        //     })
+        //     setIsLoading(false)
+        //     setTimeout(() => replace('/dashboard/medios'),500)
+        // } catch (error: any) {
+        //     console.log(error)
+        //     Notification(isDark).fire({
+        //         title: error.message,
+        //         icon: 'error',
+        //         timer: 3000
+        //     })
+        //     setIsLoading(false)
+        // }
     }
   const {allowSubmit,parsedFields} = useForm([
       {
