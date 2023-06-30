@@ -1,17 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Sidebar } from './sidebar.styles';
-import { SidebarItem } from './SidebarItem';
 import { Box, Flex } from '../containers';
 import { ThemeSwitcher } from '../navbar/ThemeSwitcher';
-import { Search, Gamepad, Tv, HomeSimpleDoor, Movie, List, OpenBook, CoinsSwap } from 'iconoir-react';
-import { Text, Link, Avatar, Tooltip, Button} from '@nextui-org/react';
+import { Text, Link, Avatar, Tooltip} from '@nextui-org/react';
 import { ProfileContext } from '@/context/profile';
 import { MenuItemsApp } from './menuItems-app';
 import { MenuItemsDashboard } from './menuItems-dashboard';
 
 export const SidebarWrapper = () => {
-   // const {user} = useContext(AuthContext);
    const router = useRouter();
    const [collapsed,setCollapsed] = useState(false)
    const {activeProfile} = useContext(ProfileContext)
@@ -57,9 +54,9 @@ export const SidebarWrapper = () => {
             >
                <Sidebar.Body className="body sidebar" >
                   {
-                     (router.pathname.includes('app'))
-                        ? <MenuItemsApp />
-                        : <MenuItemsDashboard />
+                     (router.pathname.includes('dashboard'))
+                        ? <MenuItemsDashboard />
+                        :  <MenuItemsApp />
                   }
                </Sidebar.Body>
 
@@ -67,9 +64,9 @@ export const SidebarWrapper = () => {
                   <ThemeSwitcher/>
                   {/*  Provisioal */}
                   {
-                     (router.pathname.includes('app'))
-                        ?
-                           <Link href='/app/profiles'> 
+                     (router.pathname.includes('dashboard'))
+                        ? <></>
+                        :  <Link href='/app/profiles'> 
                               <Tooltip content={'Profile'} rounded color="primary">
 
                                  <Avatar
@@ -80,7 +77,7 @@ export const SidebarWrapper = () => {
                                     />
                               </Tooltip>
                            </Link>
-                        : <></>                                 
+                                                          
                   }
                   {/* <LogoutButton/> */}
                </Sidebar.Footer>

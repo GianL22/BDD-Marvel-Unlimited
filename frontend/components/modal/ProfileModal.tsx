@@ -23,7 +23,7 @@ interface Props {
 export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} ) => {
    const [createProfile] = useMutation(CreateProfile);
    const [language,setLanguage] = useState(`${(!profile?.language) ? 'Español' : profile.language}`);
-   const [device,setDevice] = useState(`${(!profile?.device) ? 'Lapto' : profile.device}`);
+   const [device,setDevice] = useState(`${(!profile?.device) ? 'Laptop' : profile.device}`);
    const [confirmDelete, setConfirmDelete] = useState(false)
    const {isDark} = useTheme()
    const [avatar,setAvatar] = useState((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')));
@@ -31,6 +31,10 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
 
    useEffect(() => {
      setAvatar((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')))
+     setLanguage(`${(!profile?.language) ? 'Español' : profile.language}`)
+     setDevice(`${(!profile?.device) ? 'Laptop' : profile.device}`)
+     email.setValue((!profile?.emailProfile) ? '' : profile.emailProfile)
+     nickname.setValue((!profile?.nickname) ? '' : profile.nickname)
    }, [bindings])
 
    const handleAdd = () => {
@@ -277,7 +281,7 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
             {
                (edit)
                   ?  <> 
-                        <Checkbox isSelected={confirmDelete} color="success" onChange={setConfirmDelete} size='sm'>
+                        <Checkbox color="success" onChange={setConfirmDelete} size='sm'>
                            Habilitar eliminación
                         </Checkbox>
                         <Spacer x={1} />

@@ -15,6 +15,8 @@ import { CreateAppears, CreateParticipates, GetAllMediosTitlesIds } from '@/grap
 import { RadioRegister } from '@/components/radio/RadioRegister';
 import { GetCharactersNamesAndId } from '@/graphql/Character';
 import { GetAllActors } from '@/graphql/Persons';
+import { convertCharacters } from '@/helpers/transformData';
+import { DataResponse } from '@/models/Character';
 
 interface MediaResponse{
     mediosTitleAndIds: GenericResponse[];
@@ -37,8 +39,16 @@ interface DataOrganization {
     organizations : GenericResponse[]
 }
 
+interface Actor {
+    id:   string;
+    name : string;
+    lastName: string;
+}
+
 interface DataActors {
-    organizations : GenericResponse[]
+    persons : {
+        actors : Actor[]
+    }
 }
 
 interface DataCharacters {
@@ -51,9 +61,10 @@ interface JobPosition {
 }
 
 const columns = [
-    { label: "Organización", uid: "description" },
-    { label: "Rol", uid: "rol" },
-    { label: "Status", uid: "status" },
+    { label: "Personaje", uid: "characterName" },
+    { label: "Actor", uid: "actorName" },
+    { label: "Rol Actor", uid: "actorRol" },
+    { label: "Rol Personaje", uid: "characterRol" },
     { label: "Acciones", uid: "actions" },
   ];
 
@@ -66,106 +77,121 @@ const AppearsCreatePage= ( ) => {
     const {data: mediosData} = useQuery<MediaResponse>(GetAllMediosTitlesIds);
     const {data: organizationsData} = useQuery<DataOrganization>(GetAllOrganizationsNameAndId);
     const {data: actorsData} = useQuery<DataActors>(GetAllActors);
-    const {data: charactersData, error} =  useQuery<DataCharacters>(GetCharactersNamesAndId);
+    const {data: charactersData, error} =  useQuery<DataResponse>(GetCharactersNamesAndId);
     const [createAppears] = useMutation(CreateAppears)
     const [charactersInMedio, setCharactersInMedio] = useState<CharacterMedio[]>([]);
     const [medio, setMedio] = useState({id: '', description: 'Seleccionar Medio'})
-    const [rol, setRol] = useState('Protagonista')
+    const [characterRol, setCharacterRol] = useState('Protagonista')
+    const [actorRol, setActorRol] = useState('Interpretado')
     const [toAddOrgnization, setToAddOrgnization] = useState({id: '', description: 'Agregar Organización'})
+    const [toAddActor, setToAddActor] = useState({id: '', description: 'Agregar Actor'})
+    const [toAddCharacter, setToAddCharacter] = useState({id: '', description: 'Agregar Personaje'})
     const { isDark } = useTheme();
     const { replace } = useRouter();
     const [isLoading,setIsLoading] = useState(false);
     const medios = useMemo(() => mediosData?.mediosTitleAndIds, [mediosData])
     const organizations = useMemo(() => organizationsData?.organizations, [organizationsData])
+    const actors = useMemo(() => { 
+        return actorsData?.persons.actors.map( actor => {
+            return {
+                id : actor.id,
+                description : actor.name + ' ' + actor.lastName
+            }
+        })
+
+    }, [actorsData])
+    const characters = useMemo(() => convertCharacters(charactersData!), [charactersData])
     const charactersInMedioShow = useMemo(() => {
         return charactersInMedio.map(row => {
             return {
-                id : row.character.id + row.actor.id,
+                id : row.character.id + '/' +row.actor.id,
                 characterName : row.character.description,
                 actorName : row.actor.description,
-                rol : row.rolOrganization,
-                status : row.status, 
+                actorRol : row.rolActor,
+                characterRol : row.rolCharacter,
+
             }
         })
-    }, [orgsInMedio])
+    }, [charactersInMedio])
 
 
     useEffect(() => {
-        setOrgsInMedio([])
+        setCharactersInMedio([])
         setToAddOrgnization({id: '', description: 'Agregar Organización'})
         status.setValue('')
     }, [medio])
     
-    const onRemoveOrganization = async (id : string) => {
-
-        // const newOrgsInMedio = orgsInMedio.filter(row => row.organization.id !== id)
-        // setOrgsInMedio(newOrgsInMedio)
-
+    const onRemoveCharacter = async (id : string) => {
+        const newCharactersInMedio = charactersInMedio.filter(row => (row.character.id !== id.split('/')[0] || row.actor.id !== id.split('/')[1]))
+        // console.log(newCharactersInMedio)
+        setCharactersInMedio(newCharactersInMedio)
     } 
 
-    const onAddOrganization = () => {
+    const onAddChacracter = () => {
 
-        // const row = orgsInMedio!.find((row) =>
-        //         (row.organization.id === toAddOrgnization.id)
-        //     )
-        // if(row) {
-        //     Notification(isDark).fire({
-        //         title: `Esa organización ya esta en el medio`,
-        //         icon: 'error',
-        //         timer : 3000
-        //     })
-        //     return ;
-        // }
+        const row = charactersInMedio!.find((row) =>
+                (row.character.id === toAddCharacter.id) && 
+                (row.actor.id === toAddActor.id)
+            )
+        if(row) {
+            Notification(isDark).fire({
+                title: `Ese personaje ya está en el medio`,
+                icon: 'error',
+                timer : 3000
+            })
+            return ;
+        }
 
-        // const newRow  =  {
-        //     id : toAddOrgnization.id,
-        //     organization : toAddOrgnization,
-        //     rolOrganization: rol,
-        //     status: status.value
-        // }
-        // setOrgsInMedio([...orgsInMedio, newRow])
+        const newRow  =  {
+            id : toAddActor.id + toAddCharacter.id,
+            character: toAddCharacter,
+            actor: toAddActor,
+            rolCharacter: characterRol,
+            rolActor: actorRol
+        }
+        setCharactersInMedio([...charactersInMedio, newRow])
 
-        // setToAddOrgnization({id: '', description: 'Agregar Organización'})
-        // status.setValue('')
+        setToAddActor({id: '', description: 'Agregar Actor'})
+        setToAddCharacter({id: '', description: 'Agregar Personaje'})
     }
 
     const onSubmit = async () => {
-        // setIsLoading(true)
-        // Notification(isDark).fire({
-        //     title: 'Cargando',
-        //     icon: 'info',
-        // })
-        // try {
-        //     const organizationsParticipates = orgsInMedio.map(({status, rolOrganization, organization}) => {
-        //         return {
-        //             status,
-        //             rolOrganization,
-        //             organizationId : organization.id,
-        //         }
-        //     })
-        //     const {data} = await createParticipates({
-        //         variables: {
-        //             createParticipatesInput: {
-        //                 medioId : medio.id,
-        //                 organizationsParticipates
-        //             },
-        //         },
-        //     });
-        //     Notification(isDark).fire({
-        //         title: `Organizaciones añadidas`,
-        //         icon: 'success',
-        //     })
-        //     setIsLoading(false)
-        //     setTimeout(() => replace('/dashboard/medios'),500)
-        // } catch (error: any) {
-        //     console.log(error)
-        //     Notification(isDark).fire({
-        //         title: error.message,
-        //         icon: 'error',
-        //         timer: 3000
-        //     })
-        //     setIsLoading(false)
-        // }
+        setIsLoading(true)
+        Notification(isDark).fire({
+            title: 'Cargando',
+            icon: 'info',
+        })
+        try {
+            if(charactersInMedio.length === 0) throw Error
+            const appears = charactersInMedio.map((row)=>({
+                characterId: row.character.id,
+                actorId: row.actor.id,
+                rolCharacter: row.rolCharacter,
+                rolActor: row.rolActor
+            }))
+            const {data} = await createAppears({
+                variables: {
+                    createAppearsInput: {
+                        medioId : medio.id,
+                        appears: appears,
+                    }
+                },
+            });
+            Notification(isDark).fire({
+                title: `Relacion lista`,
+                icon: 'success',
+            })
+            setIsLoading(false)
+            setTimeout(() => replace('/dashboard/medios'),500)
+        } catch (error: any) {
+            // console.log(error)
+            Notification(isDark).fire({
+                title: error.message,
+                icon: 'error',
+                timer: 3000
+            })
+            setIsLoading(false)
+        }
     }
   const {allowSubmit,parsedFields} = useForm([
       {
@@ -189,7 +215,7 @@ const AppearsCreatePage= ( ) => {
         align='center'
       >
         <Text h1>
-          Agregar Organizaciones a Medios: 
+          Agregar Personajes a Medios: 
         </Text>
       </Flex>
 
@@ -211,55 +237,61 @@ const AppearsCreatePage= ( ) => {
                     />
             </Row>
         </Grid>
+
         <Grid xs={12} alignContent='space-between' alignItems='center' direction='column-reverse' css={{py:'$10'}}>
             <Row gap={1}>
-                <Grid.Container >
+                <Grid.Container direction='row'>
                     {
                         medio.id !== '' && 
                         <>
-                            <Grid xs = {6}>
+                            <Grid css={{margin:'$8', minWidth:'50%', maxWidth:'600px', display: 'inline-grid'}}>
                                 <TableWrapper 
                                     columns={columns} 
-                                    rows={orgsInMedioShow!}
+                                    rows={charactersInMedioShow!}
                                     cellReducer={SimpleCellReducer}
-                                    onDelete={onRemoveOrganization}
+                                    onDelete={onRemoveCharacter}
                                 />
                             </Grid>
                             <Grid xs = {6} direction='column'>
-                                <Input
-                                    bordered
-                                    labelPlaceholder="Estado de la organización"
-                                    css={{width:'100%'}}
-                                    value={status.value}
-                                    onChange={(e) => status.setValue(e.target.value)}
-                                    helperText={status.message}
-                                    helperColor={status.color}
-                                    status={status.color}
-                                    color={status.color}
+                                <Spacer y={2} />
+                                <DropdownRegister
+                                    listkeys={actors!}
+                                    selected={toAddActor.description}
+                                    setValue={setToAddActor}
+                                    width={100} 
+                                    check='Agregar Actor'
                                 />
                                 <Spacer y={2} />
                                 <DropdownRegister
-                                    listkeys={organizations!}
-                                    selected={toAddOrgnization.description}
-                                    setValue={setToAddOrgnization}
+                                    listkeys={characters!}
+                                    selected={toAddCharacter.description}
+                                    setValue={setToAddCharacter}
                                     width={100} 
-                                    check='Agregar Organización'
+                                    check='Agregar Personaje'
                                 />
                                 <Spacer y={2} />
                                 <RadioRegister 
-                                    label='Rol'
-                                    listValue={rols}
-                                    onSelectKey={setRol}
-                                    valueRadio={rol}
+                                    label='Rol del personaje'
+                                    listValue={characterRols}
+                                    onSelectKey={setCharacterRol}
+                                    valueRadio={characterRol}
                                     size='md'
                                 />
                                 <Spacer y={2} />
+                                <RadioRegister 
+                                    label='Rol del actor'
+                                    listValue={actorRols}
+                                    onSelectKey={setActorRol}
+                                    valueRadio={actorRol}
+                                    size='md'
+                                />
+                                <Spacer y={2} />                                        
                                 <Button
-                                    disabled={!allowSubmit || isLoading || toAddOrgnization.id === ''}
-                                    onPress={onAddOrganization}
+                                    disabled={ isLoading || toAddActor.id === ''|| toAddCharacter.id === ''}
+                                    onPress={onAddChacracter}
                                     size='lg'
                                 >
-                                    Añadir Organización
+                                    Añadir Personaje
                                 </Button>
                             </Grid>
                             
@@ -270,13 +302,13 @@ const AppearsCreatePage= ( ) => {
             </Row>
             <Row>
                 <Text h3>
-                    Organizaciones en el Medio
+                    Personajes en el Medio
                 </Text>                
             </Row>
         </Grid>
         <Grid xs ={12} alignContent='space-between' alignItems='stretch' direction='row-reverse' css={{py:'$0'}}>
             <Button
-                disabled={ orgsInMedio.length === 0 || isLoading }
+                disabled={ charactersInMedioShow.length === 0 || isLoading }
                 onPress={onSubmit}
                 size='lg'
             >

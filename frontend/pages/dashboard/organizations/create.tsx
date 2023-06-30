@@ -67,7 +67,7 @@ const OrganizationsCreatePage= ( ) => {
         })
     }, [charactersInOrg])
 
-    console.log(charactersInOrgShow)
+    // console.log(charactersInOrgShow)
     useEffect(() => {
         characters = convertCharacters(data!)
     }, [data])
@@ -146,7 +146,7 @@ const OrganizationsCreatePage= ( ) => {
             setIsLoading(false)
             setTimeout(() => replace('/dashboard/organizations'),500)
         } catch (error: any) {
-            console.log(error)
+            // console.log(error)
             Notification(isDark).fire({
                 title: error.message,
                 icon: 'error',
@@ -232,7 +232,7 @@ const OrganizationsCreatePage= ( ) => {
                     bordered
                     labelPlaceholder="Primera Aparición"
                     css={{width:'100%'}}
-                    value={firstApparition.value}
+                    // value={firstApparition.value}
                     onChange={(e) => firstApparition.setValue(e.target.value)}
                     helperText={firstApparition.message}
                     helperColor={firstApparition.color}
@@ -283,16 +283,16 @@ const OrganizationsCreatePage= ( ) => {
                     />
                 </Col>
             </Row>
-
-            <Flex css={ { width : '100%'}} justify={'center'}>
-
-                <TableWrapper 
-                columns={columns} 
-                rows={charactersInOrgShow!}
-                cellReducer={SimpleCellReducer}
-                onDelete={onRemoveCharacter}
-                />
-                <Flex direction={'column'} justify={'center'} align={'center'}>
+            <Flex direction='row' css={{ minWidth : '100%'}}>
+                <Grid css={{ minWidth : '60%'}}>
+                    <TableWrapper 
+                        columns={columns} 
+                        rows={charactersInOrgShow!}
+                        cellReducer={SimpleCellReducer}
+                        onDelete={onRemoveCharacter}
+                    />
+                </Grid>
+                <Grid css={{ minWidth : '40%'}}>
                     <DropdownRegister
                         listkeys={characters!}
                         selected={toAddCharacter.description}
@@ -314,9 +314,18 @@ const OrganizationsCreatePage= ( ) => {
                     <Button
                         onPress={onAddCharacter}
                         size='lg'
+                        disabled = { toAddCharacter.id === '' || toAddJobOcupation.id === ''}
+                        css={{ minWidth : '100% '}}
                     >
                         Agregar Personaje
                     </Button>
+                </Grid>
+            </Flex>
+            <Flex css={ { minWidth : '100%'}} justify={'center'}>
+
+                
+                <Flex direction={'column'} justify={'center'} align={'center'}>
+                    
                 </Flex>
             </Flex>
             <Row>

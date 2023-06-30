@@ -139,7 +139,7 @@ const ParticipatesCreatePage= ( ) => {
             setIsLoading(false)
             setTimeout(() => replace('/dashboard/medios'),500)
         } catch (error: any) {
-            console.log(error)
+            // console.log(error)
             Notification(isDark).fire({
                 title: error.message,
                 icon: 'error',

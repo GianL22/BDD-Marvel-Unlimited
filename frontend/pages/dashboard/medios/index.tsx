@@ -20,19 +20,19 @@ const columns = [
 ];
 
 export interface MedioResponse {
-    media: Media;
+  media: Media;
 }
 
 const MediosPage: NextPage = () => {
   const { isDark } = useTheme()
-  const { data , error} = useQuery<MedioResponse>(GetMedios,{
+  const { data, error } = useQuery<MedioResponse>(GetMedios, {
     pollInterval: 1000
   })
 
   let medios = useMemo(() => convertMedioToShow(data!), [data])
 
   useEffect(() => {
-      medios = convertMedioToShow(data!)
+    medios = convertMedioToShow(data!)
   }, [data])
 
   const [deleteMedioById] = useMutation(RemoveMedio)
@@ -43,8 +43,8 @@ const MediosPage: NextPage = () => {
     })
     try {
       await deleteMedioById({
-        variables:{
-            removeMedioId: id,
+        variables: {
+          removeMedioId: id,
         }
       })
       Notification(isDark).fire({
@@ -60,32 +60,38 @@ const MediosPage: NextPage = () => {
       })
     }
   }
-  if ( !data ) return <Loading />
-  return ( 
+  if (!data) return <Loading />
+  return (
     <AppLayout
       title='Medios'
       description='Marvel United - Medios'
     >
-        <Grid.Container gap={2} direction='column' alignItems='flex-start' css={{margin:'$4', width:'100%'}}>
+      <Grid.Container gap={2} direction='column' alignItems='flex-start' css={{ margin: '$4', width: '100%' }}>
 
-          <Grid css={{ width : '100%'}}>
-            <Flex wrap={'nowrap'} justify={'between'} >
-              <Text h1 >Medios</Text>
-              <Link href='/dashboard/medios/create'>
-                Crear Medio
-              </Link>
-            </Flex>
-          </Grid>
-          
-          <Grid css={{margin:'$8', minWidth:'100%', maxWidth:'600px', display: 'inline-grid'}}>
-            <TableWrapper 
-              columns={columns} 
-              rows={medios!}
-              cellReducer={ MediosCellReducer }
-              onDelete={MedioAction}
-            />
-          </Grid>        
-        </Grid.Container>
+        <Grid css={{ width: '100%' }}>
+          <Flex wrap={'nowrap'} justify={'between'} >
+            <Text h1 >Medios</Text>
+            <Link href='/dashboard/medios/appearsCreate'>
+              Añadir Personaje
+            </Link>
+            <Link href='/dashboard/medios/participateCreate'>
+              Añadir Organización
+            </Link>
+            <Link href='/dashboard/medios/create'>
+              Crear Medio
+            </Link>
+          </Flex>
+        </Grid>
+
+        <Grid css={{ margin: '$8', minWidth: '100%', maxWidth: '600px', display: 'inline-grid' }}>
+          <TableWrapper
+            columns={columns}
+            rows={medios!}
+            cellReducer={MediosCellReducer}
+            onDelete={MedioAction}
+          />
+        </Grid>
+      </Grid.Container>
     </AppLayout>
   )
 }
