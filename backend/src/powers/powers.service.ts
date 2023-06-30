@@ -135,6 +135,7 @@ export class PowersService {
       where  "use"."characterId" IN ( 
         ${ villain.map(vil => `'${vil.characterId}'`).join(',') }
       )
+      AND "p"."name" LIKE '%Super%' AND "use"."inherited" = TRUE
       group by "use"."powerId"
       HAVING ( COUNT("use"."characterId") > 1 )
     `)

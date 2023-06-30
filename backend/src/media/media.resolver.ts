@@ -10,6 +10,7 @@ import { MediaResponse } from './types/media-response.type';
 import { CreateVideoGameInput } from './dto/input/create-videogame.input';
 import { Platform } from './entities/platform.entity';
 import { UpdateMovieInput } from './dto/input/update-movie.input';
+import { UpdateSerieInput } from './dto/input/update-serie.input';
 import { UpdateVideoGameInput } from './dto/input/update-videogame';
 import { CreateParticipatesInput } from './dto/input/create-participates.input';
 import { Participates } from './entities/participates.entity';
@@ -53,7 +54,7 @@ export class MediaResolver {
 
   @Mutation(() => [Appears], {name : 'createAppears'})
   async createAppears(
-    @Args('createAppears') createAppearsInput : CreateAppearsInput
+    @Args('createAppearsInput') createAppearsInput : CreateAppearsInput
   ): Promise<Appears[]> {
     return this.mediaService.createAppears( createAppearsInput );
   }

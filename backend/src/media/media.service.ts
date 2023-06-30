@@ -324,13 +324,13 @@ export class MediaService {
     
     const repositories = [ this.movieRepository, this.serieRepository, this.videoGameRepository ]
     const promiseRepositories = []
-    console.log(medioId)
+    // console.log(medioId)
     for ( const repository of repositories ){
       promiseRepositories.push( repository.findOneBy( { medioId })) 
     }
 
     const [ movie, serie, videoGame ] = await Promise.all( promiseRepositories )
-    console.log([movie, serie, videoGame])
+    // console.log([movie, serie, videoGame])
     if ( movie ) return { movies : [ movie ] }
     if ( serie ) return { series : [ serie ] }
     if ( videoGame ) return { videoGames : [ videoGame ] }

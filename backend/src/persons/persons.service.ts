@@ -62,7 +62,6 @@ export class PersonsService {
     
   }
 
-
   async findAll() : Promise<PersonsResponse> {
     
     const repositories = [ this.directorRepository, this.creatorRepository, this.actorRepository ]
