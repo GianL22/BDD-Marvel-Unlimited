@@ -21,13 +21,12 @@ mutation CreateParticipates($createParticipatesInput: CreateParticipatesInput!) 
 `
 
 export const CreateAppears = gql`
-mutation CreateParticipates($createParticipatesInput: CreateParticipatesInput!) {
-  createParticipates(createParticipatesInput: $createParticipatesInput) {
-    status
-    rolOrganization
+mutation CreateAppears($createAppearsInput: CreateAppearsInput!) {
+  createAppears(createAppearsInput: $createAppearsInput) {
+    rolCharacter
+    rolActor
   }
 }
-
 `
 
 export const CreateMovie = gql`

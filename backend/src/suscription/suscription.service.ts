@@ -40,7 +40,7 @@ export class SuscriptionService {
       
       return await this.suscriptionRepository.save(newSuscription);
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       throw new InternalServerErrorException('Algo ocurrió mal en la creacion de la suscripcion')
     }
   }
@@ -108,7 +108,7 @@ export class SuscriptionService {
       return suscriptions
 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       throw new InternalServerErrorException('Error en el servidor')
     }
   }
