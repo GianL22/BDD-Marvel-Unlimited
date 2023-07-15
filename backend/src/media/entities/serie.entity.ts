@@ -48,6 +48,10 @@ export class Serie{
     @Field(() => String)
     episodes: number;
 
+    @Column( {nullable: true})
+    @Field( ()=> String)
+    poster: string
+
     @ManyToOne(
         () => Creator,
         (creator) => creator.serie,
@@ -65,10 +69,4 @@ export class Serie{
     @JoinColumn({name:'audioVisualType', foreignKeyConstraintName:'audiovisualType_FK'})
     @Field(() => AudioVisualType)
     audioVisualType: AudioVisualType;
-
-    // @OneToMany(
-    //     () => SeriesProgress,
-    //     (seriesProgress) => seriesProgress.serie
-    //   )
-    //   seriesProgress: string;
 }
