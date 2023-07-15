@@ -6,128 +6,134 @@ import { useRouter } from 'next/router';
 
 
 const ReportsPage: NextPage = () => {
-    const {push} = useRouter()
-  return ( 
-    <AppLayout
-      title='Reportes'
-      description='Reportes sobre Marvel'
-    >
-        <Flex
-            css={{
-            'mt': '$5',
-            'px': '$6',
-            '@sm': {
-                mt: '$10',
-                px: '$16',
-            },
-            }}
-            justify='between'
-            align='center'
+    const { push } = useRouter()
+    return (
+        <AppLayout
+            title='Reportes'
+            description='Reportes sobre Marvel'
         >
-            <Text h1>
-                Reportes disponibles:
-            </Text>
-        </Flex>
-
-        <Grid.Container gap={8} justify="center" alignContent='center' alignItems='center'>
-            <Grid 
-                alignContent='space-between'   
-                alignItems='center' 
-                direction="column"
-                xs={ 12 } 
-                sm={ 6 } 
-                
+            <Flex
+                css={{
+                    'mt': '$5',
+                    'px': '$6',
+                    '@sm': {
+                        mt: '$10',
+                        px: '$16',
+                    },
+                }}
+                justify='between'
+                align='center'
             >
-                <Link href='' css={{'minWidth': '100%',}}>
-                    <Button disabled auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
-                        Lideres con Poderes Artificiales
-                    </Button>
-                </Link>
+                <Text h1>
+                    Reportes disponibles:
+                </Text>
+            </Flex>
 
-                <Spacer y={4}/>
+            <Grid.Container gap={8} justify="center" alignContent='center' alignItems='center'>
+                <Grid
+                    alignContent='space-between'
+                    alignItems='center'
+                    direction="column"
+                    xs={12}
+                    sm={6}
 
-                <Link href='' css={{'minWidth': '100%'}}>
-                    <Button disabled auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
-                        Objetos de Superhéroes y Supervillanos
-                    </Button>
-                </Link>
+                >
+                    <Link css={{ 'minWidth': '100%', }}>
+                        <Button  
+                            auto 
+                            bordered 
+                            size={'xl'} 
+                            css={{ 'minWidth': '100%', fontSize: '$2xl' }}
+                            onPress={async () => await push('reports/naturalPowers')}
+                        >
+                            Lideres con Poderes Artificiales
+                        </Button>
+                    </Link>
 
-                <Spacer y={4}/>
-                <Link css={{'minWidth': '100%',}}>
-                    <Button
-                        auto
-                        bordered
-                        onPress={ async () => await push('reports/profitableLongAnimatedFilms')}
-                        size={'xl'}
-                        css={{'minWidth': '100%', fontSize : '$2xl'}}
-                    >
-                        Peliculas Animadas Rentables y Largas
-                    </Button>
-                </Link>
-                <Spacer y={4}/>
+                    <Spacer y={4} />
 
-                <Link css={{'minWidth': '100%',}}>
-                    <Button
-                        auto
-                        bordered
-                        onPress={ async () => await push('reports/upgradepremium')}
-                        size={'xl'}
-                        css={{'minWidth': '100%', fontSize : '$2xl'}}
-                    >
-                        Upgrade a Premium
-                    </Button>
-                </Link>
+                    <Link href='' css={{ 'minWidth': '100%' }}>
+                        <Button disabled auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
+                            Objetos de Superhéroes y Supervillanos
+                        </Button>
+                    </Link>
 
-            </Grid>
+                    <Spacer y={4} />
+                    <Link css={{ 'minWidth': '100%', }}>
+                        <Button
+                            auto
+                            bordered
+                            onPress={async () => await push('reports/profitableLongAnimatedFilms')}
+                            size={'xl'}
+                            css={{ 'minWidth': '100%', fontSize: '$2xl' }}
+                        >
+                            Peliculas Animadas Rentables y Largas
+                        </Button>
+                    </Link>
+                    <Spacer y={4} />
 
-            <Grid 
-                alignContent='space-between'   
-                alignItems='center' 
-                direction="column"
-                xs={ 12 } 
-                sm={ 6 } 
-            >
-                <Link css={{'minWidth': '100%',}}>
-                    <Button
-                        auto
-                        bordered
-                        onPress={ async () => await push('reports/extensiveSeries')}
-                        size={'xl'}
-                        css={{'minWidth': '100%', fontSize : '$2xl'}}
-                    >
-                        Series Extensas
-                    </Button>
-                </Link>
+                    <Link css={{ 'minWidth': '100%', }}>
+                        <Button
+                            auto
+                            bordered
+                            onPress={async () => await push('reports/upgradepremium')}
+                            size={'xl'}
+                            css={{ 'minWidth': '100%', fontSize: '$2xl' }}
+                        >
+                            Upgrade a Premium
+                        </Button>
+                    </Link>
 
-                <Spacer y={4}/>
+                </Grid>
+
+                <Grid
+                    alignContent='space-between'
+                    alignItems='center'
+                    direction="column"
+                    xs={12}
+                    sm={6}
+                >
+                    <Link css={{ 'minWidth': '100%', }}>
+                        <Button
+                            auto
+                            bordered
+                            onPress={async () => await push('reports/extensiveSeries')}
+                            size={'xl'}
+                            css={{ 'minWidth': '100%', fontSize: '$2xl' }}
+                        >
+                            Series Extensas
+                        </Button>
+                    </Link>
+
+                    <Spacer y={4} />
 
 
-                <Link href='' css={{'minWidth': '100%',}}>
-                    <Button disabled auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
-                        Locaciones de Combate
-                    </Button>
-                </Link>
+                    <Link href='' css={{ 'minWidth': '100%', }}>
+                        <Button disabled auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
+                            Locaciones de Combate
+                        </Button>
+                    </Link>
 
-                <Spacer y={4}/>
+                    <Spacer y={4} />
 
 
-                <Link href='reports/inheritedPowers' css={{'minWidth': '100%',}}>
-                    <Button auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
-                        Poderes Heredados "Super" en Villanos
-                    </Button>
-                </Link>
+                    <Link href='reports/inheritedPowers' css={{ 'minWidth': '100%', }}>
+                        <Button auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
+                            Poderes Heredados "Super" en Villanos
+                        </Button>
+                    </Link>
 
-                <Spacer y={4}/>
+                    <Spacer y={4} />
 
-                <Link href='' css={{'minWidth': '100%'}}>
-                    <Button disabled auto bordered size={'xl'} css={{'minWidth': '100%', fontSize : '$2xl'}}>
-                        Jugando al Límite
-                    </Button>
-                </Link>
-            </Grid>
-        </Grid.Container>
-    </AppLayout>
-  )
+                    <Link href='' css={{ 'minWidth': '100%' }}>
+                        <Button disabled auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
+                            Jugando al Límite
+                        </Button>
+                    </Link>
+                </Grid>
+            </Grid.Container>
+        </AppLayout>
+    )
 }
 
 export default ReportsPage
