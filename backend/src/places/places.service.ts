@@ -42,7 +42,7 @@ export class PlacesService {
 
   async findOnePlace( id : string ): Promise<Place>{
     try {
-      return await this.placeRepository.findOneBy({id})
+      return await this.placeRepository.findOneByOrFail({id})
     } catch (error) {
       throw new NotFoundException(`${ id } not found`);
     }

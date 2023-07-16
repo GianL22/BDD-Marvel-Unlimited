@@ -1,6 +1,6 @@
 import React from 'react';
 import { SidebarItem } from './SidebarItem';
-import { Search, Gamepad, Tv, HomeSimpleDoor, Movie, List, OpenBook, CoinsSwap, CinemaOld, Building, City, Yoga, Running, Archery } from 'iconoir-react';
+import { Search, Gamepad, Tv, HomeSimpleDoor, Movie, List, OpenBook, CoinsSwap, CinemaOld, Building, City, Yoga, Running, Archery, ArcheryMatch } from 'iconoir-react';
 import { useRouter } from 'next/router';
 
 export const MenuItemsDashboard = () => {
@@ -42,6 +42,12 @@ export const MenuItemsDashboard = () => {
             isActive={router.pathname.includes('objects')}
             href="/dashboard/objects"
             icon={<Archery/>}
+        />
+        <SidebarItem
+            title="Combates"
+            isActive={router.pathname.includes('fights')}
+            href="/dashboard/fights"
+            icon={<ArcheryMatch/>}
         />
         {/* <SidebarItem
             title="Algo más"

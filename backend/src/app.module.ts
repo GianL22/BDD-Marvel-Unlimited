@@ -26,6 +26,7 @@ import { MediaModule } from './media/media.module';
 import { FilesModule } from './files/files.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { PlacesModule } from './places/places.module';
+import { FightsModule } from './fights/fights.module';
 
 
 
@@ -91,6 +92,8 @@ import { PlacesModule } from './places/places.module';
     OrganizationsModule,
 
     PlacesModule,
+
+    FightsModule,
 
 
   ],

@@ -7,6 +7,7 @@ import { Objects } from 'src/objects/entities';
 import { Occupation } from 'src/occupations/entities/occupation.entity';
 import { Organization } from 'src/organizations/entities/organization.entity';
 import { Creator } from 'src/persons/entities';
+import { Fight } from 'src/fights/entities/fight.entity';
 
 @Entity({name: 'Character'})
 @ObjectType()
@@ -141,4 +142,11 @@ export class Character{
     {nullable: true, cascade: true}
   )
   leads : Organization 
+
+  @OneToMany(
+    () => Fight,
+    (fight)=> fight.character,
+    {nullable: true, cascade: true}
+  )
+  fight : Fight 
 }
