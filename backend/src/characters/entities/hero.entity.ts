@@ -6,100 +6,100 @@ import { Civil } from './civil.entity';
 import { Color } from 'src/colors/entities/color.entity';
 // import { FightWith } from './fightWith.entity';
 
-@Entity({name: 'Hero'})
+@Entity({ name: 'Hero' })
 @ObjectType()
-export class Hero{
-  
-    @PrimaryColumn({ type: "uuid" })
-    characterId: string;
-  
-    @OneToOne(
-        () => Character,
-        (character) => character.id,
-        {lazy: true, onDelete: 'CASCADE'}
-    )
-    @JoinColumn({ name: "characterId", foreignKeyConstraintName:'character_FK' })
-    @Field( ()=> Character )
-    character: Character;
-    
-    @Column({nullable: false})
-    @Field( ()=> String )
-    name: string;
+export class Hero {
 
-    @Column({nullable: false})
-    @Field( ()=> String )
-    lastName: string;
+  @PrimaryColumn({ type: "uuid" })
+  characterId: string;
 
-    @Column({nullable: false})
-    @Check(`"gender" IN ('M', 'F', 'Desc','Otro')`)
-    @Field( ()=> String )
-    gender: string;
+  @OneToOne(
+    () => Character,
+    (character) => character.id,
+    { lazy: true, onDelete: 'CASCADE' }
+  )
+  @JoinColumn({ name: "characterId", foreignKeyConstraintName: 'character_FK' })
+  @Field(() => Character)
+  character: Character;
 
-    @Column({nullable: false})
-    @Field( ()=> String )
-    phrase: string;
+  @Column({ nullable: false })
+  @Field(() => String)
+  name: string;
 
-    @Column({nullable: false})
-    @Check(`"maritialStatus" IN ('Soltero', 'Casado', 'Viudo','Divorciado')`)
-    @Field( ()=> String )
-    maritialStatus: string;
+  @Column({ nullable: false })
+  @Field(() => String)
+  lastName: string;
 
-    @Column({nullable: false})
-    @Field( ()=> String )
-    firstApparition: string;
+  @Column({ nullable: false })
+  @Check(`"gender" IN ('M', 'F', 'Desc','Otro')`)
+  @Field(() => String)
+  gender: string;
 
-    @Column({nullable: false, unique: true})
-    @Field( ()=> String )
-    nameHero: string;
+  @Column({ nullable: false })
+  @Field(() => String)
+  phrase: string;
 
-    @Column({nullable: false})
-    @Field( ()=> String )
-    logo: string;
+  @Column({ nullable: false })
+  @Check(`"maritialStatus" IN ('Soltero', 'Casado', 'Viudo','Divorciado')`)
+  @Field(() => String)
+  maritialStatus: string;
 
-    @Column({nullable: false})
-    archEnemy: string;
+  @Column({ nullable: false })
+  @Field(() => String)
+  firstApparition: string;
 
-    @OneToOne(
-        () => Villain,
-        (villain) => villain.characterId,
-        {nullable: false, lazy: true}
-    )
-    @JoinColumn({name:'archEnemy', foreignKeyConstraintName:'villain_FK'})
-    @Field( ()=> Villain, {name: 'archEnemy'} )
-    villain: Villain;
+  @Column({ nullable: false, unique: true })
+  @Field(() => String)
+  nameHero: string;
 
-    @OneToMany(
-        () => Civil,
-        (civil) => civil.hero,
-        {lazy: true}
-    )
-    civil: string
+  @Column({ nullable: false })
+  @Field(() => String)
+  logo: string;
 
-    @ManyToMany(
-        () => Color, 
-        {lazy: true, onDelete: 'CASCADE'}
-      )
-    @JoinTable({
-      name: "SuitColors",
-      joinColumn: {
-        name: "heroId",
-        referencedColumnName: "characterId",
-        foreignKeyConstraintName:'hero_FK'
-      },
-      inverseJoinColumn: {
-        name: "colorId",
-        referencedColumnName: "id",
-        foreignKeyConstraintName:'color_FK'
-      },
-    })
-    @Field(()=> [Color])
-    suitColors: Color[]
+  @Column({ nullable: false })
+  archEnemy: string;
 
-    //TODO: Recordar hacer la tabla de peleas
-    // @OneToMany(
-    //     () => FightWith,
-    //     (fightWith) => fightWith.hero
-    // )
-    // FightWith: string;
+  @OneToOne(
+    () => Villain,
+    (villain) => villain.characterId,
+    { nullable: false, lazy: true }
+  )
+  @JoinColumn({ name: 'archEnemy', foreignKeyConstraintName: 'villain_FK' })
+  @Field(() => Villain, { name: 'archEnemy' })
+  villain: Villain;
+
+  @OneToMany(
+    () => Civil,
+    (civil) => civil.hero,
+    { lazy: true }
+  )
+  civil: string
+
+  @ManyToMany(
+    () => Color,
+    { lazy: true, onDelete: 'CASCADE' }
+  )
+  @JoinTable({
+    name: "SuitColors",
+    joinColumn: {
+      name: "heroId",
+      referencedColumnName: "characterId",
+      foreignKeyConstraintName: 'hero_FK'
+    },
+    inverseJoinColumn: {
+      name: "colorId",
+      referencedColumnName: "id",
+      foreignKeyConstraintName: 'color_FK'
+    },
+  })
+  @Field(() => [Color])
+  suitColors: Color[]
+
+  //TODO: Recordar hacer la tabla de peleas
+  // @OneToMany(
+  //     () => FightWith,
+  //     (fightWith) => fightWith.hero
+  // )
+  // FightWith: string;
 
 }

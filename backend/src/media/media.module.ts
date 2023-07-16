@@ -8,6 +8,7 @@ import { PersonsModule } from 'src/persons/persons.module';
 import { Platform } from './entities/platform.entity';
 import { Participates } from './entities/participates.entity';
 import { Appears } from './entities/appears.entity';
+import { RatingsModule } from 'src/ratings/ratings.module';
 
 @Module({
   providers: [MediaResolver, MediaService],
@@ -24,9 +25,11 @@ import { Appears } from './entities/appears.entity';
     ]),
     CompaniesModule,
     PersonsModule,
+    RatingsModule,
   ],
 
   exports : [
+    TypeOrmModule,
     MediaService
   ]
 

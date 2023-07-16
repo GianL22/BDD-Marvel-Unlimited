@@ -1,6 +1,6 @@
-import {Button, Divider, Image, Link, Text} from '@nextui-org/react';
+import { Button, Divider, Image, Link, Text } from '@nextui-org/react';
 import { Check } from 'iconoir-react';
-import {Box, Flex} from '../containers'
+import { Box, Flex } from '../containers'
 
 export const Hero = () => {
    return (
@@ -60,9 +60,9 @@ export const Hero = () => {
                   }}
                   size={'$lg'}
                >
-                    Disfrutarás de información completa sobre tus peliculas, series, videojuegos  y
-                    personajes favoritos.
-                    Descubre los secretos del Universo Marvel y vive la emoción.
+                  Disfrutarás de información completa sobre tus peliculas, series, videojuegos  y
+                  personajes favoritos.
+                  Descubre los secretos del Universo Marvel y vive la emoción.
                </Text>
 
                <Flex
@@ -75,9 +75,9 @@ export const Hero = () => {
                   wrap={'wrap'}
                >
                   <Link href='/auth/register'>
-                        <Button>
-                           ¡Únete a la Aventura!
-                        </Button>
+                     <Button>
+                        ¡Únete a la Aventura!
+                     </Button>
                   </Link>
                </Flex>
                <Flex
@@ -117,21 +117,21 @@ export const Hero = () => {
                </Flex>
             </Box>
             <Box>
-               <Image 
-                    src="/Marvel_Universe.jpg"
-                    width={'775px'} 
-                    objectFit="contain" 
-                    showSkeleton
-                    containerCss={{
-                        borderRadius: '5%',
-                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.6)',
-                        overflow: 'hidden',
-                    }}
-                />
+               <Image
+                  src="/Marvel_Universe.jpg"
+                  width={'775px'}
+                  objectFit="contain"
+                  showSkeleton
+                  containerCss={{
+                     borderRadius: '5%',
+                     boxShadow: '0 8px 16px rgba(0, 0, 0, 0.6)',
+                     overflow: 'hidden',
+                  }}
+               />
             </Box>
          </Flex>
          <Divider
-            css={{position: 'absolute', inset: '0p', left: '0', mt: '$10'}}
+            css={{ position: 'absolute', inset: '0p', left: '0', mt: '$10' }}
          />
       </>
    );

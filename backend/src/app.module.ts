@@ -27,8 +27,8 @@ import { FilesModule } from './files/files.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { PlacesModule } from './places/places.module';
 import { FightsModule } from './fights/fights.module';
-
-
+import { RatingsModule } from './ratings/ratings.module';
+import { ProgressModule } from './progress/progress.module';
 
 @Module({
   imports: [
@@ -95,7 +95,10 @@ import { FightsModule } from './fights/fights.module';
 
     FightsModule,
 
+    RatingsModule,
 
+    ProgressModule,
+    
   ],
   controllers: [],
   providers: [],
