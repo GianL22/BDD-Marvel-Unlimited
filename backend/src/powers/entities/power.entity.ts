@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, BeforeUpdate } from 'typeorm';
 import { UsePower } from './use-power.entity';
+import { Fight } from 'src/fights/entities/fight.entity';
 // import { Fight } from './fight.entity';
 
 @Entity({name: 'Power'})
@@ -25,6 +26,13 @@ export class Power {
     { lazy: true }
   )
   usePower: UsePower;
+
+  @OneToMany(
+    () => Fight,
+    (fight)=> fight.power,
+    {nullable: true, cascade: true}
+  )
+  fight : Fight 
 
   // @OneToMany(
   //   () => Fight,

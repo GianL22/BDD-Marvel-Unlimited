@@ -26,10 +26,9 @@ import { MediaModule } from './media/media.module';
 import { FilesModule } from './files/files.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { PlacesModule } from './places/places.module';
+import { FightsModule } from './fights/fights.module';
 import { RatingsModule } from './ratings/ratings.module';
 import { ProgressModule } from './progress/progress.module';
-
-
 
 @Module({
   imports: [
@@ -94,11 +93,12 @@ import { ProgressModule } from './progress/progress.module';
 
     PlacesModule,
 
+    FightsModule,
+
     RatingsModule,
 
     ProgressModule,
-
-
+    
   ],
   controllers: [],
   providers: [],

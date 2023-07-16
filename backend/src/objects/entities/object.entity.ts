@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { ObjectsType } from './objectType.entity';
+import { Fight } from 'src/fights/entities/fight.entity';
 // import { CreatedBy } from './createdBy.entity';
 // import { Fight } from './fight.entity';
 
@@ -42,11 +43,12 @@ export class Objects{
   // )
   // createdBy: string;
 
-  // @OneToMany(
-  //   () => Fight,
-  //   (fight) => fight.character,
-  // )
-  // fight: string
+  @OneToMany(
+    () => Fight,
+    (fight)=> fight.object,
+    {nullable: true, cascade: true}
+  )
+  fight : Fight 
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -63,4 +65,5 @@ export class Objects{
       .map(word => word.charAt(0).toUpperCase() + word.substring(1))
       .join(" ");
   }
+
 }
