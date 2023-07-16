@@ -1,50 +1,42 @@
 import { FC } from 'react';
 import { Link, Text } from '@nextui-org/react';
 import { Box, Flex } from '../containers';
-import { useRouter } from 'next/router';
-import { Carousel } from '../carousel/carousel';
+import { Carousel } from '../carousel/caruosel';
+import { MedioList } from '@/models/Medio';
 
 interface Props {
-  medios: {
-    id: string;
-    title: string;
-    poster: string;
-    type: string;
-  }[]
+  medios: MedioList[]
 }
 
 export const MyList: FC<Props> = ({ medios }) => {
-  const { replace } = useRouter()
-  const movies = medios.filter(medio => medio.type === 'movie')
-  const series = medios.filter(medio => medio.type === 'serie')
-  const videoGames = medios.filter(medio => medio.type === 'videoGame')
-
+  const movies = medios.filter(medio => medio.type === 'movies')
+  const series = medios.filter(medio => medio.type === 'series')
+  const videoGames = medios.filter(medio => medio.type === 'videogames')
   return (
-    <Flex direction={'column'}>
-      <Box css={{ width: 'auto' }}>
-        <Text size={'$2xl'}>Películas: </Text>
+    <Flex direction={'column'} justify={'center'} css={{ gap: '$5', p: '$8' }}>
+      <Box css={{ width: '100%', justifyContent: 'center' }}>
+        <Text size={'$3xl'}>Películas: </Text>
         {
           movies.length === 0
             ? <Link href={'/app/movies'}> Agrega Peliculas a tu lista </Link>
-            : <Carousel medios={movies} type='movies' />
+            : <Carousel medios={medios} type={movies[0].type} />
         }
       </Box>
-      <Box css={{ width: 'auto' }}>
-        <Text size={'$2xl'}>Series: </Text>
+      <Box css={{ width: '100%', justifyContent: 'center' }}>
+        <Text size={'$3xl'}>Series: </Text>
         {
-          series.length === 0
-            ? <Link href={'/app/series'}> Agrega Series a tu lista </Link>
-            : <Carousel medios={series} type='series' />
+          movies.length === 0
+            ? <Link href={'/app/movies'}> Agrega Peliculas a tu lista </Link>
+            : <Carousel medios={series} type={series[0].type} />
         }
       </Box>
-      <Box css={{ width: 'auto' }}>
-        <Text size={'$2xl'}>Video Juegos: </Text>
+      <Box css={{ width: '100%', justifyContent: 'center' }}>
+        <Text size={'$3xl'}>Video Juegos: </Text>
         {
-          videoGames.length === 0
-            ? <Link href={'/app/videoGames'}> Agrega Video Juegos a tu lista </Link>
-            : <Carousel medios={videoGames} type='videoGames' />
+          movies.length === 0
+            ? <Link href={'/app/movies'}> Agrega Peliculas a tu lista </Link>
+            : <Carousel medios={videoGames} type={videoGames[0].type} />
         }
-
       </Box>
     </Flex>
   )

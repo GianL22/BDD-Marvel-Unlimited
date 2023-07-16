@@ -40,10 +40,10 @@ export const MedioCard: FC<Props> = ({ url, title, rating, img, id }) => {
                 }}
             >
                 <Grid.Container gap={0} direction='row'>
-                    <Grid xs={10}>
+                    <Grid xs={9}>
                         <Text size={'$md'} color='#FFFFFF'> {title} </Text>
                     </Grid>
-                    <Grid xs={2} css={{width:'100%'}} direction='row' justify='center' alignItems='center'>
+                    <Grid xs={3} css={{width:'100%'}} direction='row' justify='center' alignItems='center'>
                         <Text size={'$md'} color='#FFFFFF'>
                             {rating} ⭐
                         </Text>

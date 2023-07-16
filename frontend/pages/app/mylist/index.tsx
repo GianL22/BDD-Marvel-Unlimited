@@ -14,7 +14,7 @@ interface DataResponse {
 }
 
 const MyListPage: NextPage = () => {
-  const { data } = useQuery<DataResponse>(GetMyList, {
+  const { data, refetch } = useQuery<DataResponse>(GetMyList, {
     variables: {
       profileId: Cookies.get('activeProfile')
     }
@@ -30,7 +30,7 @@ const MyListPage: NextPage = () => {
         justify='between'
         align='center'
       >
-        <Text b size={'$5xl'}>Explora el vasto universo de Marvel con tus títulos favoritos.</Text>
+        <Text h1>Explora el vasto universo de Marvel con tus títulos favoritos.</Text>
       </Flex>
       {
         (data.profileMyList.medios.length === 0)

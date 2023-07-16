@@ -400,7 +400,6 @@ export class MediaService {
     return { avg, series }
   }
 
-
   async reportMovie(): Promise<MovieReportResponse> {
     const querybuilder = this.movieRepository.createQueryBuilder('movie')
 
@@ -440,8 +439,8 @@ export class MediaService {
 
   async getTypeMedio(medioId: string): Promise<string> {
     const { movies = [], series = [], videoGames = [] } = await this.findOneMediaById(medioId)
-    if (movies.length > 0) return 'movie'
-    if (series.length > 0) return 'serie'
-    if (videoGames.length > 0) return 'videoGame'
+    if (movies.length > 0) return 'movies'
+    if (series.length > 0) return 'series'
+    if (videoGames.length > 0) return 'videogames'
   }
 }
