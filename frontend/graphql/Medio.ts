@@ -299,6 +299,23 @@ query ProfileMyList($profileId: String!) {
       title
       poster
       type
+      rating {
+        ratingAvg
+      }
+    }
+  }
+}
+`
+
+export const GetMediosToPreference = gql`
+query MediosTitleAndIds {
+  mediosTitleAndIds {
+    id
+    title
+    poster
+    type
+    rating {
+      ratingAvg
     }
   }
 }

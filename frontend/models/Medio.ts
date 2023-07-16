@@ -109,9 +109,10 @@ export interface ProfileMyList {
     medios: MedioList[];
 }
 
-interface MedioList {
+export interface MedioList {
     id: string;
     title: string;
     poster: string;
     type: string;
+    rating: Rating
 }

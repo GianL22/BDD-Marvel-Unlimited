@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Text, Grid, Button } from '@nextui-org/react';
+import { Text, Grid, Button, useModal } from '@nextui-org/react';
 import { NavbarWrapper } from '@/components/navbar/Navbar';
 import { AddProfile } from '@/components/profile/AddProfile';
 import { EditPencil, Cancel } from 'iconoir-react';
@@ -11,6 +11,7 @@ import { Profile as ProfileModel } from '@/models/Client';
 import { ProfileContext } from '@/context/profile';
 import { useRouter } from 'next/router';
 import { AuthContext } from '@/context/auth';
+import { PreferenceModal } from '@/components/modal/PreferenceModal';
 
 interface RequestType {
     profileByUser: ProfileModel[],
@@ -30,9 +31,11 @@ const ProfilesPage: NextPage = () => {
     useEffect(() => {
         setActiveProfile(undefined)
     }, [])
+    const { bindings: preferenceBindings, setVisible: setPreference } = useModal();
 
     return (
         <>
+            <PreferenceModal bindings={preferenceBindings} setVisible={setPreference} />
             <NavbarWrapper type={false} />
             <Grid.Container>
                 <Grid>
@@ -75,7 +78,7 @@ const ProfilesPage: NextPage = () => {
                     (data?.profileByUser.length === 5)
                         ? <></>
                         : <Grid md={2} justify='center' alignItems='center'>
-                            <AddProfile />
+                            <AddProfile setPreference={setPreference} />
                         </Grid>
                 }
             </Grid.Container>

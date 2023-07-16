@@ -125,8 +125,14 @@ const ReportsPage: NextPage = () => {
 
                     <Spacer y={4} />
 
-                    <Link href='' css={{ 'minWidth': '100%' }}>
-                        <Button disabled auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
+                    <Link css={{ 'minWidth': '100%' }}>
+                        <Button 
+                            auto 
+                            bordered 
+                            size={'xl'} 
+                            css={{ 'minWidth': '100%', fontSize: '$2xl' }}
+                            onPress={async () => await push('reports/playingAtTheLimit')}
+                        >
                             Jugando al Límite
                         </Button>
                     </Link>

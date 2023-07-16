@@ -1,5 +1,5 @@
 import { useForm } from '@/hooks/useForm';
-import { Button, Image, Modal, Row, Text, Col, Grid, Input, useTheme, Loading, Checkbox, Spacer } from '@nextui-org/react'
+import { Button, Image, Modal, Row, Text, Col, Grid, Input, useTheme, Loading, Checkbox, Spacer, useModal } from '@nextui-org/react'
 import { FC, useEffect, useState } from 'react';
 import { ArrowRightCircle, ArrowLeftCircle } from 'iconoir-react'
 import { Notification } from '@/notification';
@@ -9,6 +9,7 @@ import { Profile } from '@/models/Client';
 import { DeleteProfile, UpdateProfile } from '@/graphql/Profile';
 import { RadioRegister } from '../radio/RadioRegister';
 import { IconButton } from '../table/IconButton';
+import Cookies from 'js-cookie';
 
 interface Props {
    bindings: {
@@ -16,11 +17,12 @@ interface Props {
       onClose: () => void;
    };
    setVisible: (visible: boolean) => void;
+   setPreference: (visible: boolean) => void;
    edit: boolean;
    profile?: Profile;
 }
 
-export const ProfileModal: FC<Props> = ({ profile, bindings, setVisible, edit }) => {
+export const ProfileModal: FC<Props> = ({ profile, bindings, setVisible, edit, setPreference }) => {
    const [createProfile] = useMutation(CreateProfile);
    const [language, setLanguage] = useState(`${(!profile?.language) ? 'Español' : profile.language}`);
    const [device, setDevice] = useState(`${(!profile?.device) ? 'Laptop' : profile.device}`);
@@ -28,7 +30,6 @@ export const ProfileModal: FC<Props> = ({ profile, bindings, setVisible, edit })
    const { isDark } = useTheme()
    const [avatar, setAvatar] = useState((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')));
    const [avatarPath, setAvatarPath] = useState((!profile?.avatar) ? '' : profile?.avatar);
-
    useEffect(() => {
       setAvatar((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')))
       setLanguage(`${(!profile?.language) ? 'Español' : profile.language}`)
@@ -119,7 +120,7 @@ export const ProfileModal: FC<Props> = ({ profile, bindings, setVisible, edit })
          icon: 'info',
       })
       try {
-         await createProfile({
+         const { data } = await createProfile({
             variables: {
                createProfileInput: {
                   nickname: nickname.value,
@@ -130,13 +131,15 @@ export const ProfileModal: FC<Props> = ({ profile, bindings, setVisible, edit })
                },
             },
          });
+         Cookies.set('activeProfile', data.createProfile.id, { expires: 8 })
          nickname.setValue('');
          email.setValue('');
          setAvatarPath('');
          setIsLoading(false);
-         setVisible(false);
          setLanguage('Español')
          setDevice('Lapto')
+         setVisible(false);
+         setPreference(true)
       } catch (error: any) {
          Notification(isDark).fire({
             title: error.message,
@@ -147,6 +150,7 @@ export const ProfileModal: FC<Props> = ({ profile, bindings, setVisible, edit })
    }
 
    return (
+
       <Modal
          width="800px"
          closeButton
