@@ -82,7 +82,6 @@ export class RatingsService {
     const ratingsVideoGames = [];
     for (const videoGame of results) {
       const { ratingAvg = 0 } = await this.getAverageRating(videoGame.medioId);
-      console.log(ratingAvg)
       if (ratingAvg < videoGameAvgRating.avg)
         ratingsVideoGames.push({ ...videoGame });
     }
@@ -90,5 +89,16 @@ export class RatingsService {
       videoGames: ratingsVideoGames,
       avg: videoGameAvgRating.avg
     };
+  }
+
+  async getTopRatedMedia(): Promise<any> {
+    const ratings = await this.ratingRepository.createQueryBuilder('r')
+    .select(`"medioId"`)
+    .groupBy(`"medioId"`)
+    .orderBy('AVG(rating)', 'DESC')
+    .limit(10)
+    .getRawMany<{ medioId: string }>();
+
+    return 10;
   }
 }
