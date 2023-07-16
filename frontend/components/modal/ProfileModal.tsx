@@ -1,7 +1,7 @@
 import { useForm } from '@/hooks/useForm';
-import { Button, Image, Modal, Row, Text, Col, Grid, Input, useTheme, Loading, Checkbox, Spacer } from '@nextui-org/react'
+import { Button, Image, Modal, Row, Text, Col, Grid, Input, useTheme, Loading, Checkbox, Spacer, useModal } from '@nextui-org/react'
 import { FC, useEffect, useState } from 'react';
-import { ArrowRightCircle, ArrowLeftCircle  } from 'iconoir-react'
+import { ArrowRightCircle, ArrowLeftCircle } from 'iconoir-react'
 import { Notification } from '@/notification';
 import { useMutation } from '@apollo/client';
 import { CreateProfile } from '@/graphql';
@@ -9,6 +9,7 @@ import { Profile } from '@/models/Client';
 import { DeleteProfile, UpdateProfile } from '@/graphql/Profile';
 import { RadioRegister } from '../radio/RadioRegister';
 import { IconButton } from '../table/IconButton';
+import Cookies from 'js-cookie';
 
 interface Props {
    bindings: {
@@ -16,39 +17,39 @@ interface Props {
       onClose: () => void;
    };
    setVisible: (visible: boolean) => void;
+   setPreference: (visible: boolean) => void;
    edit: boolean;
    profile?: Profile;
 }
 
-export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} ) => {
+export const ProfileModal: FC<Props> = ({ profile, bindings, setVisible, edit, setPreference }) => {
    const [createProfile] = useMutation(CreateProfile);
-   const [language,setLanguage] = useState(`${(!profile?.language) ? 'Español' : profile.language}`);
-   const [device,setDevice] = useState(`${(!profile?.device) ? 'Laptop' : profile.device}`);
+   const [language, setLanguage] = useState(`${(!profile?.language) ? 'Español' : profile.language}`);
+   const [device, setDevice] = useState(`${(!profile?.device) ? 'Laptop' : profile.device}`);
    const [confirmDelete, setConfirmDelete] = useState(false)
-   const {isDark} = useTheme()
-   const [avatar,setAvatar] = useState((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')));
-   const [avatarPath,setAvatarPath] = useState((!profile?.avatar) ? '' : profile?.avatar);
-
+   const { isDark } = useTheme()
+   const [avatar, setAvatar] = useState((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')));
+   const [avatarPath, setAvatarPath] = useState((!profile?.avatar) ? '' : profile?.avatar);
    useEffect(() => {
-     setAvatar((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')))
-     setLanguage(`${(!profile?.language) ? 'Español' : profile.language}`)
-     setDevice(`${(!profile?.device) ? 'Laptop' : profile.device}`)
-     email.setValue((!profile?.emailProfile) ? '' : profile.emailProfile)
-     nickname.setValue((!profile?.nickname) ? '' : profile.nickname)
+      setAvatar((!profile?.avatar) ? 1 : Number(profile.avatar.replace(/\D/g, '')))
+      setLanguage(`${(!profile?.language) ? 'Español' : profile.language}`)
+      setDevice(`${(!profile?.device) ? 'Laptop' : profile.device}`)
+      email.setValue((!profile?.emailProfile) ? '' : profile.emailProfile)
+      nickname.setValue((!profile?.nickname) ? '' : profile.nickname)
    }, [bindings])
 
    const handleAdd = () => {
-      if(avatar < 5)
-         setAvatar(avatar + 1 );
+      if (avatar < 5)
+         setAvatar(avatar + 1);
       else setAvatar(1)
-   } 
+   }
    const handleTakeOut = () => {
-      if(avatar > 1)
+      if (avatar > 1)
          setAvatar(avatar - 1);
       else setAvatar(5)
-   } 
-   const [isLoading,setIsLoading] = useState(false);
-   const {allowSubmit,parsedFields} = useForm([
+   }
+   const [isLoading, setIsLoading] = useState(false);
+   const { allowSubmit, parsedFields } = useForm([
       {
          name: 'email',
          validate: (value: string) => value.match(/\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi),
@@ -64,20 +65,20 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
          initialValue: (!profile?.nickname) ? '' : profile.nickname,
       },
    ])
-   const [email,nickname] = parsedFields;
-   
+   const [email, nickname] = parsedFields;
+
    const [updateProfile] = useMutation(UpdateProfile);
 
-   const handleUpdate = async() => {
+   const handleUpdate = async () => {
       setIsLoading(true)
       Notification(isDark).fire({
-          title: 'Cargando',
-          icon: 'info',
+         title: 'Cargando',
+         icon: 'info',
       })
-      try{
+      try {
          await updateProfile({
-            variables:{
-               updateProfileInput:{
+            variables: {
+               updateProfileInput: {
                   id: profile?.id,
                   nickname: nickname.value,
                   language: language,
@@ -87,45 +88,39 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                }
             }
          })
-         nickname.setValue('');
-         email.setValue('');
-         setAvatarPath('');
          setIsLoading(false);
          setVisible(false);
-         setLanguage('Español')
-         setDevice('Lapto')
-
       } catch (error: any) {
          Notification(isDark).fire({
-             title: error.message,
-             icon: 'error',
-         }) 
+            title: error.message,
+            icon: 'error',
+         })
          setIsLoading(false)
-     }
+      }
    }
 
    const [deleteProfile] = useMutation(DeleteProfile);
    const handleDeleteProfile = () => {
       setVisible(false);
       deleteProfile({
-         variables:{
+         variables: {
             blockProfileId: profile?.id,
          }
       })
       Notification(isDark).fire({
          title: 'Perfil Eliminado',
          icon: 'success',
-     })
+      })
    }
-   
-   const handleSubmit = async() => {
+
+   const handleSubmit = async () => {
       setIsLoading(true)
       Notification(isDark).fire({
-          title: 'Cargando',
-          icon: 'info',
+         title: 'Cargando',
+         icon: 'info',
       })
       try {
-         await createProfile({
+         const { data } = await createProfile({
             variables: {
                createProfileInput: {
                   nickname: nickname.value,
@@ -136,23 +131,26 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                },
             },
          });
+         Cookies.set('activeProfile', data.createProfile.id, { expires: 8 })
          nickname.setValue('');
          email.setValue('');
          setAvatarPath('');
          setIsLoading(false);
-         setVisible(false);
          setLanguage('Español')
          setDevice('Lapto')
+         setVisible(false);
+         setPreference(true)
       } catch (error: any) {
-          Notification(isDark).fire({
-              title: error.message,
-              icon: 'error',
-          }) 
-          setIsLoading(false)
+         Notification(isDark).fire({
+            title: error.message,
+            icon: 'error',
+         })
+         setIsLoading(false)
       }
-  }
+   }
 
    return (
+
       <Modal
          width="800px"
          closeButton
@@ -167,15 +165,15 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                      ? 'Editar Perfil'
                      : 'Crear Perfil'
                }
-               
+
             </Text>
          </Modal.Header>
 
          <Modal.Body>
             <Grid.Container gap={2} justify="center">
                <Grid
-                  xs={ 12 } 
-                  sm={ 6 } 
+                  xs={12}
+                  sm={6}
                   css={{
                      display: 'flex',
                      flexDirection: 'column',
@@ -184,31 +182,31 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                      height: '100%',
                      width: '100%',
                      gap: '$12'
-                 }}
+                  }}
                >
-                  <Image 
-                    src={`/profiles/${avatar}.png`}
-                    objectFit="contain" 
-                    width={'300px'}
-                    css={{ maxWidth: '300px', maxHeight: '375px' }}
-                    showSkeleton
-                    containerCss={{
+                  <Image
+                     src={`/profiles/${avatar}.png`}
+                     objectFit="contain"
+                     width={'300px'}
+                     css={{ maxWidth: '300px', maxHeight: '375px' }}
+                     showSkeleton
+                     containerCss={{
                         borderRadius: '5%',
                         boxShadow: '0 8px 16px rgba(0, 0, 0, 0.6)',
                         overflow: 'hidden',
-                    }}
+                     }}
                   />
-                  <Row  gap={2} css={{width: 'fit-content', justifyContent: 'center'}}>
+                  <Row gap={2} css={{ width: 'fit-content', justifyContent: 'center' }}>
                      <Col>
-                        <IconButton onClick={handleTakeOut}> 
-                           <ArrowLeftCircle fontSize={'20px'} color='#ED1D24'/>
+                        <IconButton onClick={handleTakeOut}>
+                           <ArrowLeftCircle fontSize={'20px'} color='#ED1D24' />
                         </IconButton>
                      </Col>
                      <Col>
-                        <Button 
-                           auto 
-                           ghost 
-                           size={'md'} 
+                        <Button
+                           auto
+                           ghost
+                           size={'md'}
                            onPress={() => setAvatarPath(`/profiles/${avatar}.png`)}
                         >
                            Guardar Avatar
@@ -222,8 +220,8 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                   </Row>
                </Grid>
                <Grid
-                  xs={ 12 } 
-                  sm={ 6 } 
+                  xs={12}
+                  sm={6}
                   css={{
                      gap: '$17',
                      display: 'flex',
@@ -231,7 +229,7 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                      py: '$11',
                      justifyContent: 'space-between',
                      margin: '$0'
-                 }}
+                  }}
                >
                   <Input
                      labelPlaceholder='Nickname'
@@ -260,14 +258,14 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
                      bordered
                      clearable
                   />
-                  <RadioRegister 
+                  <RadioRegister
                      label='Idioma'
-                     listValue={['Español', 'Inglés', 'Árabe','Hebreo']}
+                     listValue={['Español', 'Inglés', 'Árabe', 'Hebreo']}
                      onSelectKey={setLanguage}
                      valueRadio={language}
                      size='sm'
                   />
-                  <RadioRegister 
+                  <RadioRegister
                      label='Dispositivo'
                      listValue={['Laptop', 'Movil', 'Tablet']}
                      onSelectKey={setDevice}
@@ -280,25 +278,25 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
          <Modal.Footer>
             {
                (edit)
-                  ?  <> 
-                        <Checkbox color="success" onChange={setConfirmDelete} size='sm'>
-                           Habilitar eliminación
-                        </Checkbox>
-                        <Spacer x={1} />
-                        <Button
-                           size='md'
-                           onPress={ handleDeleteProfile }
-                           disabled = { !confirmDelete }
-                           >
-                           Eliminar Perfil
-                        </Button>
-                     </>
+                  ? <>
+                     <Checkbox color="success" onChange={setConfirmDelete} size='sm'>
+                        Habilitar eliminación
+                     </Checkbox>
+                     <Spacer x={1} />
+                     <Button
+                        size='md'
+                        onPress={handleDeleteProfile}
+                        disabled={!confirmDelete}
+                     >
+                        Eliminar Perfil
+                     </Button>
+                  </>
                   : <></>
             }
             <Button
                size='md'
                onPress={
-                  (edit) 
+                  (edit)
                      ? handleUpdate
                      : handleSubmit
                }
@@ -306,12 +304,12 @@ export const ProfileModal: FC<Props> = ( {profile, bindings, setVisible, edit} )
             >
                {
                   (edit)
-                     ? (!isLoading )? 'Modificar Perfil' : <Loading type='points' />
-                     : (!isLoading )? 'Crear Perfil' : <Loading type='points' />
+                     ? (!isLoading) ? 'Modificar Perfil' : <Loading type='points' />
+                     : (!isLoading) ? 'Crear Perfil' : <Loading type='points' />
                }
             </Button>
          </Modal.Footer>
-         
+
       </Modal>
    );
 };

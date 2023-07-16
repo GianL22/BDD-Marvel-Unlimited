@@ -23,8 +23,7 @@ export const Profile:FC<Props> = ({profile,nProfile, editable} : Props) => {
     const handleSelectProfile = () => {
         replace('/app')
         setActiveProfile(profile)
-        //Cookies.set('profilePath', profile.avatar, {expires: 8})
-
+        Cookies.set('activeProfile', profile.id, {expires: 8})
     }
   return (
     <>

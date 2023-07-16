@@ -10,7 +10,7 @@ export class FilesController {
   @UseInterceptors( FileInterceptor('file', {
     fileFilter: fileFilter,
     storage: diskStorage({
-      destination: '../frontend/public/logos',
+      destination: '../frontend/public/medios',
       filename: fileNamer,
     }),
   }))

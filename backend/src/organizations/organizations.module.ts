@@ -12,7 +12,7 @@ import { FormPart } from './entities/form-part.entity';
 
 @Module({
   providers: [OrganizationsResolver, OrganizationsService],
-  imports : [
+  imports: [
     TypeOrmModule.forFeature([
       Organization,
       BuildingType,
@@ -22,6 +22,10 @@ import { FormPart } from './entities/form-part.entity';
     ]),
     CharactersModule,
     PlacesModule
+  ],
+  exports: [
+    OrganizationsService,
+    TypeOrmModule,
   ]
 })
-export class OrganizationsModule {}
+export class OrganizationsModule { }

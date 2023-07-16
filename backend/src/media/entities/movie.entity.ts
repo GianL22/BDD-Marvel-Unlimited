@@ -55,6 +55,10 @@ export class Movie{
     @Field(() => Float)
     revenue: number;
 
+    @Column( {nullable: true})
+    @Field( ()=> String)
+    poster: string
+
     @ManyToOne(
         () => Director,
         (director) => director.movie,
@@ -81,10 +85,4 @@ export class Movie{
     @JoinColumn({name:'audioVisualType',foreignKeyConstraintName:'audiovisualType_FK'})
     @Field(() => AudioVisualType)
     audioVisualType: AudioVisualType;
-
-    // @OneToMany(
-    //     () => MovieProgress,
-    //     (movieProgress) => movieProgress.movie
-    // )
-    // movieProgress: string;
 }

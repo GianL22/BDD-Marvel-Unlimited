@@ -44,21 +44,57 @@ export const GetExtensiveSeriesReport = gql`
 `
 
 export const GetProfitableLongAnimatedFilms = gql`
-        query ReportMovie {
-            reportMovie {
-                avg
-                movies {
-                    title
-                    cost
-                    revenue
-                    duration
-                    releaseDate
-                    director {
-                    lastName
-                    name
-                    }
+    query ReportMovie {
+        reportMovie {
+            avg
+            movies {
+                title
+                cost
+                revenue
+                duration
+                releaseDate
+                director {
+                lastName
+                name
                 }
             }
         }
+    }
+`
 
+export const GetNaturalPowersReport = gql`
+    query ReportNaturalPowers {
+        reportNaturalPowers {
+            characterName
+            characterRol
+            organizationName
+            naturalPowers {
+                name
+            }
+        }
+    }
+`
+
+export const GetPlayingAtThelimitReport = gql`
+    query ReportPlayingAtThelimit {
+        reportPlayingAtThelimit {
+            avg
+            videoGames {
+                medio {
+                    rating {
+                        ratingAvg
+                    }
+                    companyProduction {
+                        description
+                    }
+                }
+                poster
+                title
+                releaseDate
+                companyPublisher {
+                    description
+                }
+            }
+        }
+    }
 `

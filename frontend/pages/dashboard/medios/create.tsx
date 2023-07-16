@@ -1,7 +1,7 @@
 import { Grid, Input, Spacer, Text, useTheme, Button, Loading, Textarea } from '@nextui-org/react';
 import { Flex } from '../../../components/containers';
 import { AppLayout } from '@/layouts/AppLayout';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { DropdownRegister } from '@/components/dropdown/DropdownRegister';
 import { RadioRegister } from '@/components/radio/RadioRegister';
@@ -12,6 +12,7 @@ import { FormMedia } from '@/models/Information';
 import { CreateMovie, CreateSerie, CreateVideoGame } from '@/graphql/Medio';
 import { useRouter } from 'next/router';
 import { DropdownMultiRegister } from '@/components/dropdown/DropdownMultiRegister';
+import axios from 'axios';
 
 const MediosCreatePage = () => {
   const { replace } = useRouter()
@@ -33,6 +34,8 @@ const MediosCreatePage = () => {
   const [companyPublisher, setCompanyPublisher] = useState({ id: '', description: `Compañia Publicadora` })
   const [companyProducer, setCompanyProducer] = useState({ id: '', description: `Compañia Productora` })
   const [plataforms, setPlataforms] = useState<{ id: string }[]>([])
+  const [file, setFile] = useState<File>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const directors = data?.persons.directors.map(director => {
     return {
       id: director.id,
@@ -101,12 +104,20 @@ const MediosCreatePage = () => {
       icon: 'info',
     })
     try {
+      const formData = new FormData();
+      formData.append('file', file!);
+      const { data: poster } = await axios.post<string>('http://localhost:3000/files', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      });
       const createMedioInput = {
         title: title.value,
         synopsis: synopsis.value,
         based: based.value,
         releaseDate: releaseDate.value,
         companyId: companyProducer.id,
+        poster: poster
       }
       if (medio === 'Película') {
         await createMovie({
@@ -237,7 +248,7 @@ const MediosCreatePage = () => {
             check='Compañia Productora'
           />
         </Grid>
-        <Grid xs={12} direction="row" css={{ px: '$3', py: '$14', height: 'max-content' }}>
+        <Grid xs={12} direction="column" css={{ px: '$3', py: '$14', height: 'max-content' }}>
           <Spacer y={1} />
           <Textarea
             labelPlaceholder="Sinópsis"
@@ -249,6 +260,24 @@ const MediosCreatePage = () => {
             helperColor={synopsis.color}
             color={synopsis.color}
           />
+          <Spacer y={1.5} />
+          <input
+            type='file'
+            ref={fileInputRef}
+            onChange={e => setFile(e.target.files?.[0])}
+            accept='image/*'
+            style={{
+              display: 'none'
+            }}
+          />
+          <Button
+            flat
+            css={{ width: '49%' }}
+            onPress={() => fileInputRef.current?.click()}
+            color={file ? 'success' : 'primary'}
+          >
+            Sube el Poster
+          </Button>
         </Grid>
         <Grid xs={12} direction="row" css={{ px: '$3', py: '$1', height: 'max-content' }}>
           <Grid xs={12} sm={6} direction='column' css={{ px: '$10', height: 'max-content', gap: '$15' }}>

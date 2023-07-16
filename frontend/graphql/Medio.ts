@@ -88,14 +88,72 @@ query Media {
 }
 `;
 
+export const GetAllMovies = gql`
+query Media {
+  media {
+    movies {
+      medioId
+      title
+      poster
+      medio {
+        rating {
+          ratingAvg
+          ratingCount
+        }
+      }
+    }
+  }
+}
+`
+
+export const GetAllSeries = gql`
+query Media {
+  media {
+    series {
+      medioId
+      title
+      poster
+      medio {
+        rating {
+          ratingAvg
+          ratingCount
+        }
+      }
+    }
+  }
+}
+`
+
+export const GetAllVideoGames = gql`
+query Media {
+  media {
+    videoGames {
+      medioId
+      title
+      poster
+      medio {
+        rating {
+          ratingAvg
+          ratingCount
+        }
+      }
+    }
+  }
+}
+`
+
 export const GetMovieById = gql`
-query Movie($movieId: String!) {
+query Movie($movieId: String!, $profileId: String!) {
   movie(id: $movieId) {
     medio {
       id
       companyProduction {
         description
         id
+      }
+      rating {
+        ratingAvg
+        ratingCount
       }
     }
     title
@@ -105,6 +163,7 @@ query Movie($movieId: String!) {
     cost
     based
     revenue
+    poster
     director {
       id
       name
@@ -119,11 +178,26 @@ query Movie($movieId: String!) {
       description
     }
   }
+  profileMyList(profileId: $profileId) {
+    medios {
+      id
+    }
+  }
+  profilePreferenceList(profileId: $profileId) {
+    medios {
+      id
+    }
+  }
+  
+  ratingOfMedioByProfile(profileId: $profileId, medioId: $movieId)
+  progressOfMedios(profileId: $profileId, medioId: $movieId) {
+    movieProgress
+  }
 }
 `
 
 export const GetSerieById = gql`
-query Serie($serieId: String!) {
+query Serie($serieId: String!, $profileId: String!) {
   serie(id: $serieId) {
     medio {
       id
@@ -131,7 +205,10 @@ query Serie($serieId: String!) {
         id
         description
       }
-      
+      rating {
+        ratingAvg
+        ratingCount
+      }
     }
     title
     releaseDate
@@ -139,6 +216,7 @@ query Serie($serieId: String!) {
     based
     channel
     episodes
+    poster
     creator {
       id
       name
@@ -149,11 +227,25 @@ query Serie($serieId: String!) {
       description
     }
   }
+  profileMyList(profileId: $profileId) {
+    medios {
+      id
+    }
+  }
+  profilePreferenceList(profileId: $profileId) {
+    medios {
+      id
+    }
+  }
+  ratingOfMedioByProfile(profileId: $profileId, medioId: $serieId)
+  progressOfMedios(profileId: $profileId, medioId: $serieId) {
+    serieProgress
+  }
 }
 `
 
 export const GetVideoGameById = gql`
-query Movie($videoGameId: String!) {
+query Movie($videoGameId: String!, $profileId: String!) {
   videoGame(id: $videoGameId) {
     medio {
       id
@@ -161,12 +253,17 @@ query Movie($videoGameId: String!) {
         id
         description
       }
+      rating {
+        ratingAvg
+        ratingCount
+      }
     }
     title
     releaseDate
     synopsis
     based
     type
+    poster
     companyPublisher {
       id
       description
@@ -174,6 +271,51 @@ query Movie($videoGameId: String!) {
     platforms {
       id
       description: name
+    }
+  }
+  profileMyList(profileId: $profileId) {
+    medios {
+      id
+    }
+  }
+  profilePreferenceList(profileId: $profileId) {
+    medios {
+      id
+    }
+  }
+  ratingOfMedioByProfile(profileId: $profileId, medioId: $videoGameId)
+  progressOfMedios(profileId: $profileId, medioId: $videoGameId) {
+    videoGameProgress
+  }
+}
+`
+
+export const GetMyList = gql`
+query ProfileMyList($profileId: String!) {
+  profileMyList(profileId: $profileId) {
+    profileId
+    medios {
+      id
+      title
+      poster
+      type
+      rating {
+        ratingAvg
+      }
+    }
+  }
+}
+`
+
+export const GetMediosToPreference = gql`
+query MediosTitleAndIds {
+  mediosTitleAndIds {
+    id
+    title
+    poster
+    type
+    rating {
+      ratingAvg
     }
   }
 }

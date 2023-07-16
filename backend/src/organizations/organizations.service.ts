@@ -13,6 +13,7 @@ import { UpdateHeadquarterInput } from './dto/input/update-headquarter.input';
 import { JobPosition } from './entities/job-position.entity';
 import { FormPart } from './entities/form-part.entity';
 import { CreateFormPartInput } from './dto/input/create-form-part.input';
+import { Character } from 'src/characters/entities';
 
 
 @Injectable()
@@ -35,24 +36,24 @@ export class OrganizationsService {
     @InjectRepository(FormPart)
     private readonly formPartRepository: Repository<FormPart>,
 
-    private readonly placesService : PlacesService,
+    private readonly placesService: PlacesService,
 
-    private readonly charactersService : CharactersService,
+    private readonly charactersService: CharactersService,
 
-  ){}
+  ) { }
 
-  async create(createOrganizationInput: CreateOrganizationInput) : Promise<Organization> {
+  async create(createOrganizationInput: CreateOrganizationInput): Promise<Organization> {
 
     try {
       const { founderId, leaderId, placeId, ...rest } = createOrganizationInput
-      const orgExists = await this.organizationRepository.findOne({where: {name: rest.name}})
-      if ( orgExists ) throw new Error('Ya existe una organización con ese nombre');
-      
+      const orgExists = await this.organizationRepository.findOne({ where: { name: rest.name } })
+      if (orgExists) throw new Error('Ya existe una organización con ese nombre');
+
       const creationPlace = await this.placesService.findOnePlace(placeId)
       const founder = await this.charactersService.findOneCharacterById(founderId)
       const leader = await this.charactersService.findOneCharacterById(leaderId)
       const newOrganization = this.organizationRepository.create({
-        founder, 
+        founder,
         leader,
         creationPlace,
         ...rest,
@@ -65,20 +66,20 @@ export class OrganizationsService {
   }
 
 
-  async createHeadquarter(createHeadquarterInput: CreateHeadquarterInput) : Promise<Headquarter> {
+  async createHeadquarter(createHeadquarterInput: CreateHeadquarterInput): Promise<Headquarter> {
 
     try {
       const { buildingTypeId, ubicationId, organizationId, ...rest } = createHeadquarterInput
-      await this.organizationRepository.findOneByOrFail({ id : organizationId })
+      await this.organizationRepository.findOneByOrFail({ id: organizationId })
 
-      const headquarterExist = await this.headquarterRepository.findOne( { where : { name : rest.name, organizationId} })
-      if ( headquarterExist ) throw new Error(' Nombre de la sede ya existente para esa orgazanición')
+      const headquarterExist = await this.headquarterRepository.findOne({ where: { name: rest.name, organizationId } })
+      if (headquarterExist) throw new Error(' Nombre de la sede ya existente para esa orgazanición')
 
       const ubication = await this.placesService.findOnePlace(ubicationId)
-      const buildingType = await this.findOneBuildingType( buildingTypeId )
+      const buildingType = await this.findOneBuildingType(buildingTypeId)
 
       const newOrganization = this.headquarterRepository.create({
-        buildingType, 
+        buildingType,
         ubication,
         organizationId,
         ...rest,
@@ -91,16 +92,16 @@ export class OrganizationsService {
   }
 
 
-  
-  async createBuildingType(nameBuildingType: string) : Promise<BuildingType> {
+
+  async createBuildingType(nameBuildingType: string): Promise<BuildingType> {
 
     try {
 
-      const buildingTypeExists = await this.buildingTypenRepository.findOne({where: {description: nameBuildingType}})
-      if ( buildingTypeExists ) throw new Error('Ya existe ese tipo de edificación con ese nombre');
+      const buildingTypeExists = await this.buildingTypenRepository.findOne({ where: { description: nameBuildingType } })
+      if (buildingTypeExists) throw new Error('Ya existe ese tipo de edificación con ese nombre');
 
-      const newBuildingType = this.buildingTypenRepository.create({ description : nameBuildingType})
-      return await this.buildingTypenRepository.save( newBuildingType )
+      const newBuildingType = this.buildingTypenRepository.create({ description: nameBuildingType })
+      return await this.buildingTypenRepository.save(newBuildingType)
 
     } catch (error) {
       throw new BadRequestException(error)
@@ -108,164 +109,173 @@ export class OrganizationsService {
   }
 
 
-    
-  async createJobPosition(nameJobPosition: string) : Promise<JobPosition> {
+
+  async createJobPosition(nameJobPosition: string): Promise<JobPosition> {
 
     try {
 
-      const JobPositionExists = await this.jobPositionRepository.findOne({where: { name : nameJobPosition}})
-      if ( JobPositionExists ) throw new Error('Ya existe ese cargo con ese nombre');
+      const JobPositionExists = await this.jobPositionRepository.findOne({ where: { name: nameJobPosition } })
+      if (JobPositionExists) throw new Error('Ya existe ese cargo con ese nombre');
 
-      const newJobPosition = this.jobPositionRepository.create({ name : nameJobPosition})
-      return await this.jobPositionRepository.save( newJobPosition )
+      const newJobPosition = this.jobPositionRepository.create({ name: nameJobPosition })
+      return await this.jobPositionRepository.save(newJobPosition)
 
     } catch (error) {
       throw new BadRequestException(error)
     }
   }
 
-  async createFormPart({charactersAndJobs, organizationId}: CreateFormPartInput): Promise<FormPart[]> {
-    
-    try {   
-      const formParts = charactersAndJobs.map( ({characterId, jobPositionId})=> {
-        return this.formPartRepository.create({ characterId,  organizationId, jobPositionId })
+  async createFormPart({ charactersAndJobs, organizationId }: CreateFormPartInput): Promise<FormPart[]> {
+
+    try {
+      const formParts = charactersAndJobs.map(({ characterId, jobPositionId }) => {
+        return this.formPartRepository.create({ characterId, organizationId, jobPositionId })
       })
 
-      return await this.formPartRepository.save( formParts );
+      return await this.formPartRepository.save(formParts);
     } catch (error) {
       throw new BadRequestException(error)
     }
   }
 
-  async findAll() : Promise<Organization[]> {
+  async getOrganizationName(leaderId: string): Promise<string> {
+    const organizationName: {name: string}[] = await this.organizationRepository.query(`
+      Select "name"
+      FROM	"Organization" org
+      where org.leader = '${leaderId}'
+    `)    
+    return organizationName[0].name;
+  }
+
+  async findAll(): Promise<Organization[]> {
     return await this.organizationRepository.find()
   }
 
-  async findAllBuildingTypes() : Promise<BuildingType[]> {
+  async findAllBuildingTypes(): Promise<BuildingType[]> {
     return await this.buildingTypenRepository.find()
   }
 
-  async findAllHeadquartersByOrganization( organizationId : string ) : Promise<Headquarter[]> {
-    return await this.headquarterRepository.find({ where : { organizationId }})
+  async findAllHeadquartersByOrganization(organizationId: string): Promise<Headquarter[]> {
+    return await this.headquarterRepository.find({ where: { organizationId } })
   }
 
-  async findAllJobPositions() : Promise<JobPosition[]> {
+  async findAllJobPositions(): Promise<JobPosition[]> {
     return await this.jobPositionRepository.find()
   }
-  
-  async findAllFormPartsByOrganization( organizationId: string ): Promise<FormPart[]>{
+
+  async findAllFormPartsByOrganization(organizationId: string): Promise<FormPart[]> {
     return await this.formPartRepository.findBy({ organizationId })
   }
 
-  async findOneBuildingType( id: string ) : Promise<BuildingType> {
+  async findOneBuildingType(id: string): Promise<BuildingType> {
     try {
-      return await this.buildingTypenRepository.findOneByOrFail( {id} )
+      return await this.buildingTypenRepository.findOneByOrFail({ id })
     } catch (error) {
       throw new NotFoundException('buldingType no encontrado')
     }
   }
 
-  async findOneHeadquarter( id : string ) : Promise<Headquarter> {
+  async findOneHeadquarter(id: string): Promise<Headquarter> {
     try {
-      return await this.headquarterRepository.findOneByOrFail( { id } )
+      return await this.headquarterRepository.findOneByOrFail({ id })
     } catch (error) {
       throw new NotFoundException('headquarter no encontrado')
     }
   }
 
-  async findOneJobPosition( id : string ) : Promise<JobPosition> {
+  async findOneJobPosition(id: string): Promise<JobPosition> {
     try {
-      return await this.jobPositionRepository.findOneByOrFail( { id } )
+      return await this.jobPositionRepository.findOneByOrFail({ id })
     } catch (error) {
       throw new NotFoundException('Jobposition no encontrado')
     }
   }
 
-  async findAllHeadquarters(): Promise<Headquarter[]>{
+  async findAllHeadquarters(): Promise<Headquarter[]> {
     return await this.headquarterRepository.find()
   }
 
-  async findOne( id: string ) : Promise<Organization> {
-      try {
-        return await this.organizationRepository.findOneByOrFail( {id} )
-      } catch (error) {
-        throw new NotFoundException('Organization no encontrado')
-      }
+  async findOne(id: string): Promise<Organization> {
+    try {
+      return await this.organizationRepository.findOneByOrFail({ id })
+    } catch (error) {
+      throw new NotFoundException('Organization no encontrado')
+    }
   }
 
-  async update(id: string, updateOrganizationInput: UpdateOrganizationInput) : Promise<Organization> {
+  async update(id: string, updateOrganizationInput: UpdateOrganizationInput): Promise<Organization> {
 
-    const { placeId, founderId, leaderId} = updateOrganizationInput
+    const { placeId, founderId, leaderId } = updateOrganizationInput
 
     await this.findOne(id);
-    const organization = await this.organizationRepository.preload({id, ...updateOrganizationInput})
+    const organization = await this.organizationRepository.preload({ id, ...updateOrganizationInput })
 
-    if ( placeId ) { 
-      const place = await this.placesService.findOnePlace( placeId )
+    if (placeId) {
+      const place = await this.placesService.findOnePlace(placeId)
       organization.creationPlace = place
     }
-    if ( founderId ) { 
-      const founder = await this.charactersService.findOneCharacterById( founderId )
+    if (founderId) {
+      const founder = await this.charactersService.findOneCharacterById(founderId)
       organization.founder = founder
     }
-    if ( leaderId ) { 
-      const leader = await this.charactersService.findOneCharacterById( leaderId )
+    if (leaderId) {
+      const leader = await this.charactersService.findOneCharacterById(leaderId)
       organization.leader = leader
     }
-    if ( organization ) return this.organizationRepository.save( organization )
+    if (organization) return this.organizationRepository.save(organization)
     throw new NotFoundException(`organization not found`)
 
   }
 
 
-  async updateHeadquarter( updateHeadquarterInput: UpdateHeadquarterInput) : Promise<Headquarter> {
+  async updateHeadquarter(updateHeadquarterInput: UpdateHeadquarterInput): Promise<Headquarter> {
 
     const { id, ubicationId, buildingTypeId } = updateHeadquarterInput
 
-    await this.findOneHeadquarter( id );
+    await this.findOneHeadquarter(id);
 
-    const headquarter = await this.headquarterRepository.preload({...updateHeadquarterInput})
-    if ( ubicationId ) { 
-      const ubication = await this.placesService.findOnePlace( ubicationId )
+    const headquarter = await this.headquarterRepository.preload({ ...updateHeadquarterInput })
+    if (ubicationId) {
+      const ubication = await this.placesService.findOnePlace(ubicationId)
       headquarter.ubication = ubication
     }
-    if ( buildingTypeId ) { 
-      const buildingType = await this.buildingTypenRepository.findOneBy( {id :  buildingTypeId} )
+    if (buildingTypeId) {
+      const buildingType = await this.buildingTypenRepository.findOneBy({ id: buildingTypeId })
       headquarter.buildingType = buildingType
     }
-    if ( headquarter ) return this.headquarterRepository.save( headquarter )
+    if (headquarter) return this.headquarterRepository.save(headquarter)
     throw new NotFoundException(`organization not found`)
 
   }
 
-  async remove( id: string ) : Promise<Boolean>{
+  async remove(id: string): Promise<Boolean> {
     try {
-      const organization = await this.organizationRepository.findOneByOrFail( { id } )
-      await this.organizationRepository.remove( organization )
+      const organization = await this.organizationRepository.findOneByOrFail({ id })
+      await this.organizationRepository.remove(organization)
       return true;
     } catch (error) {
       throw new NotFoundException(`La organizacion: ${id} tiene otras relaciones`)
-    }    
+    }
   }
 
-  async removeHeadquarter( id: string, organizationId: string ) : Promise<Boolean>{
+  async removeHeadquarter(id: string, organizationId: string): Promise<Boolean> {
     try {
-      const headquarter = await this.headquarterRepository.findOneByOrFail( { id: id, organizationId: organizationId} )
-      await this.headquarterRepository.remove( headquarter )
+      const headquarter = await this.headquarterRepository.findOneByOrFail({ id: id, organizationId: organizationId })
+      await this.headquarterRepository.remove(headquarter)
       return true;
     } catch (error) {
       throw new NotFoundException(`La Sede: ${id} no se puede eliminar`)
-    }    
+    }
   }
 
-  async removeFormPart(characterId: string, jobPositionId: string, organizationId : string) : Promise<Boolean> {
+  async removeFormPart(characterId: string, jobPositionId: string, organizationId: string): Promise<Boolean> {
     try {
       const formPart = await this.formPartRepository.findOneByOrFail({ characterId, jobPositionId, organizationId })
-      await this.formPartRepository.remove( formPart )
+      await this.formPartRepository.remove(formPart)
       return true;
     } catch (error) {
       throw new NotFoundException(`No existe esa relación`)
-    } 
+    }
   }
 
 }

@@ -17,13 +17,13 @@ export class CharactersService {
   constructor(
     @InjectRepository(Character)
     private readonly charactersRepository: Repository<Character>,
-    
+
     @InjectRepository(Hero)
     private readonly heroRepository: Repository<Hero>,
-    
+
     @InjectRepository(Villain)
     private readonly villainRepository: Repository<Villain>,
-    
+
     @InjectRepository(Civil)
     private readonly civilRepository: Repository<Civil>,
 
@@ -41,26 +41,26 @@ export class CharactersService {
 
     @InjectRepository(Creator)
     private readonly creatorsRepository: Repository<Creator>,
-  ){}
+  ) { }
 
   //* Creación de Personaje
 
-  private changeDataType(nacionalities:RelationsInput[] = [],
-      objects: RelationsInput[] = [],
-      occupations: RelationsInput[] = [],
-      creators : RelationsInput[] = []
-    ){
+  private changeDataType(nacionalities: RelationsInput[] = [],
+    objects: RelationsInput[] = [],
+    occupations: RelationsInput[] = [],
+    creators: RelationsInput[] = []
+  ) {
     const saveNacionalities: Nacionality[] = nacionalities.map((nacionality) => {
-      return this.nacionalitiesRepository.create( {id: nacionality.id} )
+      return this.nacionalitiesRepository.create({ id: nacionality.id })
     });
     const saveObjects: Objects[] = objects.map((objects) => {
-      return this.objectsRepository.create( {id: objects.id} )
+      return this.objectsRepository.create({ id: objects.id })
     });
     const saveOccupations: Occupation[] = occupations.map((occupation) => {
-      return this.occupationsRepository.create( {id: occupation.id} )
+      return this.occupationsRepository.create({ id: occupation.id })
     });
     const saveCreators: Creator[] = creators.map((occupation) => {
-      return this.creatorsRepository.create( {id: occupation.id} )
+      return this.creatorsRepository.create({ id: occupation.id })
     });
     return {
       saveNacionalities,
@@ -72,18 +72,18 @@ export class CharactersService {
 
   async createCharacter(createCharacterInput: CreateCharacterInput): Promise<Character> {
     try {
-      const { eyeColor, hairColor, nacionalities, objects, occupations, creators} = createCharacterInput
+      const { eyeColor, hairColor, nacionalities, objects, occupations, creators } = createCharacterInput
       const character = this.charactersRepository.create({
-        hairColor: hairColor, 
-        eyeColor:  eyeColor,
+        hairColor: hairColor,
+        eyeColor: eyeColor,
       })
-      const {saveNacionalities, saveObjects, saveOccupations, saveCreators} = this.changeDataType(nacionalities,objects, occupations, creators)
+      const { saveNacionalities, saveObjects, saveOccupations, saveCreators } = this.changeDataType(nacionalities, objects, occupations, creators)
       character.nacionalities = [...saveNacionalities];
       character.objects = [...saveObjects];
       character.occupations = [...saveOccupations];
       character.creators = [...saveCreators];
 
-      return await this.charactersRepository.save( character );
+      return await this.charactersRepository.save(character);
     } catch (error) {
       throw new BadRequestException(`Ha ocurrido un error al crear el personaje!`)
     }
@@ -91,20 +91,20 @@ export class CharactersService {
 
   async createVillain(createVillainInput: CreateVillainInput, createCharacterInput: CreateCharacterInput): Promise<Villain> {
     try {
-      const villainExist = await this.villainRepository.findOne({where: {nameVillain: createVillainInput.nameVillain}})
-      if(villainExist)
+      const villainExist = await this.villainRepository.findOne({ where: { nameVillain: createVillainInput.nameVillain } })
+      if (villainExist)
         throw new Error
-      const character = await this.createCharacter( createCharacterInput )
-      const {fightWith, ...rest} = createVillainInput
+      const character = await this.createCharacter(createCharacterInput)
+      const { fightWith, ...rest } = createVillainInput
       const villain = this.villainRepository.create({
         ...rest,
         characterId: character.id,
       })
       const fight: Hero[] = fightWith.map((hero) => {
-        return this.heroRepository.create( {characterId: hero.id} )
+        return this.heroRepository.create({ characterId: hero.id })
       })
-      villain.fightWith = [  ...fight ]
-      return await this.villainRepository.save( villain )
+      villain.fightWith = [...fight]
+      return await this.villainRepository.save(villain)
     } catch (error) {
       throw new BadRequestException(`Ha ocurrido un error al crear el Villano!`)
     }
@@ -113,23 +113,23 @@ export class CharactersService {
   async createHero(createHeroInput: CreateHeroInput, createCharacterInput: CreateCharacterInput): Promise<Hero> {
     try {
       const heroExist = await this.heroRepository.findOne({
-        where : [
-            { nameHero: createHeroInput.nameHero },
-            { archEnemy: createHeroInput.archEnemy },
+        where: [
+          { nameHero: createHeroInput.nameHero },
+          { archEnemy: createHeroInput.archEnemy },
         ],
       })
-      if(heroExist)
+      if (heroExist)
         throw new Error
-      const character = await this.createCharacter( createCharacterInput )
+      const character = await this.createCharacter(createCharacterInput)
       const newHero = this.heroRepository.create({
         ...createHeroInput,
         characterId: character.id,
       })
       const saveColors: Color[] = createHeroInput.suitColors.map((colors) => {
-        return this.colorsRepository.create( {id: colors.id} )
+        return this.colorsRepository.create({ id: colors.id })
       });
       newHero.suitColors = [...saveColors]
-      return await this.heroRepository.save( newHero )
+      return await this.heroRepository.save(newHero)
     } catch (error) {
       throw new BadRequestException(`Ha ocurrido un error al crear el Hero!`)
     }
@@ -137,18 +137,18 @@ export class CharactersService {
 
   async createCivil(createCivilInput: CreateCivilInput, createCharacterInput: CreateCharacterInput): Promise<Civil> {
     try {
-      const civilExist = await this.civilRepository.findOne({where: {name: createCivilInput.name, lastName: createCivilInput.lastName}})
-      if(civilExist)
+      const civilExist = await this.civilRepository.findOne({ where: { name: createCivilInput.name, lastName: createCivilInput.lastName } })
+      if (civilExist)
         throw new Error
-      const character = await this.createCharacter( createCharacterInput )
-      const {heroId = null, villainId=null, ...restCivil} = createCivilInput
+      const character = await this.createCharacter(createCharacterInput)
+      const { heroId = null, villainId = null, ...restCivil } = createCivilInput
       const civil = this.civilRepository.create({
         ...restCivil,
         characterId: character.id,
-        hero: {characterId: heroId},
-        villain: {characterId: villainId}
+        hero: { characterId: heroId },
+        villain: { characterId: villainId }
       })
-      return await this.civilRepository.save( civil )
+      return await this.civilRepository.save(civil)
     } catch (error) {
       throw new BadRequestException(`Ha ocurrido un error al crear el Civil!`)
     }
@@ -157,92 +157,92 @@ export class CharactersService {
   //* Update de personajes
   async updateHero(id: string, updateHeroInput: UpdateHeroInput): Promise<Hero> {
     try {
-      const { eyeColor, hairColor, nacionalities, objects, suitColors, occupations, creators,...updateHero } = updateHeroInput;
+      const { eyeColor, hairColor, nacionalities, objects, suitColors, occupations, creators, ...updateHero } = updateHeroInput;
       await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations, creators);
-      const hero = await this.heroRepository.preload({ ...updateHero, characterId: id  })
-      if(suitColors.length !== 0){
+      const hero = await this.heroRepository.preload({ ...updateHero, characterId: id })
+      if (suitColors.length !== 0) {
         hero.suitColors = [...suitColors.map((colors) => {
-          return this.colorsRepository.create( {id: colors.id} )
-          })
+          return this.colorsRepository.create({ id: colors.id })
+        })
         ]
-      } 
-      return await this.heroRepository.save( hero );
+      }
+      return await this.heroRepository.save(hero);
     } catch (error) {
-      throw new BadRequestException( error.detail.replace('Key ', ''));
+      throw new BadRequestException(error.detail.replace('Key ', ''));
     }
   }
 
   async updateVillain(id: string, updateVillainInput: UpdateVillainInput): Promise<Villain> {
     try {
-      const { eyeColor, hairColor, nacionalities, objects, occupations, creators,fightWith,...updateVillain } = updateVillainInput;
+      const { eyeColor, hairColor, nacionalities, objects, occupations, creators, fightWith, ...updateVillain } = updateVillainInput;
       await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations, creators);
-      const villain = await this.villainRepository.preload({ ...updateVillain, characterId: id  })
-      return await this.villainRepository.save( villain );
+      const villain = await this.villainRepository.preload({ ...updateVillain, characterId: id })
+      return await this.villainRepository.save(villain);
 
     } catch (error) {
-      throw new BadRequestException( error.detail.replace('Key ', ''));
+      throw new BadRequestException(error.detail.replace('Key ', ''));
     }
   }
 
   async updateCivil(id: string, updateCivilInput: UpdateCivilInput): Promise<Civil> {
     try {
-      const { eyeColor, hairColor, nacionalities, objects, occupations , creators, ...updateCivil } = updateCivilInput;
+      const { eyeColor, hairColor, nacionalities, objects, occupations, creators, ...updateCivil } = updateCivilInput;
       await this.updateCharacter(id, eyeColor, hairColor, nacionalities, objects, occupations, creators);
-      const civil = await this.civilRepository.preload({ ...updateCivil, characterId: id  })
-      return await this.civilRepository.save( civil );
+      const civil = await this.civilRepository.preload({ ...updateCivil, characterId: id })
+      return await this.civilRepository.save(civil);
 
     } catch (error) {
-      throw new BadRequestException( error.detail.replace('Key ', ''));
+      throw new BadRequestException(error.detail.replace('Key ', ''));
     }
   }
 
   async updateCharacter(
-    id: string, 
-    eyeColor: string, 
+    id: string,
+    eyeColor: string,
     hairColor: string,
     nacionalities: RelationsInput[],
     objects: RelationsInput[],
     occupations: RelationsInput[],
-    creators : RelationsInput[]
-  ): Promise<Character>{    
+    creators: RelationsInput[]
+  ): Promise<Character> {
     try {
-      const {saveNacionalities , saveObjects, saveOccupations, saveCreators } = this.changeDataType(nacionalities,objects, occupations,creators)
+      const { saveNacionalities, saveObjects, saveOccupations, saveCreators } = this.changeDataType(nacionalities, objects, occupations, creators)
       const character = await this.charactersRepository.preload({
-        id: id, 
-        hairColor: eyeColor, 
-        eyeColor:  hairColor,
+        id: id,
+        hairColor: eyeColor,
+        eyeColor: hairColor,
       })
-      if(saveNacionalities.length !== 0) character.nacionalities = [...saveNacionalities]
-      if(saveObjects.length !== 0) character.objects = [...saveObjects]
-      if(saveOccupations.length !== 0) character.occupations = [...saveOccupations]
-      if(saveCreators.length !== 0) character.creators = [...saveCreators]
+      if (saveNacionalities.length !== 0) character.nacionalities = [...saveNacionalities]
+      if (saveObjects.length !== 0) character.objects = [...saveObjects]
+      if (saveOccupations.length !== 0) character.occupations = [...saveOccupations]
+      if (saveCreators.length !== 0) character.creators = [...saveCreators]
 
-      return await this.charactersRepository.save( character );
+      return await this.charactersRepository.save(character);
     } catch (error) {
-      throw new BadRequestException( error.detail.replace('Key ', ''));
+      throw new BadRequestException(error.detail.replace('Key ', ''));
     }
   }
 
   //*Eliminacion de un personaje.
   async removeCharacter(id: string) {
     try {
-      const character = await this.charactersRepository.findOne({ where:{id}})
-      await this.charactersRepository.remove( character )
+      const character = await this.charactersRepository.findOne({ where: { id } })
+      await this.charactersRepository.remove(character)
       return true;
     } catch (error) {
       throw new MethodNotAllowedException(`El personaje: ${id} tiene otras relaciones`)
-    }    
+    }
   }
 
   //*Busqueda de personajes
-  async findCharacters(): Promise<CharactersResponse>{
+  async findCharacters(): Promise<CharactersResponse> {
     const repositories = [this.heroRepository, this.villainRepository, this.civilRepository];
     const repositoriesPromise = [];
-    
-    for (const repository of repositories) { 
-      repositoriesPromise.push( repository.find({order: {name: 'ASC'}}) )
+
+    for (const repository of repositories) {
+      repositoriesPromise.push(repository.find({ order: { name: 'ASC' } }))
     }
-    const [ hero, villain, civil ] = await Promise.all(repositoriesPromise)
+    const [hero, villain, civil] = await Promise.all(repositoriesPromise)
 
     return {
       hero,
@@ -251,19 +251,19 @@ export class CharactersService {
     }
   }
 
-  async findAllCharacters() : Promise<Character[]>{
+  async findAllCharacters(): Promise<Character[]> {
     return await this.charactersRepository.find()
   }
 
 
-  async findCharacterById(id: string): Promise<{hero?: Hero, villain?: Villain, civil?:Civil}>{
+  async findCharacterById(id: string): Promise<{ hero?: Hero, villain?: Villain, civil?: Civil }> {
     const repositories = [this.heroRepository, this.villainRepository, this.civilRepository];
     const repositoriesPromise = [];
-    for (const repository of repositories) { 
-      repositoriesPromise.push( repository.findOneBy({characterId: id}) )
+    for (const repository of repositories) {
+      repositoriesPromise.push(repository.findOneBy({ characterId: id }))
     }
-    const character = await this.charactersRepository.findOneBy({id})
-    const [ hero, villain, civil ] = await Promise.all(repositoriesPromise)
+    const character = await this.charactersRepository.findOneBy({ id })
+    const [hero, villain, civil] = await Promise.all(repositoriesPromise)
     const characterResponse = {
       ...character,
       hero,
@@ -273,50 +273,57 @@ export class CharactersService {
     return characterResponse;
   }
 
-  async findOneHerorById( characterId : string ) : Promise<Hero>{
+  async findOneHerorById(characterId: string): Promise<Hero> {
     try {
-      return await this.heroRepository.findOneByOrFail({characterId})
+      return await this.heroRepository.findOneByOrFail({ characterId })
     } catch (error) {
       throw new NotFoundException('Character no encontrado')
     }
   }
 
-  async findOneVillainById( characterId : string ) : Promise<Villain>{
+  async findOneVillainById(characterId: string): Promise<Villain> {
     try {
-      return await this.villainRepository.findOneByOrFail({characterId})
+      return await this.villainRepository.findOneByOrFail({ characterId })
     } catch (error) {
       throw new NotFoundException('Character no encontrado')
     }
   }
 
-  async findOneCivilById( characterId : string ) : Promise<Civil>{
+  async findOneCivilById(characterId: string): Promise<Civil> {
     try {
-      return await this.civilRepository.findOneByOrFail({characterId})
+      return await this.civilRepository.findOneByOrFail({ characterId })
     } catch (error) {
       throw new NotFoundException('Character no encontrado')
     }
   }
 
-  async findOneCharacterById( id : string ) : Promise<Character>{
+  async findOneCharacterById(id: string): Promise<Character> {
     try {
-      return await this.charactersRepository.findOneByOrFail({id})
+      return await this.charactersRepository.findOneByOrFail({ id })
     } catch (error) {
       throw new NotFoundException('Character no encontrado')
     }
   }
 
 
-  async findVillain(villains: string[]): Promise<Villain[]>{
+  async findVillain(villains: string[]): Promise<Villain[]> {
     const result = await Promise.all(villains.map(async (villainId) => {
-      return await this.villainRepository.findOneBy({characterId: villainId});
+      return await this.villainRepository.findOneBy({ characterId: villainId });
     }));
     return result
   }
 
-  async getNameCharacter(id: string): Promise<string>{
+  async getNameCharacter(id: string): Promise<string> {
     const result = await this.findCharacterById(id)
-    if(result.hero) return result.hero.nameHero;
-    if(result.villain)  return result.villain.nameVillain;
-    if(result.civil) return result.civil.name + ' ' + result.civil.lastName
+    if (result.hero) return result.hero.nameHero;
+    if (result.villain) return result.villain.nameVillain;
+    if (result.civil) return result.civil.name + ' ' + result.civil.lastName
+  }
+
+  async getRolCharacter(id: string): Promise<string> {
+    const result = await this.findCharacterById(id)
+    if (result.hero) return 'hero';
+    if (result.villain) return 'villain';
+    if (result.civil) return 'civil'
   }
 }

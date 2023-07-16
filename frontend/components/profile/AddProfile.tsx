@@ -1,14 +1,18 @@
 import { Card, Row, Text, useModal } from '@nextui-org/react';
 import { Plus } from 'iconoir-react';
 import { ProfileModal } from '../modal/ProfileModal';
+import { FC } from 'react';
 
+interface Props {
+    setPreference: (visible: boolean) => void;
+ }
 
-export const AddProfile= () => {
+export const AddProfile: FC<Props>= ({setPreference}) => {
     const { bindings, setVisible } = useModal();
 
   return (
     <>
-        <ProfileModal bindings={bindings} setVisible={setVisible} edit={false} />
+        <ProfileModal bindings={bindings} setVisible={setVisible} edit={false} setPreference={setPreference} />
         <Card 
             isPressable 
             variant='bordered'

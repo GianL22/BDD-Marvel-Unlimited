@@ -50,3 +50,39 @@ export const DeleteProfile = gql`
         }
     }
 `;
+
+export const ToggleMedioInMyList = gql`
+mutation Mutation($profileRelationInput: ProfileRelationInput!) {
+    relateMyList(profileRelationInput: $profileRelationInput)
+  }
+`
+
+export const ToggleMedioInMyPreference = gql`
+mutation Mutation($profileRelationInput: ProfileRelationInput!) {
+    relatePreferenceList(profileRelationInput: $profileRelationInput)
+  }
+`
+
+export const ToggleRating = gql`
+    mutation RatingMedio($ratingRelationInput: RatingRelationInput!) {
+        ratingMedio(ratingRelationInput: $ratingRelationInput)
+    }
+`
+
+export const SaveMovieProgress = gql`
+    mutation SaveMovieProgress($movieProgressInput: MovieProgressInput!) {
+        saveMovieProgress(movieProgressInput: $movieProgressInput)
+    }
+`
+
+export const SaveSerieProgress = gql`
+    mutation SaveSerieProgress($serieProgressInput: SerieProgressInput!) {
+        saveSerieProgress(serieProgressInput: $serieProgressInput)
+    }
+`
+
+export const SaveVideoGameProgress = gql`
+    mutation SaveVideoGameProgress($videoGameProgressInput: VideoGameProgressInput!) {
+        saveVideoGameProgress(videoGameProgressInput: $videoGameProgressInput)
+    }
+`

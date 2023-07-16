@@ -29,6 +29,11 @@ export class CreateMediaInput {
   @IsNotEmpty()
   @IsDateString()
   releaseDate : string;
+
+  @Field(() => String, {nullable: false})
+  @IsNotEmpty()
+  @IsString()
+  poster : string;
   
 
 }
