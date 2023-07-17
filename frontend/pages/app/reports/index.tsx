@@ -52,8 +52,8 @@ const ReportsPage: NextPage = () => {
 
                     <Spacer y={4} />
 
-                    <Link href='' css={{ 'minWidth': '100%' }}>
-                        <Button disabled auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
+                    <Link href='reports/objectsMostUsed' css={{ 'minWidth': '100%' }}>
+                        <Button auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
                             Objetos de Superhéroes y Supervillanos
                         </Button>
                     </Link>
@@ -108,8 +108,8 @@ const ReportsPage: NextPage = () => {
                     <Spacer y={4} />
 
 
-                    <Link href='' css={{ 'minWidth': '100%', }}>
-                        <Button disabled auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
+                    <Link href='reports/placesFight' css={{ 'minWidth': '100%', }}>
+                        <Button auto bordered size={'xl'} css={{ 'minWidth': '100%', fontSize: '$2xl' }}>
                             Locaciones de Combate
                         </Button>
                     </Link>

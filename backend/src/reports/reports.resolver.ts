@@ -6,9 +6,10 @@ import { PowersService } from 'src/powers/powers.service';
 import { Power, UsePower } from 'src/powers/entities';
 import { MovieReportResponse, SerieReportResponse } from 'src/media/types/reports-response.type';
 import { RatingsService } from '../ratings/ratings.service';
-import { NaturalPowersReportResponse, VideoGameReportResponse } from './types/reports-response.type';
+import { NaturalPowersReportResponse, ObjectsMostUsedReportResponse, PlacesFightReportResponse, VideoGameReportResponse } from './types/reports-response.type';
 import { CharactersService } from '../characters/characters.service';
 import { OrganizationsService } from '../organizations/organizations.service';
+import { FightsService } from '../fights/fights.service';
 
 @Resolver()
 export class ReportsResolver {
@@ -25,6 +26,8 @@ export class ReportsResolver {
         private readonly charactersService: CharactersService,
 
         private readonly organizationsService: OrganizationsService,
+
+        private readonly fightsService : FightsService
     ) { }
 
     @Query(() => [Suscription], { name: 'reportSuscription' })
@@ -72,4 +75,15 @@ export class ReportsResolver {
         }));
         return reportResponse;
     }
+    @Query(() => [PlacesFightReportResponse], { name: 'reportPlacesFight' })
+    async reportPlacesFight() : Promise<PlacesFightReportResponse[]>{
+        return this.fightsService.reportPlacesFight();
+    }
+
+    @Query(() => [ObjectsMostUsedReportResponse], { name: 'reportObjectsMostUsed' })
+    async reportObjectsMostUsed() : Promise<ObjectsMostUsedReportResponse[]>{
+        return this.fightsService.reportObjectsMostUsed();
+    }
+
+
 }

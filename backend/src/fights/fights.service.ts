@@ -10,6 +10,7 @@ import { PowersService } from 'src/powers/powers.service';
 import { ObjectsService } from 'src/objects/objects.service';
 import { RemoveFightInput } from './dto/remove-fight.input';
 import { CharacterPowerAndObject, FightResponse, PowerAndObjectUsedInputElement } from './types/fight-response.type';
+import { ObjectsMostUsedReportResponse, PlacesFightReportResponse } from 'src/reports/types/reports-response.type';
 
 
 @Injectable()
@@ -29,41 +30,6 @@ export class FightsService {
     private readonly objectsService: ObjectsService,
 
   ) {}
-
-  // async create(createFightInput: CreateFightInput): Promise<Fight> {
-  //   try {
-
-  //     const { placeId, characterId , objectId, powerId, date } = createFightInput
-
-  //     console.log({ placeId , characterId, objectId, powerId, date })
-
-  //     const character = await this.charactersService.findOneCharacterById(characterId)
-  //     const place = await this.placesService.findOnePlace(placeId)
-
-  //     const newFight = this.fightRepository.create({
-  //       character,
-  //       place,
-  //       date : new Date(date),
-  //     })
-
-  //     if ( objectId ){
-  //       const object = await this.objectsService.findOneById(objectId)
-  //       newFight.object = object
-  //     }
-      
-  //     if ( powerId ){
-  //       const power = await this.powersService.findOneById(powerId)
-  //       newFight.power = power
-  //     }
-      
-  //     console.log(newFight)
-  //     return await this.fightRepository.save(newFight)
-
-  //   } catch (error) {
-  //     throw new BadRequestException(error.message)
-  //   }
-  // }
-
   async create({characterPowerAndObjects, date, placeId} : CreateFightInput): Promise<Fight[]> {
     
     try {   
@@ -203,6 +169,65 @@ export class FightsService {
     return true;
   }
 
-  
+  async reportPlacesFight() : Promise<PlacesFightReportResponse[]>{
+
+    const res = await this.fightRepository.createQueryBuilder()
+    .select('COUNT(DISTINCT("f"."date"))', 'count')
+    .addSelect('MAX(f.date)', 'max')
+    .addSelect('p.name', 'name')
+    .from('Fight', 'f')
+    .innerJoin('Place', 'p', 'f.placeId = p.id')
+    .groupBy('f.placeId')
+    .addGroupBy('p.name')
+    .orderBy('COUNT(DISTINCT("f"."date"))', 'DESC')
+    .limit(3)
+    .getRawMany()
+
+
+    return res.map(({count, max, name}) => {
+      return {
+        id : name,
+        name,
+        count,
+        max : max.toISOString().substring(0,10)
+      }
+    })
+
+  }
+
+  async reportObjectsMostUsed():Promise<ObjectsMostUsedReportResponse[]> {
+
+    const res = await this.fightRepository.query(`
+        SELECT "O"."name", "O"."description", "Ob"."description" "type", COUNT(DISTINCT("F"."id"))
+        FROM "Fight" "F" JOIN "Object" "O"
+        ON ("F"."objectId" = "O".id)
+        JOIN "ObjectType" "Ob"
+        ON ("O"."objectTypeId" = "Ob".id) 
+        WHERE "F"."powerId" is NULL
+        AND (
+          "F"."characterId" IN (Select "characterId" from "Villain") 
+          OR "F"."characterId" IN (Select "characterId" from "Hero")
+        ) 
+        GROUP BY ("O"."name", "O"."description", "Ob"."description", "F"."objectId") 
+        ORDER BY COUNT(DISTINCT("F"."date")) DESC
+        LIMIT 5
+
+    
+    `)
+
+
+    return res.map(({count, name, description, type}) => {
+      return {
+        id : name,
+        name,
+        description,
+        type,
+        count
+      }
+    })
+
+  } 
+
+
 
 }

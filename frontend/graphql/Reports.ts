@@ -98,3 +98,29 @@ export const GetPlayingAtThelimitReport = gql`
         }
     }
 `
+
+
+export const GetPlacesFightReportResponse = gql`
+        query ReportPlacesFight {
+            reportPlacesFight {
+            name
+            max
+            count
+            id
+            }
+        }
+
+`
+
+export const GetObjectsMostUsedReportResponse = gql`
+query ReportObjectsMostUsed {
+    reportObjectsMostUsed {
+      id
+      count
+      description
+      name
+      type
+    }
+  }
+
+`
