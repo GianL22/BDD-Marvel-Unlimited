@@ -1,4 +1,4 @@
-import { ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Check, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Profile } from 'src/users/entities';
 import { Movie } from 'src/media/entities';
@@ -11,6 +11,7 @@ export class MovieProgress {
     userId: string;
 
     @PrimaryColumn({ type: "uuid" })
+    @Field(()=> ID)
     profileId: string;
 
     @PrimaryColumn({ type: "uuid" })
@@ -18,6 +19,7 @@ export class MovieProgress {
 
     @Column({ nullable: false, name: 'timeWatched' })
     @Check('"timeWatched" >= 0')
+    @Field(()=> Int)
     timeWatched: number;
 
     @ManyToOne(
@@ -33,5 +35,6 @@ export class MovieProgress {
         { lazy: true }
     )
     @JoinColumn({ name: "movieId", foreignKeyConstraintName: 'movie_FK' })
+    @Field(() => Movie)
     movie: Movie;
 }
