@@ -40,7 +40,7 @@ const columns = [
 
 const FightsCreatePage= ( ) => {  
     
-    const { data } = useQuery<DataToCreateResponse>(GetInfoToCreate);
+    const { data, error } = useQuery<DataToCreateResponse>(GetInfoToCreate);
     const [createFight] = useMutation(CreateFight)
     const [place, setPlace] = useState<GenericResponse>({id: '', description: 'Seleccionar Lugar'})
     const [characterToAdd, setCharacterToAdd] = useState<GenericResponse>({id: '', description: 'Seleccionar Personaje'})
@@ -65,7 +65,6 @@ const FightsCreatePage= ( ) => {
             }
         })
     },[charactersAdded])
- 
     const onChangeList = (id : string) => {
 
         if (id == '') return  
@@ -199,7 +198,7 @@ const FightsCreatePage= ( ) => {
         onChangeList(character.characterId)
     } 
 
-    console.log(charactersAdded)
+    console.log(data, error)
 
 
     const onSubmit = async () => {
@@ -308,6 +307,7 @@ const FightsCreatePage= ( ) => {
                 :
                     <Grid xs={6} alignContent='space-between' alignItems='center' direction='column' css={{py:'$10' , minWidth : 'max-content'}}>
                         <ListGrid
+                            title = 'Personajes'
                             rows={listCharactersAdded!}
                             selected={characterSelect.id}
                             pressable = {true}
@@ -341,6 +341,7 @@ const FightsCreatePage= ( ) => {
                         <>
                             
                         <ListGrid
+                            title = 'Poderes'
                             rows={listPowersAdded!}
                             selected=''
                             pressable = {false}
@@ -365,6 +366,7 @@ const FightsCreatePage= ( ) => {
                         </Button>
 
                         <ListGrid
+                            title = 'Objetos'
                             rows={listObjectsAdded!}
                             pressable = {false}
                             selected=''

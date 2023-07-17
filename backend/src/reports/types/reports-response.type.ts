@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { VideoGame } from "src/media/entities";
 import { Power } from "src/powers/entities";
 
@@ -26,4 +26,44 @@ export class NaturalPowersReportResponse {
 
     @Field(() => [Power])
     naturalPowers: Power[];
+}
+
+
+@ObjectType()
+export class PlacesFightReportResponse{
+    
+    @Field(() => String)
+    id : string
+
+    @Field(() => String)
+    name : string
+    
+    @Field(() => Int)
+    count : number
+    
+    @Field(() => String)
+    max : string
+
+}
+
+@ObjectType()
+export class ObjectsMostUsedReportResponse{
+    
+    
+    
+    @Field(() => String)
+    id : string
+
+    @Field(() => String)
+    name : string
+    
+    @Field(() => String)
+    description : string
+
+    @Field(() => String)
+    type : string
+    
+    @Field(() => Int)
+    count : string
+
 }

@@ -16,6 +16,9 @@ import { CharactersModule } from 'src/characters/characters.module';
     ObjectsModule,
     PlacesModule,
     CharactersModule
+  ],
+  exports : [
+    FightsService
   ]
 })
 export class FightsModule {}
