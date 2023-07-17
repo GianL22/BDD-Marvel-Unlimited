@@ -5,6 +5,7 @@ import { MovieProgress, SerieProgress, VideoGameProgress } from './entities';
 import { MovieProgressInput, SerieProgressInput, VideoGameProgressInput } from './dto/inputs';
 import { Movie, Serie } from 'src/media/entities';
 import { MediaService } from '../media/media.service';
+import { ProfileProgressResponse } from './types/profile-progress-response.type';
 
 @Injectable()
 export class ProgressService {
@@ -19,8 +20,28 @@ export class ProgressService {
         @InjectRepository(VideoGameProgress)
         private readonly videoGameProgressRepository: Repository<VideoGameProgress>,
 
-        private readonly mediaService :MediaService,
+        private readonly mediaService: MediaService,
     ) { }
+
+    async findMediosInProgressByProfile(profileId: string): Promise<ProfileProgressResponse> {
+        const movies = await this.movieProgressRepository
+            .createQueryBuilder('mp')
+            .innerJoin(Movie, 'm', 'mp."movieId" = m."medioId"')
+            .where('m.duration > mp."timeWatched"')
+            .andWhere('mp."profileId" = :profileId', { profileId })
+            .getMany();
+
+        const series = await this.serieProgressRepository
+            .createQueryBuilder('sp')
+            .innerJoin(Serie, 's', 'sp."serieId" = s."medioId"')
+            .where('s.episodes > sp."viewedEpisodes"')
+            .andWhere('sp."profileId" = :profileId', { profileId })
+            .getMany();
+        return {
+            movies: movies,
+            series: series,
+        };
+    }
 
     async findMovieProgress(profileId: string, movieId: string): Promise<MovieProgress> {
         return await this.movieProgressRepository.findOne({

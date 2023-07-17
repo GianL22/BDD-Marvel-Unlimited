@@ -18,23 +18,41 @@ export const MyList: FC<Props> = ({ medios }) => {
         <Text size={'$3xl'}>Películas: </Text>
         {
           movies.length === 0
-            ? <Link href={'/app/movies'}> Agrega Peliculas a tu lista </Link>
-            : <Carousel medios={medios} type={movies[0].type} />
+            ? (
+              <Link href={'/app/movies'}>
+                <Text color='##00BFFF' size={'$2xl'}>
+                  Agrega Peliculas a tu lista
+                </Text>
+              </Link>
+            )
+            : <Carousel medios={movies} type={movies[0].type} />
         }
       </Box>
       <Box css={{ width: '100%', justifyContent: 'center' }}>
         <Text size={'$3xl'}>Series: </Text>
         {
-          movies.length === 0
-            ? <Link href={'/app/movies'}> Agrega Peliculas a tu lista </Link>
+          series.length === 0
+            ? (
+              <Link href={'/app/series'}>
+                <Text color='##00BFFF' size={'$2xl'}>
+                  Agrega series a tu lista
+                </Text>
+              </Link>
+            )
             : <Carousel medios={series} type={series[0].type} />
         }
       </Box>
       <Box css={{ width: '100%', justifyContent: 'center' }}>
         <Text size={'$3xl'}>Video Juegos: </Text>
         {
-          movies.length === 0
-            ? <Link href={'/app/movies'}> Agrega Peliculas a tu lista </Link>
+          videoGames.length === 0
+            ? (
+              <Link href={'/app/videogames'}>
+                <Text color='##00BFFF' size={'$2xl'}>
+                  Agrega video-juegos a tu lista
+                </Text>
+              </Link>
+            )
             : <Carousel medios={videoGames} type={videoGames[0].type} />
         }
       </Box>
