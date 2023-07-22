@@ -88,3 +88,4 @@ Then run the frontend
 
 - Add route protection
 - Refactorization of forms for entity creation.
+- Add responsive sidebar
