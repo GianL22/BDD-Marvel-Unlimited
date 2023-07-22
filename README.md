@@ -12,7 +12,7 @@ A shell of a streaming platform for Marvel series, movies, and video games, wher
 - Rating system
 
 ## Tech Stack
-<p style="display:flex; align-content:center; justify-content:center">
+<p style="display:flex; align-content:center; justify-content:center; width: 100%">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
   <a href="https://docs.nestjs.com/graphql/quick-start" target="blank"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/GraphQL_Logo.svg" width="200" alt="GraphQL Logo" /></a>
   <a href="https://nextjs.org/" target="blank"><img src="https://cdn.worldvectorlogo.com/logos/next-js.svg" width="200" alt="Next Logo" /></a>
