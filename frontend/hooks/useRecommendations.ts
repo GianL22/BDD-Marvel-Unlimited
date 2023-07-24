@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 export const useRecommendations = (myListInitial: boolean, preferenceInitial: boolean, ratingInitial: number) => {
     const { user } = useContext(AuthContext)
     const { isDark } = useTheme()
-    const {replace, asPath} = useRouter();
+    const { replace, asPath } = useRouter();
     const [myList, setMyList] = useState<boolean>(myListInitial);
     const [preference, setPreference] = useState<boolean>(preferenceInitial);
     const [rating, setRating] = useState<number>(ratingInitial);
@@ -47,27 +47,31 @@ export const useRecommendations = (myListInitial: boolean, preferenceInitial: bo
     const handleRating = async (medioId: string, rating: number) => {
         if (rating < 1) {
             Notification(isDark).fire({
-                title: 'El minimo para calificar es ⭐',
+                title: 'El mínimo para calificar es ⭐',
                 icon: 'error',
             })
             setRating(0)
         } else {
-            await toggleRating({
-                variables: {
-                    ratingRelationInput: {
-                        userId: user?.id,
-                        profileId: Cookies.get('activeProfile'),
-                        medioId: medioId,
-                        rating: rating,
+            try {
+                await toggleRating({
+                    variables: {
+                        ratingRelationInput: {
+                            userId: user?.id,
+                            profileId: Cookies.get('activeProfile'),
+                            medioId: medioId,
+                            rating: rating,
+                        }
                     }
-                }
-            })
-            setRating(rating)
-            Notification(isDark).fire({
-                title: 'Su calificación ha sido cargada',
-                icon: 'success',
-            })
-            replace(asPath)
+                })
+                setRating(rating)
+                Notification(isDark).fire({
+                    title: 'Su calificación ha sido cargada',
+                    icon: 'success',
+                })
+                replace(asPath)
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
 

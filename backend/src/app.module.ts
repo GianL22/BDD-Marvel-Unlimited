@@ -29,6 +29,7 @@ import { PlacesModule } from './places/places.module';
 import { FightsModule } from './fights/fights.module';
 import { RatingsModule } from './ratings/ratings.module';
 import { ProgressModule } from './progress/progress.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -98,6 +99,8 @@ import { ProgressModule } from './progress/progress.module';
     RatingsModule,
 
     ProgressModule,
+
+    SearchModule,
     
   ],
   controllers: [],
