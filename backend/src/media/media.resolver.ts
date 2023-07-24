@@ -113,6 +113,15 @@ export class MediaResolver {
     return this.mediaService.findAllPlatforms();
   }
 
+  @Query(() => [Medio], { name: 'bestRatingMedia' })
+  async getRecommendations(): Promise<Medio[]> {
+    const mediasIds = await this.ratingsService.getRecommendations();
+    const results = await Promise.all(mediasIds.map(async (queryResult) => {
+      return await this.mediaService.findOneMedia(queryResult.medioId);
+    }));
+    return results;
+  }
+
 
   @Mutation(() => Boolean, { name: 'removeMedio' })
   async removeMedio(@Args('id') id: string) {

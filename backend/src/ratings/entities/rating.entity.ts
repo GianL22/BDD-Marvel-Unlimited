@@ -1,4 +1,4 @@
-import { ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Medio } from 'src/media/entities';
 import { Profile } from 'src/users/entities';
 import { Check, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
@@ -35,5 +35,6 @@ export class Rating {
     { lazy: true }
   )
   @JoinColumn({ name: "medioId", foreignKeyConstraintName: 'medio_FK' })
+  @Field(() => Medio)
   medio: Medio;
 }

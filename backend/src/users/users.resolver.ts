@@ -14,6 +14,7 @@ import { ProfileRelationInput } from './dto/inputs/profile-relation.input';
 import { RelationResponse, ProgressResponse } from './types';
 import { RatingsService } from '../ratings/ratings.service';
 import { ProgressService } from 'src/progress/progress.service';
+import { Medio } from 'src/media/entities';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -147,6 +148,13 @@ export class UsersResolver {
     @CurrentUser() user: User,
   ): Promise<RelationResponse> {
     return this.usersService.getPreferenceList(profileId, user.id);
+  }
+
+  @Query(() => [Medio], { name: 'profileRecommendation' })
+  async getRecommendationByProfile(
+    @Args('profileId', { type: () => String }) profileId: string,
+  ): Promise<Medio[]> {
+    return this.usersService.getRecomendations(profileId);
   }
 
   @Query(() => Float, { name: 'ratingOfMedioByProfile' })

@@ -17,8 +17,8 @@ export class RatingsResolver {
     return this.ratingsService.toggleRating(ratingRelationInput);
   }
 
-  // @Query(()=> Rating, {name: 'topRatedMedia'})
-  // async getTopRatedMedia(): Promise<any>{
-  //   return await this.ratingsService.getTopRatedMedia();
-  // }
+  @Query(()=> [Rating], {name: 'topRatedMedia'})
+  async getTopRatedMedia(): Promise<any>{
+    return await this.ratingsService.getTopRatedMedia();
+  }
 }
