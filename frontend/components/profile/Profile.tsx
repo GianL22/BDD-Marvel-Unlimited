@@ -27,7 +27,7 @@ export const Profile:FC<Props> = ({profile,nProfile, editable} : Props) => {
     }
   return (
     <>
-        <ProfileModal profile={profile} bindings={bindings} setVisible={setVisible} edit={true} />
+        <ProfileModal profile={profile} bindings={bindings} setVisible={setVisible} edit={true} setPreference={setVisible} />
         <Card 
             isPressable 
             isHoverable  

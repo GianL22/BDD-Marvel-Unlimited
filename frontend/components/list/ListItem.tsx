@@ -17,13 +17,13 @@ interface Props {
 
 export const ListItem : FC<Props>= ({id, description = 'Testing', pressable, selected, onDelete, onSelect}) => {
   return (
-    <Flex direction='row'>
+    <Flex direction='row' justify='between'>
         <Card
         isPressable={pressable}
         isHoverable
         variant={selected ? 'bordered' : 'flat'}
         onClick={() => onSelect(id)}
-        css={{ mw: "400px" }}
+        css={{ mw: "100%" }}
         >
             <Card.Body>
                 <Text h4>{description}</Text>

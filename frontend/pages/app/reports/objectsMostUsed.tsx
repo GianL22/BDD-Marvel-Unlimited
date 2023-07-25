@@ -11,7 +11,7 @@ import { ReportsCellReducer } from '@/components/table/cell-reducers/ReportsCell
 const columns = [
     { label: 'NOMBRE', uid: 'name' },
     { label: 'TIPO', uid: 'type' },
-    { label: 'N°COMBATES ', uid: 'count' },
+    { label: 'CANT. USO', uid: 'count' },
 ]
 
 interface Data {

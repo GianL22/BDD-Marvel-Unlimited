@@ -25,7 +25,7 @@ export const MyList: FC<Props> = ({ medios }) => {
                 </Text>
               </Link>
             )
-            : <Carousel medios={movies} type={movies[0].type} />
+            : <Carousel medios={movies} />
         }
       </Box>
       <Box css={{ width: '100%', justifyContent: 'center' }}>
@@ -39,7 +39,7 @@ export const MyList: FC<Props> = ({ medios }) => {
                 </Text>
               </Link>
             )
-            : <Carousel medios={series} type={series[0].type} />
+            : <Carousel medios={series} />
         }
       </Box>
       <Box css={{ width: '100%', justifyContent: 'center' }}>
@@ -53,7 +53,7 @@ export const MyList: FC<Props> = ({ medios }) => {
                 </Text>
               </Link>
             )
-            : <Carousel medios={videoGames} type={videoGames[0].type} />
+            : <Carousel medios={videoGames} />
         }
       </Box>
     </Flex>

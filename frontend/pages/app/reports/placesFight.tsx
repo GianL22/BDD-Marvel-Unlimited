@@ -10,7 +10,7 @@ import { ReportsCellReducer } from '@/components/table/cell-reducers/ReportsCell
 
 const columns = [
     { label: 'NOMBRE', uid: 'name' },
-    { label: 'F.DEL ULTIMO COMBATE', uid: 'max' },
+    { label: 'F.DEL ÚLTIMO COMBATE', uid: 'max' },
     { label: 'N° COMBATES ', uid: 'count' },
 ]
 

@@ -16,7 +16,7 @@ import { ObjectsMostUsedReportResponse, PlacesFightReportResponse } from 'src/re
 @Injectable()
 export class FightsService {
 
-  constructor (
+  constructor(
 
     @InjectRepository(Fight)
     private readonly fightRepository: Repository<Fight>,
@@ -29,25 +29,25 @@ export class FightsService {
 
     private readonly objectsService: ObjectsService,
 
-  ) {}
-  async create({characterPowerAndObjects, date, placeId} : CreateFightInput): Promise<Fight[]> {
-    
-    try {   
+  ) { }
+  async create({ characterPowerAndObjects, date, placeId }: CreateFightInput): Promise<Fight[]> {
+
+    try {
       const place = await this.placesService.findOnePlace(placeId)
       console.log(characterPowerAndObjects)
-      const allFightsPromises =  characterPowerAndObjects.map( async ({characterId, powerAndObjectUsedInput})=> {
+      const allFightsPromises = characterPowerAndObjects.map(async ({ characterId, powerAndObjectUsedInput }) => {
 
         const character = await this.charactersService.findOneCharacterById(characterId)
-        if (powerAndObjectUsedInput.length == 0) powerAndObjectUsedInput.push({powerId : null, objectId : null})
+        if (powerAndObjectUsedInput.length == 0) powerAndObjectUsedInput.push({ powerId: null, objectId: null })
 
-        const  fightsPromises = powerAndObjectUsedInput.map(async ({powerId, objectId}) => {
+        const fightsPromises = powerAndObjectUsedInput.map(async ({ powerId, objectId }) => {
 
-          const powerAndObject = { power: null, object: null};
+          const powerAndObject = { power: null, object: null };
 
           if (powerId) powerAndObject.power = await this.powersService.findOneById(powerId)
           if (objectId) powerAndObject.object = await this.objectsService.findOneById(objectId)
 
-          const fight = this.fightRepository.create({ ...powerAndObject, character, place, date})
+          const fight = this.fightRepository.create({ ...powerAndObject, character, place, date })
           return fight;
         })
 
@@ -62,7 +62,7 @@ export class FightsService {
       const allFights = await Promise.all(allFightsPromises)
 
       return allFights.flat();
-      
+
     } catch (error) {
       throw new BadRequestException(error.message)
     }
@@ -71,131 +71,131 @@ export class FightsService {
 
 
 
-  async findAll() : Promise<any[]> { //cambiar tipo
-    
-    const res =  await this.fightRepository.createQueryBuilder()
-    .select('f.date')
-    .addSelect('f.placeId')
-    .from('Fight', 'f')
-    .groupBy('f.placeId')
-    .addGroupBy('f.date')
-    .getRawMany()
+  async findAll(): Promise<any[]> { //cambiar tipo
+
+    const res = await this.fightRepository.createQueryBuilder()
+      .select('f.date')
+      .addSelect('f.placeId')
+      .from('Fight', 'f')
+      .groupBy('f.placeId')
+      .addGroupBy('f.date')
+      .getRawMany()
 
     const placesAndDate = res.map(async (r) => {
 
 
       const place = await this.placesService.findOnePlace(r.placeId);
-      return {date : r.f_date.toISOString(), place}
+      return { date: r.f_date.toISOString(), place }
     })
     return placesAndDate;
 
   }
 
-  async findAllByPlaceAndDate(placeId : string, date : string) : Promise<FightResponse> {
+  async findAllByPlaceAndDate(placeId: string, date: string): Promise<FightResponse> {
 
 
     console.log("entro")
 
     const fights = await this.fightRepository.find({
       where: {
-        place : { id : placeId },
+        place: { id: placeId },
         date,
       },
     });
 
 
-    const characterPowerAndObjects : CharacterPowerAndObject[] = []
-    
-    fights.forEach(({character : c1}) => {
+    const characterPowerAndObjects: CharacterPowerAndObject[] = []
+
+    fights.forEach(({ character: c1 }) => {
 
       const finded = characterPowerAndObjects.find((c) => c.character.id == c1.id)
 
       if (!finded) {
-        const powerAndObjectUsedInput : PowerAndObjectUsedInputElement[] = []; 
+        const powerAndObjectUsedInput: PowerAndObjectUsedInputElement[] = [];
 
-        fights.forEach(({character : c2, power, object}) => {
-          
-          if (c1.id == c2.id){
+        fights.forEach(({ character: c2, power, object }) => {
+
+          if (c1.id == c2.id) {
             powerAndObjectUsedInput.push({
               power: power || null,
               object: object || null,
             })
-          } 
+          }
         })
-  
+
         characterPowerAndObjects.push({
           character: c1,
           powerAndObjectUsedInput,
-        }) 
+        })
       }
 
     })
 
-    const res: FightResponse  = {
-      place : fights[0].place,
+    const res: FightResponse = {
+      place: fights[0].place,
       date,
       characterPowerAndObjects
     }
     console.log("salio")
-  
+
     return res
 
   }
 
 
-  async remove(removeFightInput : RemoveFightInput) : Promise<Boolean> {
-    
-    const {date, characterId, objectId, powerId} = removeFightInput
-    let removeOptions = { date } 
-    
-    if ((objectId  || powerId) && (!characterId)) {
+  async remove(removeFightInput: RemoveFightInput): Promise<Boolean> {
+
+    const { date, characterId, objectId, powerId } = removeFightInput
+    let removeOptions = { date }
+
+    if ((objectId || powerId) && (!characterId)) {
       throw new BadRequestException('No se puede eliminar un objeto o poder sin un personaje');
     }
-    if (objectId  && powerId) {
+    if (objectId && powerId) {
       throw new BadRequestException('No se puede eliminar un objeto y un poder al mismo tiempo');
     }
-    
-    Object.keys(removeFightInput).forEach(key =>{
+
+    Object.keys(removeFightInput).forEach(key => {
       if (key == "date") return;
 
       let keyOption = key.substring(0, key.length - 2)
 
-      removeOptions[keyOption] = { id : removeFightInput[key] }
+      removeOptions[keyOption] = { id: removeFightInput[key] }
     })
     const fights = await this.fightRepository.findBy(removeOptions)
     if (fights.length == 0) throw new NotFoundException(`Combate no encontrado`)
-    
-    await this.fightRepository.remove( fights )
+
+    await this.fightRepository.remove(fights)
     return true;
   }
 
-  async reportPlacesFight() : Promise<PlacesFightReportResponse[]>{
+  async reportPlacesFight(): Promise<PlacesFightReportResponse[]> {
 
     const res = await this.fightRepository.createQueryBuilder()
-    .select('COUNT(DISTINCT("f"."date"))', 'count')
-    .addSelect('MAX(f.date)', 'max')
-    .addSelect('p.name', 'name')
-    .from('Fight', 'f')
-    .innerJoin('Place', 'p', 'f.placeId = p.id')
-    .groupBy('f.placeId')
-    .addGroupBy('p.name')
-    .orderBy('COUNT(DISTINCT("f"."date"))', 'DESC')
-    .limit(3)
-    .getRawMany()
+      .select('COUNT(DISTINCT("f"."date"))', 'count')
+      .addSelect('MAX(f.date)', 'max')
+      .addSelect('p.name', 'name')
+      .from('Fight', 'f')
+      .innerJoin('Place', 'p', 'f.placeId = p.id')
+      .groupBy('f.placeId')
+      .addGroupBy('p.name')
+      .orderBy('COUNT(DISTINCT("f"."date"))', 'DESC')
+      .limit(3)
+      .getRawMany()
 
 
-    return res.map(({count, max, name}) => {
+    return res.map(({ count, max, name }) => {
       return {
-        id : name,
+        id: name,
         name,
         count,
-        max : max.toISOString().substring(0,10)
+        max: max.toISOString().substring(0, 10)
       }
     })
 
   }
 
-  async reportObjectsMostUsed():Promise<ObjectsMostUsedReportResponse[]> {
+  async reportObjectsMostUsed(): Promise<ObjectsMostUsedReportResponse[]> {
 
     const res = await this.fightRepository.query(`
         SELECT "O"."name", "O"."description", "Ob"."description" "type", COUNT(DISTINCT("F"."id"))
@@ -216,9 +216,9 @@ export class FightsService {
     `)
 
 
-    return res.map(({count, name, description, type}) => {
+    return res.map(({ count, name, description, type }) => {
       return {
-        id : name,
+        id: name,
         name,
         description,
         type,
@@ -226,7 +226,7 @@ export class FightsService {
       }
     })
 
-  } 
+  }
 
 
 

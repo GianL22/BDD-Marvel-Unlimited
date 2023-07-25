@@ -8,13 +8,13 @@ export const MenuItemsApp = () => {
    return (
       <>
         <SidebarItem
-            title="Home"
+            title="Inicio"
             isActive={router.pathname === '/app'}
             href="/app"
             icon = { <HomeSimpleDoor />}
         />
         <SidebarItem
-            title="Busqueda"
+            title="Búsqueda"
             isActive={router.pathname.includes('search')}
             href="/app/search"
             icon={<Search />}
@@ -51,7 +51,7 @@ export const MenuItemsApp = () => {
         />
 
         <SidebarItem
-            title="Suscripcion"
+            title="Suscripción"
             isActive={router.pathname.includes('changesuscription')}
             href="/app/changesuscription"
             icon={<CoinsSwap/>}

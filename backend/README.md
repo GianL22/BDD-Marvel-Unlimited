@@ -24,5 +24,7 @@ JWT_SECRET=
 npm run start:dev
 ```
 
+3. Ya ejecutado el proyecto puedes cargar la base de datos con la seed que se encuentra en scriptsDB/inserts/seed.
+
 
 

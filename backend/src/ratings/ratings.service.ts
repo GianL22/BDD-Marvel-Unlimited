@@ -83,22 +83,55 @@ export class RatingsService {
     for (const videoGame of results) {
       const { ratingAvg = 0 } = await this.getAverageRating(videoGame.medioId);
       if (ratingAvg < videoGameAvgRating.avg)
-        ratingsVideoGames.push({ ...videoGame });
+        ratingsVideoGames.push({ ...videoGame, ratingAvg });
     }
     return {
-      videoGames: ratingsVideoGames,
+      videoGames: ratingsVideoGames.sort((a, b) => b.ratingAvg - a.ratingAvg),
       avg: videoGameAvgRating.avg
     };
   }
 
   async getTopRatedMedia(): Promise<any> {
     const ratings = await this.ratingRepository.createQueryBuilder('r')
-    .select(`"medioId"`)
-    .groupBy(`"medioId"`)
-    .orderBy('AVG(rating)', 'DESC')
-    .limit(10)
-    .getRawMany<{ medioId: string }>();
+      .select(`"medioId"`)
+      .groupBy(`"medioId"`)
+      .orderBy('AVG(rating)', 'DESC')
+      .limit(5)
+      .getRawMany<{ medioId: string }>();
+    const results = await Promise.all(ratings.map(async (queryResult) => {
+      return await this.ratingRepository.findOne({ where: { medioId: queryResult.medioId } });
+    }));
+    return results;
+  }
 
-    return 10;
+  async getRecommendations(): Promise<{ medioId: string }[]> {
+    const results = await this.ratingRepository.query(`
+      (SELECT "medioId"
+      from "Rating"
+      where "medioId" IN (select "medioId" from "Movie")
+      group by "medioId"
+      order by AVG(rating) DESC
+      LIMIT 3)
+      
+      UNION
+      
+      (SELECT "medioId"
+      from "Rating"
+      where "medioId" IN (select "medioId" from "Serie")
+      group by "medioId"
+      order by AVG(rating) DESC
+      LIMIT 3)
+      
+      UNION
+      
+      (SELECT "medioId"
+      from "Rating"
+      where "medioId" IN (select "medioId" from "VideoGame")
+      group by "medioId"
+      order by AVG(rating) DESC
+      LIMIT 3)
+    `)
+
+    return results
   }
 }

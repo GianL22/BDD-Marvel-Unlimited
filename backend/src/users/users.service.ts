@@ -247,4 +247,57 @@ export class UsersService {
     })
     return results;
   }
+
+  async getRecomendations(profileId: string) : Promise<Medio[]>{
+
+    const res:{medioId: string}[]  = await this.medioRepository.query(`
+    SELECT "medioId"
+    FROM "Movie"
+    WHERE "audioVisualType" in (SELECT m."audioVisualType"
+                  FROM "PreferenceList" p 
+                  JOIN "Movie" m
+                  ON (p."medioId" = m."medioId") 
+                  WHERE p."profileId" ='${profileId}'
+                  GROUP BY ( m."audioVisualType") 
+                  ORDER by (COUNT(m."medioId")) DESC
+                  LIMIT 1) 
+    AND "medioId" not in (SELECT "movieId" 
+                FROM "MovieProgress"
+                WHERE "profileId" ='${profileId}' 
+                )
+    UNION
+    SELECT "medioId"
+    FROM "Serie"
+    WHERE "audioVisualType" in (SELECT s."audioVisualType"
+                  FROM "PreferenceList" p 
+                  JOIN "Serie" s
+                  ON (p."medioId" = s."medioId") 
+                  WHERE p."profileId" ='${profileId}'
+                  GROUP BY ( s."audioVisualType") 
+                  ORDER by (COUNT(s."medioId")) DESC
+                  LIMIT 1)
+    AND "medioId" not in (SELECT "serieId"
+                FROM "SeriesProgress"
+                WHERE "profileId" ='${profileId}' 
+                )
+    UNION
+    SELECT "medioId"
+    FROM "VideoGame"
+    WHERE "type" in (SELECT v."type"
+                  FROM "PreferenceList" p 
+                  JOIN "VideoGame" v
+                  ON (p."medioId" = v."medioId") 
+                  WHERE p."profileId" ='${profileId}'
+                  GROUP BY ( v."type") 
+                  ORDER by (COUNT(v."medioId")) DESC
+                  LIMIT 1)
+    AND "medioId" not in (SELECT "videoGameId"
+                FROM "VideoGameProgress"
+                WHERE "profileId" ='${profileId}' 
+                )
+    `)
+
+    return await this.getMediosId(res)
+  }
+
 }

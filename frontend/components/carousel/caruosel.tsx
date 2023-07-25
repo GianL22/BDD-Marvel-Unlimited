@@ -11,16 +11,17 @@ export interface IMovie {
     title: string;
     poster: string;
     id: string;
-    rating: { ratingAvg: number | null };
+    rating?: { ratingAvg: number | null };
+    type: string;
+    progress?: number;
+    maxProgress?: number;
 }
 
 interface Props {
     medios: IMovie[];
-    type: string;
 }
 
-export const Carousel: FC<Props> = ({ medios, type }) => {
-    console.log(medios)
+export const Carousel: FC<Props> = ({ medios }) => {
     return (
         <Swiper
             rewind={true}
@@ -47,10 +48,12 @@ export const Carousel: FC<Props> = ({ medios, type }) => {
                     <SwiperSlide key={medio.id}>
                         <MedioCard
                             img={`/medios/${medio.poster}`}
-                            rating={(medio.rating.ratingAvg) ? medio.rating.ratingAvg.toFixed(2) : 'N.C.'}
+                            rating={((medio.rating) && medio.rating.ratingAvg) ? medio.rating.ratingAvg.toFixed(2) : 'N.C.'}
                             title={medio.title}
-                            url={`/app/${type}`}
+                            url={`/app/${medio.type}`}
                             id={medio.id}
+                            progress={medio.progress}
+                            maxProgress={medio.maxProgress}
                         />
                     </SwiperSlide>
                 ))

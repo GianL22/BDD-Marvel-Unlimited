@@ -443,4 +443,8 @@ export class MediaService {
     if (series.length > 0) return 'series'
     if (videoGames.length > 0) return 'videogames'
   }
+
+  async findOneMedia(mediaId: string): Promise<Medio>{
+    return await this.medioRepository.findOne({where: {id:mediaId }})
+  }
 }
