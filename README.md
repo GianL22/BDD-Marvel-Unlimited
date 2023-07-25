@@ -1,5 +1,5 @@
+![image](https://github.com/GianL22/BDD-Marvel-Unlimited/assets/110587636/0c1f6508-c562-4e85-b935-41db9cd8b508)
 
-![2e007c1a-724f-47a8-8e52-4164eed780ba](https://github.com/GianL22/BDD-Marvel-Unlimited/assets/110587636/22964178-5d4a-46bf-8b83-5ea9291e7d3c)
 # Marvel United
 
 A shell of a streaming platform for Marvel series, movies, and video games, where you can register, create profiles, browse your favorite media, among other things.
